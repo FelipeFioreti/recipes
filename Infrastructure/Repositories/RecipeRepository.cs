@@ -9,15 +9,20 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
 {
     private readonly DbSet<Recipe> _dbSet = context.Recipes;
 
-    public async Task<IEnumerable<Recipe>> GetAll()
+    public async Task<IEnumerable<Recipe>> GetAll(int userId)
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .AsNoTracking()
+            .Where(recipe => recipe.UserId == userId)
+            .ToListAsync();
     }
 
 
-    public async Task<Recipe?> GetById(int id)
+    public async Task<Recipe?> GetById(int id, int userId)
     {
-        return await _dbSet.FindAsync(id);
+        return await _dbSet
+            .AsNoTracking()
+            .FirstOrDefaultAsync(recipe => recipe.Id == id && recipe.UserId == userId);
     }
 
     public async Task<Recipe?> Create(Recipe recipe)

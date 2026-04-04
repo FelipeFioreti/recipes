@@ -1,42 +1,85 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Recipes.Domain.Constants;
+using Recipes.Domain.DTOs.Recipes;
 using Recipes.Domain.Entities.Recipes;
+using Recipes.Domain.Interfaces.Auth;
 using Recipes.Domain.Interfaces.Recipes;
 
 namespace Recipes.Presentation.Controllers.Recipes;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = AuthorizationPolicies.AuthenticatedUser)]
 [Route("api/[controller]")]
-public class RecipeController(IRecipeService recipeService) : ControllerBase
+public class RecipeController(IRecipeService recipeService, ICurrentUser currentUser) : ControllerBase
 {
     [HttpGet("{id:int}")]
-    public async Task<Recipe?> GetById(int id)
+    public async Task<ActionResult<Recipe>> GetById(int id)
     {
-        return await recipeService.GetById(id);
+        if (currentUser.UserId is not { } userId)
+            return Unauthorized();
+
+        var recipe = await recipeService.GetById(id, userId);
+
+        return recipe == null ? NotFound() : Ok(recipe);
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Recipe>> GetAll()
+    public async Task<ActionResult<IEnumerable<Recipe>>> GetAll()
     {
-        return await recipeService.GetAll();
+        if (currentUser.UserId is not { } userId)
+            return Unauthorized();
+
+        var recipes = await recipeService.GetAll(userId);
+
+        return Ok(recipes);
     }
 
     [HttpPost]
-    public async Task<Recipe?> Create([FromBody] Recipe recipe)
+    public async Task<ActionResult<Recipe>> Create([FromBody] CreateRecipeRequest request)
     {
-        return await recipeService.Create(recipe);
+        if (currentUser.UserId is not { } userId)
+            return Unauthorized();
+
+        var recipe = new Recipe
+        {
+            Name = request.Name,
+            Description = request.Description,
+            RecipeTypeId = request.RecipeTypeId
+        };
+
+        var createdRecipe = await recipeService.Create(userId, recipe);
+
+        return createdRecipe == null ? BadRequest() : Ok(createdRecipe);
     }
 
-    [HttpPut]
-    public async Task<Recipe?> Update([FromBody] Recipe recipe)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<Recipe>> Update(int id, [FromBody] UpdateRecipeRequest request)
     {
-        return await recipeService.Update(recipe);
+        if (currentUser.UserId is not { } userId)
+            return Unauthorized();
+
+        var recipe = new Recipe
+        {
+            Id = id,
+            Name = request.Name,
+            Description = request.Description,
+            RecipeTypeId = request.RecipeTypeId
+        };
+
+        var updatedRecipe = await recipeService.Update(userId, recipe);
+
+        return updatedRecipe == null ? NotFound() : Ok(updatedRecipe);
     }
 
-    [HttpDelete]
-    public async Task Disable(int id)
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Disable(int id)
     {
-        await recipeService.Disable(id);
+        if (currentUser.UserId is not { } userId)
+            return Unauthorized();
+
+        var disabled = await recipeService.Disable(id, userId);
+
+        return disabled ? NoContent() : NotFound();
     }
 }

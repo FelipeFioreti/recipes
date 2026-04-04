@@ -7,10 +7,10 @@ namespace Recipes.Presentation.Controllers.Auth;
 
 [ApiController]
 [Route("api/[controller]")]
+[AllowAnonymous]
 public class AccountController(IAuthService authService) : ControllerBase
 {
     [HttpPost("authenticate")]
-    [AllowAnonymous]
     public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest authenticateRequest)
     {
         var response = await authService.Authenticate(authenticateRequest);
@@ -22,7 +22,6 @@ public class AccountController(IAuthService authService) : ControllerBase
     }
 
     [HttpPost("register")]
-    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUserRequest)
     {
         var response = await authService.RegisterUser(registerUserRequest);

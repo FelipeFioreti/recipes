@@ -1,12 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Recipes.Domain.Constants;
 using Recipes.Domain.Entities.Recipes;
 using Recipes.Domain.Interfaces.Recipes;
 
 namespace Recipes.Presentation.Controllers.Recipes;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
 [Route("api/[controller]")]
 public class RecipeTypeController(IRecipeTypeService recipeTypeService) : ControllerBase
 {
@@ -28,13 +29,15 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
         return await recipeTypeService.Create(recipeType);
     }
 
-    [HttpPut]
-    public async Task<RecipeType?> Update([FromBody] RecipeType recipeType)
+    [HttpPut("{id:int}")]
+    public async Task<RecipeType?> Update(int id, [FromBody] RecipeType recipeType)
     {
+        recipeType.Id = id;
+
         return await recipeTypeService.Update(recipeType);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id:int}")]
     public async Task Delete(int id)
     {
         await recipeTypeService.Disable(id);

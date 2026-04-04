@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Recipes.Domain.Entities.Enums;
 using Recipes.Domain.Entities.Users;
 
 namespace Recipes.Infrastructure.Data.Configurations;
@@ -22,6 +23,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Password)
             .IsRequired()
             .HasMaxLength(255);
+        builder.Property(e => e.Role)
+            .IsRequired()
+            .HasMaxLength(50)
+            .HasDefaultValue(Roles.USER.ToString());
 
         builder.HasIndex(u => u.Name);
         builder.HasIndex(u => u.Email)
