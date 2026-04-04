@@ -1,0 +1,21 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+*.DotSettings.user
+
+# IDE folders
+.vs/
+.idea/
+
+# Local development configuration
+appsettings.Development.json
+
+# Package/cache artifacts
+TestResults/
