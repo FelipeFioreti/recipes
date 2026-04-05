@@ -37,10 +37,4 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
         await context.SaveChangesAsync();
         return user;
     }
-
-    public async Task Delete(User user)
-    {
-        _dbSet.Remove(user);
-        await context.SaveChangesAsync();
-    }
 }

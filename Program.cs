@@ -61,7 +61,6 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireAuthenticatedUser();
         policy.RequireClaim(ClaimTypes.NameIdentifier);
         policy.RequireClaim(ClaimTypes.Email);
-        policy.RequireRole(nameof(Roles.USER));
     })
     .AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
     {

@@ -33,10 +33,10 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
         return recipeType == null ? BadRequest() : Ok(recipeType);
     }
 
-    [HttpPut("")]
-    public async Task<ActionResult<RecipeTypeResponse>> Update([FromBody] UpdateRecipeTypeRequest request)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<RecipeTypeResponse>> Update(int id, [FromBody] UpdateRecipeTypeRequest request)
     {
-        var recipeType = await recipeTypeService.Update(request);
+        var recipeType = await recipeTypeService.Update(id, request);
 
         return recipeType == null ? NotFound() : Ok(recipeType);
     }

@@ -1,7 +1,10 @@
-﻿namespace Recipes.Domain.DTOs.Recipes;
+using System.ComponentModel.DataAnnotations;
+
+namespace Recipes.Domain.DTOs.Recipes;
 
 public record UpdateRecipeTypeRequest
 {
-    public required int Id { get; set; }
-    public required string Name { get; set; }
+    [Required]
+    [MaxLength(255)]
+    public string Name { get; init; } = string.Empty;
 }

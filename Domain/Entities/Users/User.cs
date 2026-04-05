@@ -23,13 +23,13 @@ public class User : BaseEntity
         Role = Roles.USER;
     }
 
-    [MaxLength(255)] [Required] public string Name { get; private set; }
-    [MaxLength(255)] [Required] public string Email { get; private set; }
+    [MaxLength(255)] [Required] public string Name { get; private set; } = string.Empty;
+    [MaxLength(255)] [Required] public string Email { get; private set; } = string.Empty;
 
     [MaxLength(255)]
     [Required]
     [JsonIgnore]
-    public string Password { get; private set; }
+    public string Password { get; private set; } = string.Empty;
 
     [MaxLength(50)] [Required] public Roles Role { get; private set; }
 

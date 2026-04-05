@@ -1,10 +1,14 @@
 using Recipes.Domain.DTOs.Users;
 using Recipes.Domain.Entities.Users;
+using Recipes.Domain.Interfaces.Auth;
 using Recipes.Domain.Interfaces.Users;
 
 namespace Recipes.Application.Services.Users;
 
-public class UserService(IUserRepository userRepository, ILogger<UserService> logger) : IUserService
+public class UserService(
+    IUserRepository userRepository,
+    IUserContext userContext,
+    ILogger<UserService> logger) : IUserService
 {
     public async Task<IEnumerable<UserResponse>> GetAll()
     {
@@ -13,6 +17,13 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         var users = await userRepository.GetAll();
 
         return users.Select(ToResponse);
+    }
+
+    public async Task<UserResponse?> GetCurrent()
+    {
+        logger.LogDebug("GetCurrent()");
+
+        return await GetById(userContext.GetUserId());
     }
 
     public async Task<UserResponse?> GetById(int id)
@@ -24,11 +35,18 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         return user == null ? null : ToResponse(user);
     }
 
-    public async Task<UserResponse?> Update(int userId, UpdateUserRequest request)
+    public async Task<UserResponse?> UpdateCurrent(UpdateUserRequest request)
+    {
+        logger.LogDebug("UpdateCurrent()");
+
+        return await Update(userContext.GetUserId(), request);
+    }
+
+    public async Task<UserResponse?> Update(int id, UpdateUserRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingUser = await userRepository.GetById(userId);
+        var existingUser = await userRepository.GetById(id);
 
         if (existingUser == null)
             return null;
@@ -38,6 +56,13 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
         var updatedUser = await userRepository.Update(existingUser);
 
         return updatedUser == null ? null : ToResponse(updatedUser);
+    }
+
+    public async Task<bool> DisableCurrent()
+    {
+        logger.LogDebug("DisableCurrent()");
+
+        return await Disable(userContext.GetUserId());
     }
 
     public async Task<bool> Disable(int id)
@@ -50,26 +75,11 @@ public class UserService(IUserRepository userRepository, ILogger<UserService> lo
             return false;
 
         user.Disable();
-
         await userRepository.Update(user);
 
         return true;
     }
-
-    public async Task<bool> Delete(int id)
-    {
-        logger.LogDebug("Delete()");
-
-        var user = await userRepository.GetById(id);
-
-        if (user == null)
-            return false;
-
-        await userRepository.Delete(user);
-
-        return true;
-    }
-
+    
     public async Task<UserResponse?> Create(CreateUserRequest request)
     {
         logger.LogDebug("Create()");

@@ -34,11 +34,11 @@ public class RecipeTypeService(IRecipeTypeRepository recipeTypeRepository, ILogg
         return recipeType == null ? null : ToResponse(recipeType);
     }
 
-    public async Task<RecipeTypeResponse?> Update(UpdateRecipeTypeRequest request)
+    public async Task<RecipeTypeResponse?> Update(int id, UpdateRecipeTypeRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingRecipeType = await recipeTypeRepository.GetById(request.Id);
+        var existingRecipeType = await recipeTypeRepository.GetById(id);
 
         if (existingRecipeType == null)
             return null;
@@ -61,20 +61,6 @@ public class RecipeTypeService(IRecipeTypeRepository recipeTypeRepository, ILogg
 
         recipeType.Disable();
         await recipeTypeRepository.Update(recipeType);
-
-        return true;
-    }
-
-    public async Task<bool> Delete(int id)
-    {
-        logger.LogDebug("Delete()");
-
-        var recipeType = await recipeTypeRepository.GetById(id);
-
-        if (recipeType == null)
-            return false;
-
-        await recipeTypeRepository.Delete(recipeType);
 
         return true;
     }

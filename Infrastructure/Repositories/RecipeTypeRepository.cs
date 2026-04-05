@@ -32,10 +32,4 @@ public class RecipeTypeRepository(ApplicationDbContext context) : IRecipeTypeRep
         await context.SaveChangesAsync();
         return recipeType;
     }
-
-    public async Task Delete(RecipeType recipeType)
-    {
-        _dbSet.Remove(recipeType);
-        await context.SaveChangesAsync();
-    }
 }

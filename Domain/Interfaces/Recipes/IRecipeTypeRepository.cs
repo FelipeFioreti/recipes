@@ -8,5 +8,4 @@ public interface IRecipeTypeRepository
     Task<RecipeType?> GetById(int id);
     Task<RecipeType?> Create(RecipeType recipeType);
     Task<RecipeType?> Update(RecipeType recipeType);
-    Task Delete(RecipeType recipeType);
 }

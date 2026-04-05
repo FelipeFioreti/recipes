@@ -13,6 +13,11 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
         TryGetIntClaim(JwtRegisteredClaimNames.Sub) ??
         TryGetIntClaim("id");
 
+    public int GetUserId()
+    {
+        return UserId ?? throw new UnauthorizedAccessException("Authenticated user id claim is missing.");
+    }
+
     private int? TryGetIntClaim(string claimType)
     {
         var value = Principal?.FindFirstValue(claimType);
