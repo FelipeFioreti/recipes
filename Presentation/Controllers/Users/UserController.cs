@@ -19,6 +19,14 @@ public class UserController(IUserService userService) : ControllerBase
         return user == null ? NotFound() : Ok(user);
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<UserResponse>> GetById(int id)
+    {
+        var user = await userService.GetById(id);
+
+        return user == null ? NotFound() : Ok(user);
+    }
+
     [HttpPost("")]
     public async Task<ActionResult<UserResponse>> Create([FromBody] CreateUserRequest request)
     {
@@ -27,18 +35,18 @@ public class UserController(IUserService userService) : ControllerBase
         return createdUser == null ? BadRequest() : Ok(createdUser);
     }
 
-    [HttpPut("")]
-    public async Task<ActionResult<UserResponse>> Update([FromBody] UpdateUserRequest request)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<UserResponse>> Update(int id, [FromBody] UpdateUserRequest request)
     {
-        var updatedUser = await userService.UpdateCurrent(request);
+        var updatedUser = await userService.Update(id, request);
 
-        return updatedUser == null ? BadRequest() : Ok(updatedUser);
+        return updatedUser == null ? NotFound() : Ok(updatedUser);
     }
 
-    [HttpDelete("")]
-    public async Task<IActionResult> Delete()
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
     {
-        var disabled = await userService.DisableCurrent();
+        var disabled = await userService.Disable(id);
 
         return disabled ? NoContent() : NotFound();
     }

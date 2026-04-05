@@ -35,13 +35,6 @@ public class UserService(
         return user == null ? null : ToResponse(user);
     }
 
-    public async Task<UserResponse?> UpdateCurrent(UpdateUserRequest request)
-    {
-        logger.LogDebug("UpdateCurrent()");
-
-        return await Update(userContext.GetUserId(), request);
-    }
-
     public async Task<UserResponse?> Update(int id, UpdateUserRequest request)
     {
         logger.LogDebug("Update()");
@@ -56,13 +49,6 @@ public class UserService(
         var updatedUser = await userRepository.Update(existingUser);
 
         return updatedUser == null ? null : ToResponse(updatedUser);
-    }
-
-    public async Task<bool> DisableCurrent()
-    {
-        logger.LogDebug("DisableCurrent()");
-
-        return await Disable(userContext.GetUserId());
     }
 
     public async Task<bool> Disable(int id)
