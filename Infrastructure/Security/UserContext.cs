@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Recipes.Domain.Exceptions;
 using Recipes.Domain.Interfaces.Auth;
 
 namespace Recipes.Infrastructure.Security;
@@ -15,7 +16,7 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
 
     public int GetUserId()
     {
-        return UserId ?? throw new UnauthorizedAccessException("Authenticated user id claim is missing.");
+        return UserId ?? throw new UnauthorizedException("Authenticated user id claim is missing.");
     }
 
     private int? TryGetIntClaim(string claimType)

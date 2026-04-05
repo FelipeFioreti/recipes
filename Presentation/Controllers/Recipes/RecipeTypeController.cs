@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Domain.Constants;
 using Recipes.Domain.DTOs.Recipes;
+using Recipes.Domain.Exceptions;
 using Recipes.Domain.Interfaces.Recipes;
 
 namespace Recipes.Presentation.Controllers.Recipes;
@@ -16,7 +17,9 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
     {
         var recipeType = await recipeTypeService.GetById(id);
 
-        return recipeType == null ? NotFound() : Ok(recipeType);
+        return recipeType == null
+            ? throw new NotFoundException($"Recipe type with id '{id}' was not found.")
+            : Ok(recipeType);
     }
 
     [HttpGet]
@@ -30,7 +33,9 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
     {
         var recipeType = await recipeTypeService.Create(request);
 
-        return recipeType == null ? BadRequest() : Ok(recipeType);
+        return recipeType == null
+            ? throw new BadRequestException("Failed to create recipe type.")
+            : Ok(recipeType);
     }
 
     [HttpPut("{id:int}")]
@@ -38,7 +43,9 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
     {
         var recipeType = await recipeTypeService.Update(id, request);
 
-        return recipeType == null ? NotFound() : Ok(recipeType);
+        return recipeType == null
+            ? throw new NotFoundException($"Recipe type with id '{id}' was not found.")
+            : Ok(recipeType);
     }
 
     [HttpDelete("{id:int}")]
@@ -46,6 +53,9 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
     {
         var disabled = await recipeTypeService.Disable(id);
 
-        return disabled ? NoContent() : NotFound();
+        if (!disabled)
+            throw new NotFoundException($"Recipe type with id '{id}' was not found.");
+
+        return NoContent();
     }
 }

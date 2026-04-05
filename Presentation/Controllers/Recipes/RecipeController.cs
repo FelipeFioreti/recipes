@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Domain.Constants;
 using Recipes.Domain.DTOs.Recipes;
+using Recipes.Domain.Exceptions;
 using Recipes.Domain.Interfaces.Recipes;
 
 namespace Recipes.Presentation.Controllers.Recipes;
@@ -16,7 +17,9 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     {
         var recipe = await recipeService.GetById(id);
 
-        return recipe == null ? NotFound() : Ok(recipe);
+        return recipe == null
+            ? throw new NotFoundException($"Recipe with id '{id}' was not found.")
+            : Ok(recipe);
     }
 
     [HttpGet]
@@ -32,7 +35,9 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     {
         var createdRecipe = await recipeService.Create(request);
 
-        return createdRecipe == null ? BadRequest() : Ok(createdRecipe);
+        return createdRecipe == null
+            ? throw new BadRequestException("Failed to create recipe.")
+            : Ok(createdRecipe);
     }
 
     [HttpPut("{id:int}")]
@@ -40,7 +45,9 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     {
         var updatedRecipe = await recipeService.Update(id, request);
 
-        return updatedRecipe == null ? NotFound() : Ok(updatedRecipe);
+        return updatedRecipe == null
+            ? throw new NotFoundException($"Recipe with id '{id}' was not found.")
+            : Ok(updatedRecipe);
     }
 
     [HttpDelete("{id:int}")]
@@ -48,6 +55,9 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     {
         var disabled = await recipeService.Disable(id);
 
-        return disabled ? NoContent() : NotFound();
+        if (!disabled)
+            throw new NotFoundException($"Recipe with id '{id}' was not found.");
+
+        return NoContent();
     }
 }

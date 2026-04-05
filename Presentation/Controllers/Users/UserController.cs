@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Domain.Constants;
 using Recipes.Domain.DTOs.Users;
+using Recipes.Domain.Exceptions;
 using Recipes.Domain.Interfaces.Users;
 
 namespace Recipes.Presentation.Controllers.Users;
@@ -16,7 +17,9 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var user = await userService.GetCurrent();
 
-        return user == null ? NotFound() : Ok(user);
+        return user == null
+            ? throw new NotFoundException("Current user was not found.")
+            : Ok(user);
     }
 
     [HttpGet("{id:int}")]
@@ -24,7 +27,9 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var user = await userService.GetById(id);
 
-        return user == null ? NotFound() : Ok(user);
+        return user == null
+            ? throw new NotFoundException($"User with id '{id}' was not found.")
+            : Ok(user);
     }
 
     [HttpPost("")]
@@ -32,7 +37,9 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var createdUser = await userService.Create(request);
 
-        return createdUser == null ? BadRequest() : Ok(createdUser);
+        return createdUser == null
+            ? throw new BadRequestException("Failed to create user.")
+            : Ok(createdUser);
     }
 
     [HttpPut("{id:int}")]
@@ -40,7 +47,9 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var updatedUser = await userService.Update(id, request);
 
-        return updatedUser == null ? NotFound() : Ok(updatedUser);
+        return updatedUser == null
+            ? throw new NotFoundException($"User with id '{id}' was not found.")
+            : Ok(updatedUser);
     }
 
     [HttpDelete("{id:int}")]
@@ -48,6 +57,9 @@ public class UserController(IUserService userService) : ControllerBase
     {
         var disabled = await userService.Disable(id);
 
-        return disabled ? NoContent() : NotFound();
+        if (!disabled)
+            throw new NotFoundException($"User with id '{id}' was not found.");
+
+        return NoContent();
     }
 }

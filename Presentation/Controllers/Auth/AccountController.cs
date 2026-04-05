@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Domain.DTOs.Auth;
+using Recipes.Domain.Exceptions;
 using Recipes.Domain.Interfaces.Auth;
 
 namespace Recipes.Presentation.Controllers.Auth;
@@ -16,7 +17,7 @@ public class AccountController(IAuthService authService) : ControllerBase
         var response = await authService.Authenticate(authenticateRequest);
 
         if (response == null)
-            return BadRequest(new { message = "Username or password is incorrect" });
+            throw new UnauthorizedException("Username or password is incorrect.");
 
         return Ok(response);
     }
@@ -27,7 +28,7 @@ public class AccountController(IAuthService authService) : ControllerBase
         var response = await authService.Register(registerUserRequest);
 
         if (response == null)
-            return BadRequest(new { message = "Failed to register user" });
+            throw new BadRequestException("Failed to register user.");
 
         return Ok(response);
     }
