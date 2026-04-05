@@ -15,8 +15,18 @@ public abstract class BaseEntity
         Update();
     }
 
-    protected virtual void Update()
+    private void Update()
     {
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetCreatedAt()
+    {
+        CreatedAt = DateTime.UtcNow;
+    }
+
+    public void SetUpdatedAt()
+    {
+        Update();
     }
 }

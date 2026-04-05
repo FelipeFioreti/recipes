@@ -31,7 +31,6 @@ public class Recipe : BaseEntity
 
     public void Update(UpdateRecipeRequest request)
     {
-        base.Update();
         Name = request.Name;
         Description = request.Description;
         RecipeTypeId = request.RecipeTypeId;

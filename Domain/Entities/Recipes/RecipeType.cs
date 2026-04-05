@@ -22,7 +22,6 @@ public class RecipeType : BaseEntity
 
     public void Update(UpdateRecipeTypeRequest request)
     {
-        base.Update();
         Name = request.Name;
     }
 }

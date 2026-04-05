@@ -16,6 +16,7 @@ namespace Recipes.Application.Services.Auth;
 public class AuthService(
     IUserRepository userRepository,
     IUserService service,
+    IPasswordService passwordService,
     IOptions<AppSettings> appSettings,
     ILogger<AuthService> logger) : IAuthService
 {
@@ -49,7 +50,7 @@ public class AuthService(
         if (user == null)
             return null;
 
-        return BCrypt.Net.BCrypt.Verify(model.Password, user.Password)
+        return passwordService.VerifyPassword(model.Password, user.Password)
             ? user
             : null;
     }

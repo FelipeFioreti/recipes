@@ -8,6 +8,7 @@ namespace Recipes.Application.Services.Users;
 public class UserService(
     IUserRepository userRepository,
     IUserContext userContext,
+    IPasswordService passwordService,
     ILogger<UserService> logger) : IUserService
 {
     public async Task<IEnumerable<UserResponse>> GetAll()
@@ -46,6 +47,9 @@ public class UserService(
 
         existingUser.Update(request);
 
+        if (!string.IsNullOrWhiteSpace(request.Password))
+            existingUser.ChangePassword(passwordService.HashPassword(request.Password));
+
         var updatedUser = await userRepository.Update(existingUser);
 
         return updatedUser == null ? null : ToResponse(updatedUser);
@@ -65,12 +69,13 @@ public class UserService(
 
         return true;
     }
-    
+
     public async Task<UserResponse?> Create(CreateUserRequest request)
     {
         logger.LogDebug("Create()");
 
-        var user = await userRepository.Create(new User(request.Name, request.Email.ToLower(), request.Password));
+        var user = await userRepository.Create(
+            new User(request.Name, request.Email.ToLower(), passwordService.HashPassword(request.Password)));
 
         return user == null ? null : ToResponse(user);
     }

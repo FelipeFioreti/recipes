@@ -24,9 +24,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired()
             .HasMaxLength(255);
         builder.Property(e => e.Role)
+            .HasConversion<string>()
             .IsRequired()
             .HasMaxLength(50)
-            .HasDefaultValue(Roles.USER.ToString());
+            .HasDefaultValue(nameof(Roles.USER));
 
         builder.HasIndex(u => u.Name);
         builder.HasIndex(u => u.Email)

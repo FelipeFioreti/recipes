@@ -19,7 +19,7 @@ public class User : BaseEntity
     {
         Name = name;
         Email = email;
-        Password = HashPassword(password);
+        Password = password;
         Role = Roles.USER;
     }
 
@@ -38,12 +38,10 @@ public class User : BaseEntity
     public void Update(UpdateUserRequest request)
     {
         Name = request.Name;
-        if (!string.IsNullOrWhiteSpace(request.Password))
-            Password = HashPassword(request.Password);
     }
 
-    private static string HashPassword(string password)
+    public void ChangePassword(string passwordHash)
     {
-        return password.StartsWith("$2") ? password : BCrypt.Net.BCrypt.HashPassword(password);
+        Password = passwordHash;
     }
 }
