@@ -4,13 +4,11 @@ namespace Recipes.Domain.DTOs.Recipes;
 
 public record UpdateRecipeRequest
 {
-    [Required]
-    [MaxLength(255)]
-    public string Name { get; init; } = string.Empty;
+    [Required] public int Id { get; init; }
 
-    [MaxLength(2000)]
-    public string Description { get; init; } = string.Empty;
+    [Required] [MaxLength(255)] public string Name { get; init; } = string.Empty;
 
-    [Required]
-    public int RecipeTypeId { get; init; }
+    [MaxLength(2000)] public string Description { get; init; } = string.Empty;
+
+    [Required] public int RecipeTypeId { get; init; }
 }

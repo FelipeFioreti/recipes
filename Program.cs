@@ -61,11 +61,13 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireAuthenticatedUser();
         policy.RequireClaim(ClaimTypes.NameIdentifier);
         policy.RequireClaim(ClaimTypes.Email);
+        policy.RequireRole(nameof(Roles.USER));
     })
     .AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
     {
         policy.RequireAuthenticatedUser();
         policy.RequireClaim(ClaimTypes.NameIdentifier);
+        policy.RequireClaim(ClaimTypes.Email);
         policy.RequireRole(nameof(Roles.ADMIN));
     });
 
@@ -74,7 +76,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IRecipeTypeService, RecipeTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IUserContext, UserContext>();
 
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

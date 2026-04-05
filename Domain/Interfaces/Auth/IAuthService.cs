@@ -6,5 +6,5 @@ namespace Recipes.Domain.Interfaces.Auth;
 public interface IAuthService
 {
     Task<AuthenticateResponse?> Authenticate(AuthenticateRequest authenticateRequest);
-    Task<UserResponse?> RegisterUser(RegisterUserRequest registerUserRequest);
+    Task<UserResponse?> Register(RegisterUserRequest registerUserRequest);
 }

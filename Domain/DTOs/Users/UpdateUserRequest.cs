@@ -4,16 +4,7 @@ namespace Recipes.Domain.DTOs.Users;
 
 public record UpdateUserRequest
 {
-    [Required]
-    [MaxLength(255)]
-    public string Name { get; init; } = string.Empty;
+    [Required] [MaxLength(255)] public string Name { get; init; } = string.Empty;
 
-    [Required]
-    [EmailAddress]
-    [MaxLength(255)]
-    public string Email { get; init; } = string.Empty;
-
-    [MinLength(6)]
-    [MaxLength(255)]
-    public string? Password { get; init; }
+    [MinLength(6)] [MaxLength(255)] public string Password { get; init; } = string.Empty;
 }

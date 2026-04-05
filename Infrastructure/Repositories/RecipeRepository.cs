@@ -41,9 +41,7 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
 
     public async Task Delete(Recipe recipe)
     {
-        recipe.DeletedAt = DateTime.UtcNow;
-        recipe.UpdatedAt = DateTime.UtcNow;
-        _dbSet.Update(recipe);
+        _dbSet.Remove(recipe);
         await context.SaveChangesAsync();
     }
 }

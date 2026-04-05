@@ -1,13 +1,13 @@
-﻿using Recipes.Domain.Entities.Recipes;
+using Recipes.Domain.DTOs.Recipes;
 
 namespace Recipes.Domain.Interfaces.Recipes;
 
 public interface IRecipeService
 {
-    Task<IEnumerable<Recipe>> GetAll(int userId);
-    Task<Recipe?> GetById(int id, int userId);
-    Task<Recipe?> Create(int userId, Recipe recipe);
-    Task<Recipe?> Update(int userId, Recipe recipe);
+    Task<IEnumerable<RecipeResponse>> GetAll(int userId);
+    Task<RecipeResponse?> GetById(int id, int userId);
+    Task<RecipeResponse?> Create(int userId, CreateRecipeRequest request);
+    Task<RecipeResponse?> Update(int userId, UpdateRecipeRequest request);
     Task<bool> Disable(int id, int userId);
     Task<bool> Delete(int id, int userId);
 }

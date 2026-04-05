@@ -40,9 +40,7 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 
     public async Task Delete(User user)
     {
-        user.DeletedAt = DateTime.UtcNow;
-        user.UpdatedAt = DateTime.UtcNow;
-        _dbSet.Update(user);
+        _dbSet.Remove(user);
         await context.SaveChangesAsync();
     }
 }

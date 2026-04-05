@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Recipes.Domain.Constants;
-using Recipes.Domain.Entities.Recipes;
+using Recipes.Domain.DTOs.Recipes;
 using Recipes.Domain.Interfaces.Recipes;
 
 namespace Recipes.Presentation.Controllers.Recipes;
@@ -12,34 +12,40 @@ namespace Recipes.Presentation.Controllers.Recipes;
 public class RecipeTypeController(IRecipeTypeService recipeTypeService) : ControllerBase
 {
     [HttpGet("{id:int}")]
-    public async Task<RecipeType?> Get(int id)
+    public async Task<ActionResult<RecipeTypeResponse>> Get(int id)
     {
-        return await recipeTypeService.GetById(id);
+        var recipeType = await recipeTypeService.GetById(id);
+
+        return recipeType == null ? NotFound() : Ok(recipeType);
     }
 
     [HttpGet]
-    public async Task<IEnumerable<RecipeType>> GetAll()
+    public async Task<ActionResult<IEnumerable<RecipeTypeResponse>>> GetAll()
     {
-        return await recipeTypeService.GetAll();
+        return Ok(await recipeTypeService.GetAll());
     }
 
     [HttpPost]
-    public async Task<RecipeType?> Create([FromBody] RecipeType recipeType)
+    public async Task<ActionResult<RecipeTypeResponse>> Create([FromBody] CreateRecipeTypeRequest request)
     {
-        return await recipeTypeService.Create(recipeType);
+        var recipeType = await recipeTypeService.Create(request);
+
+        return recipeType == null ? BadRequest() : Ok(recipeType);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<RecipeType?> Update(int id, [FromBody] RecipeType recipeType)
+    [HttpPut("")]
+    public async Task<ActionResult<RecipeTypeResponse>> Update([FromBody] UpdateRecipeTypeRequest request)
     {
-        recipeType.Id = id;
+        var recipeType = await recipeTypeService.Update(request);
 
-        return await recipeTypeService.Update(recipeType);
+        return recipeType == null ? NotFound() : Ok(recipeType);
     }
 
     [HttpDelete("{id:int}")]
-    public async Task Delete(int id)
+    public async Task<IActionResult> Disable(int id)
     {
-        await recipeTypeService.Disable(id);
+        var disabled = await recipeTypeService.Disable(id);
+
+        return disabled ? NoContent() : NotFound();
     }
 }

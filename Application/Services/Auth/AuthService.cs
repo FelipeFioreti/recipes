@@ -13,8 +13,11 @@ using Recipes.Domain.Interfaces.Users;
 
 namespace Recipes.Application.Services.Auth;
 
-public class AuthService(IUserService service, IOptions<AppSettings> appSettings, ILogger<AuthService> logger)
-    : IAuthService
+public class AuthService(
+    IUserRepository userRepository,
+    IUserService service,
+    IOptions<AppSettings> appSettings,
+    ILogger<AuthService> logger) : IAuthService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
@@ -24,36 +27,24 @@ public class AuthService(IUserService service, IOptions<AppSettings> appSettings
 
         var user = await VerifyUser(model);
 
-        if (user == null)
-            return null;
-
-        var token = GenerateJwtToken(user);
-
-        return new AuthenticateResponse(user, token);
+        return user == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
     }
 
-    public async Task<UserResponse?> RegisterUser(RegisterUserRequest registerUserRequest)
+    public async Task<UserResponse?> Register(RegisterUserRequest registerUserRequest)
     {
         logger.LogDebug("RegisterUser()");
 
-        var user = new User
-        {
-            Name = registerUserRequest.Name,
-            Email = registerUserRequest.Email,
-            Password = BCrypt.Net.BCrypt.HashPassword(registerUserRequest.Password),
-            Role = registerUserRequest.Role
-        };
-
-        var createdUser = await service.Create(user);
-
-        return createdUser == null ? null : new UserResponse(createdUser);
+        return await service.Create(new CreateUserRequest(
+            registerUserRequest.Name,
+            registerUserRequest.Email,
+            registerUserRequest.Password));
     }
 
     private async Task<User?> VerifyUser(AuthenticateRequest model)
     {
         logger.LogDebug("VerifyUser()");
 
-        var user = await service.GetByEmail(model.Email);
+        var user = await userRepository.GetByEmail(model.Email);
 
         if (user == null)
             return null;
@@ -86,7 +77,8 @@ public class AuthService(IUserService service, IOptions<AppSettings> appSettings
             Audience = _appSettings.Audience,
             Expires = now.AddDays(_appSettings.TokenExpirationDays),
             NotBefore = now,
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

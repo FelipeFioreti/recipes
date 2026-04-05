@@ -1,3 +1,4 @@
+using Recipes.Domain.DTOs.Recipes;
 using Recipes.Domain.Entities.Recipes;
 using Recipes.Domain.Interfaces.Recipes;
 
@@ -5,57 +6,60 @@ namespace Recipes.Application.Services.Recipes;
 
 public class RecipeService(IRecipeRepository recipeRepository, ILogger<RecipeService> logger) : IRecipeService
 {
-    public async Task<IEnumerable<Recipe>> GetAll(int userId)
+    public async Task<IEnumerable<RecipeResponse>> GetAll(int userId)
     {
         logger.LogDebug("GetAll()");
 
-        return await recipeRepository.GetAll(userId);
+        var recipes = await recipeRepository.GetAll(userId);
+
+        return recipes.Select(ToResponse);
     }
 
-    public async Task<Recipe?> GetById(int id, int userId)
+    public async Task<RecipeResponse?> GetById(int id, int userId)
     {
         logger.LogDebug("GetById()");
 
-        return await recipeRepository.GetById(id, userId);
+        var recipe = await recipeRepository.GetById(id, userId);
+
+        return recipe == null ? null : ToResponse(recipe);
     }
 
-    public async Task<Recipe?> Create(int userId, Recipe recipe)
+    public async Task<RecipeResponse?> Create(int userId, CreateRecipeRequest request)
     {
         logger.LogDebug("Create()");
 
-        recipe.UserId = userId;
+        var recipe = await recipeRepository.Create(
+            new Recipe(request.Name, request.Description, request.RecipeTypeId, userId));
 
-        return await recipeRepository.Create(recipe);
+        return recipe == null ? null : ToResponse(recipe);
     }
 
-    public async Task<Recipe?> Update(int userId, Recipe recipe)
+    public async Task<RecipeResponse?> Update(int userId, UpdateRecipeRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingRecipe = await recipeRepository.GetById(recipe.Id, userId);
+        var existingRecipe = await recipeRepository.GetById(request.Id, userId);
 
         if (existingRecipe == null)
             return null;
 
-        existingRecipe.Name = recipe.Name;
-        existingRecipe.Description = recipe.Description;
-        existingRecipe.RecipeTypeId = recipe.RecipeTypeId;
-        existingRecipe.UserId = userId;
+        existingRecipe.Update(request);
 
-        return await recipeRepository.Update(existingRecipe);
+        var updatedRecipe = await recipeRepository.Update(existingRecipe);
+
+        return updatedRecipe == null ? null : ToResponse(updatedRecipe);
     }
 
     public async Task<bool> Disable(int id, int userId)
     {
         logger.LogDebug("Disable()");
 
-        var recipe = await GetById(id, userId);
+        var recipe = await recipeRepository.GetById(id, userId);
 
         if (recipe == null)
             return false;
 
-        recipe.DeletedAt = DateTime.UtcNow;
-        recipe.UpdatedAt = DateTime.UtcNow;
+        recipe.Disable();
         await recipeRepository.Update(recipe);
 
         return true;
@@ -65,7 +69,7 @@ public class RecipeService(IRecipeRepository recipeRepository, ILogger<RecipeSer
     {
         logger.LogDebug("Delete()");
 
-        var recipe = await GetById(id, userId);
+        var recipe = await recipeRepository.GetById(id, userId);
 
         if (recipe == null)
             return false;
@@ -73,5 +77,10 @@ public class RecipeService(IRecipeRepository recipeRepository, ILogger<RecipeSer
         await recipeRepository.Delete(recipe);
 
         return true;
+    }
+
+    private static RecipeResponse ToResponse(Recipe recipe)
+    {
+        return new RecipeResponse(recipe);
     }
 }

@@ -1,3 +1,4 @@
+using Recipes.Domain.DTOs.Users;
 using Recipes.Domain.Entities.Users;
 using Recipes.Domain.Interfaces.Users;
 
@@ -5,73 +6,81 @@ namespace Recipes.Application.Services.Users;
 
 public class UserService(IUserRepository userRepository, ILogger<UserService> logger) : IUserService
 {
-    public async Task<IEnumerable<User>> GetAll()
+    public async Task<IEnumerable<UserResponse>> GetAll()
     {
         logger.LogDebug("GetAll()");
 
-        return await userRepository.GetAll();
+        var users = await userRepository.GetAll();
+
+        return users.Select(ToResponse);
     }
 
-    public async Task<User?> GetById(int id)
+    public async Task<UserResponse?> GetById(int id)
     {
         logger.LogDebug("GetById()");
 
-        return await userRepository.GetById(id);
+        var user = await userRepository.GetById(id);
+
+        return user == null ? null : ToResponse(user);
     }
 
-    public async Task<User?> GetByEmail(string email)
-    {
-        logger.LogDebug("GetByEmail()");
-
-        return await userRepository.GetByEmail(email);
-    }
-
-    public async Task<User?> Create(User user)
-    {
-        logger.LogDebug("Create()");
-
-        user.Password = HashPassword(user.Password);
-
-        return await userRepository.Create(user);
-    }
-
-    public async Task<User?> Update(User user)
+    public async Task<UserResponse?> Update(int userId, UpdateUserRequest request)
     {
         logger.LogDebug("Update()");
 
-        if (!string.IsNullOrWhiteSpace(user.Password))
-            user.Password = HashPassword(user.Password);
+        var existingUser = await userRepository.GetById(userId);
 
-        return await userRepository.Update(user);
+        if (existingUser == null)
+            return null;
+
+        existingUser.Update(request);
+
+        var updatedUser = await userRepository.Update(existingUser);
+
+        return updatedUser == null ? null : ToResponse(updatedUser);
     }
 
-    public async Task Disable(int id)
+    public async Task<bool> Disable(int id)
     {
         logger.LogDebug("Disable()");
 
-        var user = await GetById(id);
+        var user = await userRepository.GetById(id);
 
         if (user == null)
-            return;
+            return false;
 
-        user.DeletedAt = DateTime.Now;
+        user.Disable();
+
         await userRepository.Update(user);
+
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         logger.LogDebug("Delete()");
 
-        var user = await GetById(id);
+        var user = await userRepository.GetById(id);
 
         if (user == null)
-            return;
+            return false;
 
         await userRepository.Delete(user);
+
+        return true;
     }
 
-    private static string HashPassword(string password)
+    public async Task<UserResponse?> Create(CreateUserRequest request)
     {
-        return password.StartsWith("$2") ? password : BCrypt.Net.BCrypt.HashPassword(password);
+        logger.LogDebug("Create()");
+
+        var user = await userRepository.Create(new User(request.Name, request.Email.ToLower(), request.Password));
+
+        return user == null ? null : ToResponse(user);
+    }
+
+    private static UserResponse ToResponse(User user)
+    {
+        return new UserResponse(user);
     }
 }

@@ -1,3 +1,4 @@
+using Recipes.Domain.DTOs.Recipes;
 using Recipes.Domain.Entities.Recipes;
 using Recipes.Domain.Interfaces.Recipes;
 
@@ -6,56 +7,80 @@ namespace Recipes.Application.Services.Recipes;
 public class RecipeTypeService(IRecipeTypeRepository recipeTypeRepository, ILogger<RecipeTypeService> logger)
     : IRecipeTypeService
 {
-    public async Task<IEnumerable<RecipeType>> GetAll()
+    public async Task<IEnumerable<RecipeTypeResponse>> GetAll()
     {
         logger.LogDebug("GetAll()");
 
-        return await recipeTypeRepository.GetAll();
+        var recipeTypes = await recipeTypeRepository.GetAll();
+
+        return recipeTypes.Select(ToResponse);
     }
 
-    public async Task<RecipeType?> GetById(int id)
+    public async Task<RecipeTypeResponse?> GetById(int id)
     {
         logger.LogDebug("GetById()");
 
-        return await recipeTypeRepository.GetById(id);
+        var recipeType = await recipeTypeRepository.GetById(id);
+
+        return recipeType == null ? null : ToResponse(recipeType);
     }
 
-    public async Task<RecipeType?> Create(RecipeType recipeType)
+    public async Task<RecipeTypeResponse?> Create(CreateRecipeTypeRequest request)
     {
         logger.LogDebug("Create()");
 
-        return await recipeTypeRepository.Create(recipeType);
+        var recipeType = await recipeTypeRepository.Create(new RecipeType(request.Name));
+
+        return recipeType == null ? null : ToResponse(recipeType);
     }
 
-    public async Task<RecipeType?> Update(RecipeType recipeType)
+    public async Task<RecipeTypeResponse?> Update(UpdateRecipeTypeRequest request)
     {
         logger.LogDebug("Update()");
 
-        return await recipeTypeRepository.Update(recipeType);
+        var existingRecipeType = await recipeTypeRepository.GetById(request.Id);
+
+        if (existingRecipeType == null)
+            return null;
+
+        existingRecipeType.Update(request);
+
+        var updatedRecipeType = await recipeTypeRepository.Update(existingRecipeType);
+
+        return updatedRecipeType == null ? null : ToResponse(updatedRecipeType);
     }
 
-    public async Task Disable(int id)
+    public async Task<bool> Disable(int id)
     {
         logger.LogDebug("Disable()");
 
-        var recipeType = await GetById(id);
+        var recipeType = await recipeTypeRepository.GetById(id);
 
         if (recipeType == null)
-            return;
+            return false;
 
-        recipeType.DeletedAt = DateTime.Now;
+        recipeType.Disable();
         await recipeTypeRepository.Update(recipeType);
+
+        return true;
     }
 
-    public async Task Delete(int id)
+    public async Task<bool> Delete(int id)
     {
         logger.LogDebug("Delete()");
 
-        var recipeType = await GetById(id);
+        var recipeType = await recipeTypeRepository.GetById(id);
 
         if (recipeType == null)
-            return;
+            return false;
 
         await recipeTypeRepository.Delete(recipeType);
+
+        return true;
+    }
+
+    private static RecipeTypeResponse ToResponse(RecipeType recipeType)
+    {
+        return new RecipeTypeResponse(recipeType);
     }
 }

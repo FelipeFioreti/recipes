@@ -4,7 +4,7 @@ using Recipes.Domain.Interfaces.Auth;
 
 namespace Recipes.Infrastructure.Security;
 
-public class CurrentUser(IHttpContextAccessor httpContextAccessor) : ICurrentUser
+public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContext
 {
     private ClaimsPrincipal? Principal => httpContextAccessor.HttpContext?.User;
 
