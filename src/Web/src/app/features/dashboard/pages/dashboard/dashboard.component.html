@@ -1,0 +1,87 @@
+<div class="page-grid">
+  <app-page-header
+    eyebrow="Dashboard"
+    title="Uma visao rapida da operacao culinaria"
+    description="Use este painel para entender o volume do acervo, o ritmo de atualizacoes e o estado atual das suas receitas.">
+    <div page-actions>
+      <a routerLink="/app/recipes" class="button button-primary">Abrir catalogo</a>
+    </div>
+  </app-page-header>
+
+  <section class="dashboard-stats">
+    <app-stat-card
+      label="Receitas ativas"
+      [value]="activeRecipes().length.toString()"
+      helper="Preparos disponiveis para consulta"
+      tone="accent" />
+    <app-stat-card
+      label="Cobertura de categorias"
+      [value]="categoryCoverage().toString()"
+      [helper]="authStore.isAdmin() ? 'Categorias ativas sob sua curadoria' : 'Categorias diferentes utilizadas no seu acervo'"
+      tone="neutral" />
+    <app-stat-card
+      label="Arquivadas"
+      [value]="archivedRecipes().length.toString()"
+      helper="Receitas preservadas apenas no historico"
+      tone="success" />
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="section-card stagger-in">
+      <div class="dashboard-section__header">
+        <div>
+          <span class="eyebrow">Movimento recente</span>
+          <h2>Ultimas receitas atualizadas</h2>
+        </div>
+        <a routerLink="/app/recipes" class="button button-secondary">Ver tudo</a>
+      </div>
+
+      @if (loading()) {
+        <p class="dashboard-section__placeholder">Carregando dados do painel...</p>
+      } @else if (recentRecipes().length > 0) {
+        <div class="dashboard-timeline">
+          @for (recipe of recentRecipes(); track recipe.id) {
+            <article class="dashboard-timeline__item">
+              <div class="dashboard-timeline__marker"></div>
+              <div class="dashboard-timeline__copy">
+                <strong>{{ recipe.name }}</strong>
+                <p>{{ recipe.description || 'Sem observacoes adicionais.' }}</p>
+              </div>
+              <small>{{ recipe.updatedAt | date: 'dd/MM/yyyy' }}</small>
+            </article>
+          }
+        </div>
+      } @else {
+        <app-empty-state
+          title="Seu dashboard ainda esta em branco"
+          description="Assim que receitas forem adicionadas ou atualizadas, o painel passa a destacar o que merece atencao."
+          actionLabel="Criar primeira receita"
+          (actionTriggered)="goToRecipes()" />
+      }
+    </section>
+
+    <section class="dashboard-aside section-card stagger-in">
+      <span class="eyebrow">Leitura rapida</span>
+      <h2>Ritmo do acervo</h2>
+      <p>
+        {{ activeRecipes().length > 0
+          ? 'Seu acervo ja tem base suficiente para operacao. Use as atualizacoes recentes para manter o padrao de execucao.'
+          : 'Vale comecar pelas receitas mais recorrentes da operacao para criar uma base confiavel.' }}
+      </p>
+
+      <div class="dashboard-aside__meter">
+        <div class="dashboard-aside__meter-bar" [style.width.%]="activeRecipes().length === 0 ? 12 : 100"></div>
+      </div>
+
+      <ul class="dashboard-aside__list">
+        <li>Priorize nomes claros e descricoes com contexto de servico.</li>
+        <li>Mantenha categorias enxutas para facilitar busca e edicao.</li>
+        <li>Arquive apenas o que saiu de operacao, sem apagar historico util.</li>
+      </ul>
+
+      @if (authStore.isAdmin()) {
+        <a routerLink="/app/categories" class="button button-secondary">Ajustar categorias</a>
+      }
+    </section>
+  </div>
+</div>

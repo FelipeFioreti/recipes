@@ -1,0 +1,58 @@
+<section class="recipe-editor section-card stagger-in">
+  <div class="recipe-editor__header">
+    <div>
+      <span class="eyebrow">{{ mode() === 'create' ? 'Nova receita' : 'Edicao' }}</span>
+      <h2>{{ mode() === 'create' ? 'Registrar preparo' : 'Atualizar receita' }}</h2>
+    </div>
+
+    <button type="button" class="button button-ghost" (click)="cancel()">Limpar</button>
+  </div>
+
+  @if (categoriesUnavailableMessage()) {
+    <div class="recipe-editor__notice">
+      {{ categoriesUnavailableMessage() }}
+    </div>
+  }
+
+  <form class="recipe-editor__form" [formGroup]="form()" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="recipeName">Nome</label>
+      <input id="recipeName" type="text" formControlName="name" placeholder="Ex.: Ravioli de abobora tostada" />
+      @if (form().get('name')?.touched && form().get('name')?.invalid) {
+        <span class="field-error">Informe um nome de ate 255 caracteres.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="recipeTypeId">Categoria</label>
+      <select id="recipeTypeId" formControlName="recipeTypeId">
+        <option value="0">Selecione uma categoria</option>
+        @for (type of recipeTypes(); track type.id) {
+          <option [value]="type.id">{{ type.name }}</option>
+        }
+      </select>
+      @if (form().get('recipeTypeId')?.touched && form().get('recipeTypeId')?.invalid) {
+        <span class="field-error">Selecione uma categoria valida.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="description">Descricao</label>
+      <textarea
+        id="description"
+        formControlName="description"
+        placeholder="Ingredientes, passos chave, ponto de cocao ou observacoes de servico."></textarea>
+      @if (form().get('description')?.touched && form().get('description')?.invalid) {
+        <span class="field-error">Use no maximo 2000 caracteres.</span>
+      }
+    </div>
+
+    <button
+      type="submit"
+      class="button button-primary recipe-editor__submit"
+      [disabled]="saving() || recipeTypes().length === 0">
+      {{ saving() ? 'Salvando...' : mode() === 'create' ? 'Salvar receita' : 'Atualizar receita' }}
+    </button>
+  </form>
+</section>
+

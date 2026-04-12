@@ -1,0 +1,24 @@
+<article class="recipe-card section-card stagger-in" [class.recipe-card--selected]="selected()">
+  <div class="recipe-card__top">
+    <div>
+      <span class="pill pill-accent">{{ categoryName() }}</span>
+      @if (recipe().deletedAt) {
+        <span class="pill pill-muted">Arquivada</span>
+      }
+    </div>
+
+    <small>Atualizada em {{ recipe().updatedAt | date: 'dd/MM/yyyy' }}</small>
+  </div>
+
+  <div class="recipe-card__body">
+    <h3>{{ recipe().name }}</h3>
+    <p>{{ recipe().description || 'Sem descricao adicional.' }}</p>
+  </div>
+
+  <div class="recipe-card__actions">
+    <button type="button" class="button button-secondary" (click)="edit()">Editar</button>
+    <button type="button" class="button button-ghost" [disabled]="!!recipe().deletedAt" (click)="remove()">
+      {{ recipe().deletedAt ? 'Arquivada' : 'Arquivar' }}
+    </button>
+  </div>
+</article>

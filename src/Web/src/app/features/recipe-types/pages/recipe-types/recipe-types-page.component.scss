@@ -1,0 +1,66 @@
+.recipe-types-stats {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.recipe-types-list {
+  min-width: 0;
+}
+
+.recipe-type-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.recipe-type-card__copy {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.recipe-type-card__copy p {
+  margin: 0;
+  color: var(--text-soft);
+}
+
+.recipe-type-card__actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.recipe-types-editor {
+  display: grid;
+  gap: 1rem;
+  position: sticky;
+  top: 1.25rem;
+}
+
+.recipe-types-editor__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.recipe-types-editor__form {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (max-width: 1080px) {
+  .recipe-types-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .recipe-type-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .recipe-types-editor {
+    position: static;
+  }
+}

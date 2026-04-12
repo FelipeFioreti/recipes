@@ -1,0 +1,11 @@
+<article
+  class="stat-card section-card stagger-in"
+  [class.stat-card--accent]="tone() === 'accent'"
+  [class.stat-card--success]="tone() === 'success'"
+  [class.stat-card--neutral]="tone() === 'neutral'">
+  <span class="stat-card__label">{{ label() }}</span>
+  <strong class="stat-card__value">{{ value() }}</strong>
+  @if (helper()) {
+    <p class="stat-card__helper">{{ helper() }}</p>
+  }
+</article>

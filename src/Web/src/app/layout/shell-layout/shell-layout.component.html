@@ -1,0 +1,71 @@
+<div class="shell">
+  <aside class="shell__sidebar glass-card" [class.shell__sidebar--open]="menuOpen()">
+    <div class="shell__brand">
+      <div class="brand-mark">AR</div>
+      <div>
+        <strong>Atelie de Receitas</strong>
+        <p>Operacao culinaria em uma interface clara.</p>
+      </div>
+    </div>
+
+    <nav class="shell__nav">
+      @for (item of navigation(); track item.route) {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="is-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="shell__nav-link"
+          (click)="closeMenu()">
+          <span class="shell__nav-badge">{{ item.badge }}</span>
+          <span class="shell__nav-copy">
+            <strong>{{ item.label }}</strong>
+            <small>{{ item.description }}</small>
+          </span>
+        </a>
+      }
+    </nav>
+
+    <section class="shell__sidebar-card">
+      <span class="eyebrow">Sessao</span>
+      <h3>{{ authStore.displayName() }}</h3>
+      <p>{{ authStore.session()?.email || 'usuario autenticado' }}</p>
+      <span class="pill" [class.pill-accent]="authStore.isAdmin()" [class.pill-muted]="!authStore.isAdmin()">
+        {{ authStore.isAdmin() ? 'Perfil administrador' : 'Perfil usuario' }}
+      </span>
+    </section>
+
+    <button type="button" class="button button-secondary shell__logout" (click)="signOut()">
+      Encerrar sessao
+    </button>
+  </aside>
+
+  <div class="shell__main">
+    <header class="shell__topbar">
+      <button type="button" class="shell__menu-button" (click)="toggleMenu()">
+        Menu
+      </button>
+
+      <div class="shell__topbar-copy">
+        <span class="eyebrow">Painel principal</span>
+        <strong>{{ currentDateLabel }}</strong>
+      </div>
+
+      <div class="shell__user-pill">
+        <span>{{ authStore.displayName().slice(0, 1) }}</span>
+        <div>
+          <strong>{{ authStore.displayName() }}</strong>
+          <small>{{ authStore.isAdmin() ? 'Admin' : 'Usuario' }}</small>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell__content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+@if (menuOpen()) {
+  <button type="button" class="shell__backdrop" (click)="closeMenu()" aria-label="Fechar menu"></button>
+}
+

@@ -1,0 +1,80 @@
+<div class="page-grid">
+  <app-page-header
+    eyebrow="Catalogo"
+    title="Gerencie receitas com contexto visual"
+    description="Acompanhe o acervo, filtre pelo que importa e edite cada preparo em um painel lateral pensado para reduzir atrito.">
+    <div page-actions>
+      <button type="button" class="button button-primary" (click)="startCreate()">Nova receita</button>
+    </div>
+  </app-page-header>
+
+  <section class="recipes-stats">
+    <app-stat-card
+      label="Receitas ativas"
+      [value]="activeRecipesCount().toString()"
+      helper="Itens prontos para consulta e operacao"
+      tone="accent" />
+    <app-stat-card
+      label="Arquivadas"
+      [value]="archivedRecipesCount().toString()"
+      helper="Historico preservado para referencia"
+      tone="neutral" />
+    <app-stat-card
+      label="Atualizadas na semana"
+      [value]="recentRecipesCount().toString()"
+      helper="Indicador rapido de movimento recente"
+      tone="success" />
+  </section>
+
+  <section class="recipes-toolbar section-card stagger-in">
+    <div class="field">
+      <label for="search">Buscar receitas</label>
+      <input
+        id="search"
+        type="search"
+        [value]="searchTerm()"
+        (input)="updateSearchTerm(($any($event.target)).value)"
+        placeholder="Procure por nome, tecnica ou descricao" />
+    </div>
+
+    <div class="recipes-toolbar__meta">
+      <span class="pill pill-accent">{{ filteredRecipes().length }} resultado(s)</span>
+      <span class="pill pill-muted">{{ recipeTypes().length }} categoria(s) ativa(s)</span>
+    </div>
+  </section>
+
+  <div class="two-column">
+    <section class="recipes-list page-grid">
+      @if (loading()) {
+        <section class="section-card">
+          <p>Carregando receitas...</p>
+        </section>
+      } @else if (filteredRecipes().length > 0) {
+        @for (recipe of filteredRecipes(); track recipe.id) {
+          <app-recipe-card
+            [recipe]="recipe"
+            [categoryName]="categoryName(recipe.recipeTypeId)"
+            [selected]="selectedRecipeId() === recipe.id"
+            (editRequested)="startEdit(recipe)"
+            (deleteRequested)="archiveRecipe(recipe)" />
+        }
+      } @else {
+        <app-empty-state
+          title="Nenhuma receita encontrada"
+          description="Comece criando uma nova receita ou ajuste sua busca para localizar preparos ja cadastrados."
+          actionLabel="Criar receita"
+          (actionTriggered)="startCreate()" />
+      }
+    </section>
+
+    <app-recipe-editor
+      [form]="form"
+      [recipeTypes]="recipeTypes()"
+      [saving]="saving()"
+      [mode]="mode()"
+      [categoriesUnavailableMessage]="categoriesUnavailableMessage()"
+      (submitted)="saveRecipe()"
+      (canceled)="startCreate()" />
+  </div>
+</div>
+

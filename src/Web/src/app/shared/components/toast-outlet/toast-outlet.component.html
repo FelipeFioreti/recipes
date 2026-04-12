@@ -1,0 +1,15 @@
+<div class="toast-outlet">
+  @for (toast of notificationService.messages(); track toast.id) {
+    <article class="toast" [class.toast--success]="toast.tone === 'success'" [class.toast--error]="toast.tone === 'error'">
+      <div class="toast__copy">
+        <strong>{{ toast.title }}</strong>
+        <p>{{ toast.message }}</p>
+      </div>
+
+      <button type="button" class="toast__close" (click)="dismiss(toast.id)" aria-label="Fechar">
+        Fechar
+      </button>
+    </article>
+  }
+</div>
+

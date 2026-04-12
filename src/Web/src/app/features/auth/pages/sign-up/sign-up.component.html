@@ -1,0 +1,55 @@
+<section class="auth-card section-card">
+  <div class="auth-card__header">
+    <span class="eyebrow">Cadastro</span>
+    <h2>Abra seu espaco de trabalho</h2>
+    <p>Crie uma conta para organizar fichas, registrar categorias e manter o acervo culinario sempre acessivel.</p>
+  </div>
+
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="name">Nome</label>
+      <input id="name" type="text" formControlName="name" placeholder="Seu nome" />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <span class="field-error">Informe seu nome.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="chef@atelie.com" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <span class="field-error">Informe um email valido.</span>
+      }
+    </div>
+
+    <div class="auth-form__grid">
+      <div class="field">
+        <label for="password">Senha</label>
+        <input id="password" type="password" formControlName="password" placeholder="Ao menos 6 caracteres" />
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirmacao</label>
+        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita a senha" />
+      </div>
+    </div>
+
+    @if ((form.controls.password.touched || form.controls.confirmPassword.touched) && form.hasError('passwordMismatch')) {
+      <span class="field-error">As senhas precisam ser iguais.</span>
+    }
+
+    @if (errorMessage()) {
+      <div class="auth-card__error">{{ errorMessage() }}</div>
+    }
+
+    <button type="submit" class="button button-primary auth-card__submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Criando conta...' : 'Criar conta' }}
+    </button>
+  </form>
+
+  <div class="auth-card__footer">
+    <span>Ja tem acesso?</span>
+    <a routerLink="/auth/sign-in">Entrar</a>
+  </div>
+</section>
+

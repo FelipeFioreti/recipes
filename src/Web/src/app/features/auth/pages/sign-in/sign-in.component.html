@@ -1,0 +1,39 @@
+<section class="auth-card section-card">
+  <div class="auth-card__header">
+    <span class="eyebrow">Acesso</span>
+    <h2>Entre na cozinha digital</h2>
+    <p>Consulte o acervo, acompanhe o ritmo da operacao e edite receitas sem sair do fluxo.</p>
+  </div>
+
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email" placeholder="chef@atelie.com" />
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <span class="field-error">Informe um email valido.</span>
+      }
+    </div>
+
+    <div class="field">
+      <label for="password">Senha</label>
+      <input id="password" type="password" formControlName="password" placeholder="Sua senha segura" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <span class="field-error">A senha precisa ter ao menos 6 caracteres.</span>
+      }
+    </div>
+
+    @if (errorMessage()) {
+      <div class="auth-card__error">{{ errorMessage() }}</div>
+    }
+
+    <button type="submit" class="button button-primary auth-card__submit" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Entrando...' : 'Entrar' }}
+    </button>
+  </form>
+
+  <div class="auth-card__footer">
+    <span>Novo por aqui?</span>
+    <a routerLink="/auth/sign-up">Crie sua conta</a>
+  </div>
+</section>
+

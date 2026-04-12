@@ -1,0 +1,14 @@
+<header class="page-header section-card stagger-in">
+  <div class="page-header__copy">
+    <span class="eyebrow">{{ eyebrow() }}</span>
+    <h1>{{ title() }}</h1>
+    @if (description()) {
+      <p>{{ description() }}</p>
+    }
+  </div>
+
+  <div class="page-header__actions">
+    <ng-content select="[page-actions]"></ng-content>
+  </div>
+</header>
+

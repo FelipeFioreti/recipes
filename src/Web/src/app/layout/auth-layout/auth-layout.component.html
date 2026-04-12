@@ -1,0 +1,44 @@
+<div class="auth-layout">
+  <section class="auth-hero glass-card stagger-in">
+    <div class="auth-hero__top">
+      <a routerLink="/auth/sign-in" class="brand">
+        <span class="brand__mark">AR</span>
+        <span class="brand__text">
+          <strong>Atelie de Receitas</strong>
+          <small>Planejamento, acervo e ritmo de cozinha em um unico fluxo.</small>
+        </span>
+      </a>
+
+      <span class="pill pill-accent">Angular + API .NET</span>
+    </div>
+
+    <div class="auth-hero__content">
+      <span class="eyebrow">Fluxo enxuto</span>
+      <h1 class="hero-title">Organize o cardapio, registre processos e mantenha cada receita pronta para servir.</h1>
+      <p>
+        O frontend foi pensado como um cockpit editorial: rapido para consultar, agradavel para escrever e claro para
+        manter categorias e receitas em dia.
+      </p>
+    </div>
+
+    <div class="auth-hero__highlights">
+      <article>
+        <strong>Cadastro centralizado</strong>
+        <span>Entradas, pratos principais, bases e sobremesas no mesmo espaco.</span>
+      </article>
+      <article>
+        <strong>Edicao orientada por contexto</strong>
+        <span>Listas, filtros e painel lateral reduzem troca de tela desnecessaria.</span>
+      </article>
+      <article>
+        <strong>Permissoes por perfil</strong>
+        <span>JWT no cliente e rotas administrativas protegidas para gestao de categorias.</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="auth-panel stagger-in">
+    <router-outlet></router-outlet>
+  </section>
+</div>
+

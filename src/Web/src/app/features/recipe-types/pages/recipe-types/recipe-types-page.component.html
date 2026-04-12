@@ -1,0 +1,90 @@
+<div class="page-grid">
+  <app-page-header
+    eyebrow="Categorias"
+    title="Curadoria das categorias culinarias"
+    description="Mantenha o vocabulario do acervo consistente para facilitar busca, criacao de receitas e padronizacao da operacao.">
+    <div page-actions>
+      <button type="button" class="button button-primary" (click)="startCreate()">Nova categoria</button>
+    </div>
+  </app-page-header>
+
+  <section class="recipe-types-stats">
+    <app-stat-card
+      label="Categorias ativas"
+      [value]="activeRecipeTypesCount().toString()"
+      helper="Disponiveis no formulario de receitas"
+      tone="accent" />
+    <app-stat-card
+      label="Arquivadas"
+      [value]="archivedRecipeTypesCount().toString()"
+      helper="Mantidas apenas para historico"
+      tone="neutral" />
+  </section>
+
+  <div class="two-column">
+    <section class="recipe-types-list page-grid">
+      @if (loading()) {
+        <section class="section-card">
+          <p>Carregando categorias...</p>
+        </section>
+      } @else if (sortedRecipeTypes().length > 0) {
+        @for (recipeType of sortedRecipeTypes(); track recipeType.id) {
+          <article class="recipe-type-card section-card stagger-in">
+            <div class="recipe-type-card__copy">
+              <div>
+                <span class="pill" [class.pill-accent]="!recipeType.deletedAt" [class.pill-muted]="!!recipeType.deletedAt">
+                  {{ recipeType.deletedAt ? 'Arquivada' : 'Ativa' }}
+                </span>
+              </div>
+
+              <h3>{{ recipeType.name }}</h3>
+              <p>Atualizada em {{ recipeType.updatedAt | date: 'dd/MM/yyyy' }}</p>
+            </div>
+
+            <div class="recipe-type-card__actions">
+              <button type="button" class="button button-secondary" (click)="startEdit(recipeType)">Editar</button>
+              <button
+                type="button"
+                class="button button-ghost"
+                [disabled]="!!recipeType.deletedAt"
+                (click)="archiveRecipeType(recipeType)">
+                Arquivar
+              </button>
+            </div>
+          </article>
+        }
+      } @else {
+        <app-empty-state
+          title="Nenhuma categoria cadastrada"
+          description="Crie pelo menos uma categoria para habilitar o cadastro de receitas de forma organizada."
+          actionLabel="Criar categoria"
+          (actionTriggered)="startCreate()" />
+      }
+    </section>
+
+    <section class="recipe-types-editor section-card stagger-in">
+      <div class="recipe-types-editor__header">
+        <div>
+          <span class="eyebrow">{{ mode() === 'create' ? 'Nova categoria' : 'Edicao' }}</span>
+          <h2>{{ mode() === 'create' ? 'Nomear uma nova categoria' : 'Atualizar categoria' }}</h2>
+        </div>
+
+        <button type="button" class="button button-ghost" (click)="startCreate()">Limpar</button>
+      </div>
+
+      <form class="recipe-types-editor__form" [formGroup]="form" (ngSubmit)="saveRecipeType()">
+        <div class="field">
+          <label for="name">Nome</label>
+          <input id="name" type="text" formControlName="name" placeholder="Ex.: Massas frescas, Bases, Sobremesas" />
+          @if (form.controls.name.touched && form.controls.name.invalid) {
+            <span class="field-error">Informe um nome com ate 255 caracteres.</span>
+          }
+        </div>
+
+        <button type="submit" class="button button-primary" [disabled]="saving()">
+          {{ saving() ? 'Salvando...' : mode() === 'create' ? 'Salvar categoria' : 'Atualizar categoria' }}
+        </button>
+      </form>
+    </section>
+  </div>
+</div>

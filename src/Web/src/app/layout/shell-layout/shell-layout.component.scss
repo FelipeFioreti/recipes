@@ -1,0 +1,224 @@
+.shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 1.25rem;
+}
+
+.shell__sidebar {
+  position: sticky;
+  top: 1.25rem;
+  height: calc(100vh - 2.5rem);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 252, 247, 0.88), rgba(244, 235, 222, 0.8)),
+    radial-gradient(circle at top right, rgba(216, 120, 46, 0.16), transparent 38%);
+}
+
+.shell__brand {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.brand-mark {
+  width: 3.15rem;
+  height: 3.15rem;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+  color: var(--text-inverse);
+  font-weight: 800;
+}
+
+.shell__brand strong,
+.shell__topbar-copy strong,
+.shell__user-pill strong,
+.shell__sidebar-card h3 {
+  font-family: 'Fraunces', serif;
+}
+
+.shell__brand p,
+.shell__sidebar-card p,
+.shell__nav-copy small,
+.shell__user-pill small {
+  color: var(--text-soft);
+  margin: 0;
+}
+
+.shell__nav {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shell__nav-link {
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.9rem;
+  align-items: center;
+  border: 1px solid transparent;
+  transition:
+    background-color var(--transition),
+    transform var(--transition),
+    border-color var(--transition);
+}
+
+.shell__nav-link:hover,
+.shell__nav-link.is-active {
+  background: rgba(255, 252, 247, 0.88);
+  border-color: rgba(216, 120, 46, 0.16);
+  transform: translateY(-1px);
+}
+
+.shell__nav-badge {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: rgba(216, 120, 46, 0.12);
+  color: var(--accent-deep);
+  font-weight: 800;
+  font-size: 0.78rem;
+}
+
+.shell__nav-copy {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.shell__sidebar-card {
+  align-self: end;
+  display: grid;
+  gap: 0.75rem;
+  border-radius: 26px;
+  padding: 1.15rem;
+  background: rgba(255, 250, 243, 0.72);
+  border: 1px solid var(--line);
+}
+
+.shell__logout {
+  width: 100%;
+}
+
+.shell__main {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1.25rem;
+}
+
+.shell__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 252, 247, 0.64);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(16px);
+}
+
+.shell__menu-button {
+  display: none;
+  padding: 0.85rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.shell__topbar-copy {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.shell__user-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.55rem 0.75rem 0.55rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(255, 250, 243, 0.78);
+  border: 1px solid var(--line);
+}
+
+.shell__user-pill span {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(216, 120, 46, 0.2), rgba(184, 92, 40, 0.24));
+  color: var(--accent-deep);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.shell__content {
+  min-width: 0;
+}
+
+.shell__backdrop {
+  display: none;
+}
+
+@media (max-width: 980px) {
+  .shell {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .shell__sidebar {
+    position: fixed;
+    inset: 1rem auto 1rem 1rem;
+    width: min(88vw, 320px);
+    transform: translateX(-115%);
+    transition: transform var(--transition);
+    z-index: 20;
+  }
+
+  .shell__sidebar--open {
+    transform: translateX(0);
+  }
+
+  .shell__menu-button {
+    display: inline-flex;
+  }
+
+  .shell__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    background: rgba(23, 16, 12, 0.32);
+    backdrop-filter: blur(2px);
+    z-index: 10;
+  }
+}
+
+@media (max-width: 720px) {
+  .shell__topbar {
+    padding: 0.95rem 1rem;
+  }
+
+  .shell__user-pill small {
+    display: none;
+  }
+
+  .shell__topbar-copy .eyebrow {
+    display: none;
+  }
+}
