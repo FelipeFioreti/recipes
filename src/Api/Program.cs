@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +11,6 @@ using Recipes.Api.Application.Services.Auth;
 using Recipes.Api.Application.Services.Recipes;
 using Recipes.Api.Application.Services.Users;
 using Recipes.Api.Domain.Constants;
-using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Settings;
 using Recipes.Api.Domain.Interfaces.Auth;
 using Recipes.Api.Domain.Interfaces.Recipes;
@@ -81,8 +80,8 @@ builder.Services
             ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            NameClaimType = ClaimTypes.Name,
-            RoleClaimType = ClaimTypes.Role
+            NameClaimType = JwtRegisteredClaimNames.UniqueName,
+            RoleClaimType = "role"
         };
     });
 
@@ -90,19 +89,8 @@ builder.Services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build())
-    .AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim(ClaimTypes.NameIdentifier);
-        policy.RequireClaim(ClaimTypes.Email);
-    })
-    .AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim(ClaimTypes.NameIdentifier);
-        policy.RequireClaim(ClaimTypes.Email);
-        policy.RequireRole(nameof(Roles.ADMIN));
-    });
+    .AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy => policy.RequireApplicationUser())
+    .AddPolicy(AuthorizationPolicies.AdminOnly, policy => policy.RequireAdminUser());
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
@@ -124,24 +112,6 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "Recipes API",
         Version = "v1"
-    });
-
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        Scheme = "bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Informe o token JWT no formato: Bearer {token}"
-    });
-
-    options.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecuritySchemeReference("Bearer", null, null),
-            new List<string>()
-        }
     });
 });
 
