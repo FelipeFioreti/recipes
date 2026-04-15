@@ -5,41 +5,26 @@ namespace Recipes.Api.Infrastructure.Security;
 
 public static class ClaimsPrincipalExtensions
 {
-    private static readonly string[] UserIdClaimTypes =
-    [
-        ClaimTypes.NameIdentifier,
-        JwtRegisteredClaimNames.Sub,
-        "nameid",
-        "id"
-    ];
-
-    private static readonly string[] EmailClaimTypes =
-    [
-        ClaimTypes.Email,
-        JwtRegisteredClaimNames.Email,
-        "email"
-    ];
-
-    private static readonly string[] RoleClaimTypes =
-    [
-        ClaimTypes.Role,
-        "role"
-    ];
-
     public static bool HasUserIdentifier(this ClaimsPrincipal user)
     {
-        return user.HasAnyClaim(UserIdClaimTypes);
+        return user.HasAnyClaim([
+            ClaimTypes.NameIdentifier,
+            JwtRegisteredClaimNames.Sub
+        ]);
     }
 
     public static bool HasUserEmail(this ClaimsPrincipal user)
     {
-        return user.HasAnyClaim(EmailClaimTypes);
+        return user.HasAnyClaim([
+            ClaimTypes.Email,
+            JwtRegisteredClaimNames.Email
+        ]);
     }
 
     public static bool HasApplicationRole(this ClaimsPrincipal user, string role)
     {
         return user.Claims.Any(claim =>
-            RoleClaimTypes.Contains(claim.Type) &&
+            string.Equals(claim.Type, ClaimTypes.Role, StringComparison.Ordinal) &&
             string.Equals(claim.Value, role, StringComparison.OrdinalIgnoreCase));
     }
 

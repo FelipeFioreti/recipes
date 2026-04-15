@@ -94,11 +94,12 @@ builder.Services.AddAuthorizationBuilder()
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRecipeService, RecipeService>();
-builder.Services.AddScoped<IRecipeTypeService, RecipeTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IRecipeTypeService, RecipeTypeService>();
+
 
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
