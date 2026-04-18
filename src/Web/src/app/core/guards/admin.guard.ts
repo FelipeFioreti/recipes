@@ -12,7 +12,7 @@ export const adminGuard: CanActivateFn = () => {
     return true;
   }
 
-  notificationService.error('Acesso restrito', 'Somente administradores podem acessar a gestao de categorias.');
+  notificationService.error('Acesso restrito', 'Somente administradores podem acessar essa tela.');
   return router.createUrlTree(['/app/dashboard']);
 };
 
