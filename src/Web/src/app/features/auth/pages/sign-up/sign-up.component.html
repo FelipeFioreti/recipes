@@ -1,55 +1,89 @@
-<section class="auth-card section-card">
-  <div class="auth-card__header">
-    <span class="eyebrow">Cadastro</span>
-    <h2>Abra seu espaco de trabalho</h2>
-    <p>Crie uma conta para organizar fichas, registrar categorias e manter o acervo culinario sempre acessivel.</p>
-  </div>
-
-  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
-    <div class="field">
-      <label for="name">Nome</label>
-      <input id="name" type="text" formControlName="name" placeholder="Seu nome" />
-      @if (form.controls.name.touched && form.controls.name.invalid) {
-        <span class="field-error">Informe seu nome.</span>
-      }
+<section class="card border-0 shadow-sm bg-body-tertiary mx-auto w-100 auth-card">
+  <div class="card-body d-grid gap-4 p-4 p-lg-5">
+    <div class="d-grid gap-3">
+      <span class="eyebrow">Cadastro</span>
+      <h2>Abra seu espaco de trabalho</h2>
+      <p class="mb-0 text-body-secondary">
+        Crie uma conta para organizar fichas, registrar categorias e manter o acervo culinario sempre acessivel.
+      </p>
     </div>
 
-    <div class="field">
-      <label for="email">Email</label>
-      <input id="email" type="email" formControlName="email" placeholder="chef@atelie.com" />
-      @if (form.controls.email.touched && form.controls.email.invalid) {
-        <span class="field-error">Informe um email valido.</span>
-      }
-    </div>
-
-    <div class="auth-form__grid">
-      <div class="field">
-        <label for="password">Senha</label>
-        <input id="password" type="password" formControlName="password" placeholder="Ao menos 6 caracteres" />
+    <form class="d-grid gap-3" [formGroup]="form" (ngSubmit)="submit()">
+      <div>
+        <label class="form-label" for="name">Nome</label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="form.controls.name.touched && form.controls.name.invalid"
+          formControlName="name"
+          placeholder="Seu nome" />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <div class="invalid-feedback d-block">Informe seu nome.</div>
+        }
       </div>
 
-      <div class="field">
-        <label for="confirmPassword">Confirmacao</label>
-        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Repita a senha" />
+      <div>
+        <label class="form-label" for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid"
+          formControlName="email"
+          placeholder="chef@atelie.com" />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <div class="invalid-feedback d-block">Informe um email valido.</div>
+        }
       </div>
+
+      <div class="row g-3">
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            class="form-control"
+            [class.is-invalid]="form.controls.password.touched && form.controls.password.invalid"
+            formControlName="password"
+            placeholder="Ao menos 6 caracteres" />
+          @if (form.controls.password.touched && form.controls.password.invalid) {
+            <div class="invalid-feedback d-block">A senha precisa ter ao menos 6 caracteres.</div>
+          }
+        </div>
+
+        <div class="col-12 col-md-6">
+          <label class="form-label" for="confirmPassword">Confirmacao</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            class="form-control"
+            [class.is-invalid]="form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid"
+            formControlName="confirmPassword"
+            placeholder="Repita a senha" />
+          @if (form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid) {
+            <div class="invalid-feedback d-block">Confirme sua senha.</div>
+          }
+        </div>
+      </div>
+
+      @if ((form.controls.password.touched || form.controls.confirmPassword.touched) && form.hasError('passwordMismatch')) {
+        <div class="invalid-feedback d-block">As senhas precisam ser iguais.</div>
+      }
+
+      @if (errorMessage()) {
+        <div class="alert alert-danger py-3 px-3">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="btn btn-primary w-100" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Criando conta...' : 'Criar conta' }}
+      </button>
+    </form>
+
+    <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 text-body-secondary">
+      <span>Ja tem acesso?</span>
+      <a routerLink="/auth/sign-in" class="fw-bold">Entrar</a>
     </div>
-
-    @if ((form.controls.password.touched || form.controls.confirmPassword.touched) && form.hasError('passwordMismatch')) {
-      <span class="field-error">As senhas precisam ser iguais.</span>
-    }
-
-    @if (errorMessage()) {
-      <div class="auth-card__error">{{ errorMessage() }}</div>
-    }
-
-    <button type="submit" class="button button-primary auth-card__submit" [disabled]="isSubmitting()">
-      {{ isSubmitting() ? 'Criando conta...' : 'Criar conta' }}
-    </button>
-  </form>
-
-  <div class="auth-card__footer">
-    <span>Ja tem acesso?</span>
-    <a routerLink="/auth/sign-in">Entrar</a>
   </div>
 </section>
 

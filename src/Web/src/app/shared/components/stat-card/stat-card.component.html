@@ -1,11 +1,13 @@
 <article
-  class="stat-card section-card stagger-in"
+  class="card border-0 shadow-sm h-100 stagger-in stat-card"
   [class.stat-card--accent]="tone() === 'accent'"
   [class.stat-card--success]="tone() === 'success'"
   [class.stat-card--neutral]="tone() === 'neutral'">
-  <span class="stat-card__label">{{ label() }}</span>
-  <strong class="stat-card__value">{{ value() }}</strong>
-  @if (helper()) {
-    <p class="stat-card__helper">{{ helper() }}</p>
-  }
+  <div class="card-body d-flex flex-column justify-content-end gap-2">
+    <span class="text-body-secondary fw-semibold">{{ label() }}</span>
+    <strong class="stat-card__value">{{ value() }}</strong>
+    @if (helper()) {
+      <p class="mb-0 text-body-secondary">{{ helper() }}</p>
+    }
+  </div>
 </article>

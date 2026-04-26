@@ -1,60 +1,66 @@
-<div class="shell">
-  <aside class="shell__sidebar glass-card" [class.shell__sidebar--open]="menuOpen()">
-    <div class="shell__brand">
-      <div class="brand-mark">AR</div>
-      <div>
-        <strong>Atelie de Receitas</strong>
-        <p>Operacao culinaria em uma interface clara.</p>
+<div class="shell container-fluid px-3 px-lg-4 py-3">
+  <aside class="shell__sidebar card border-0 shadow-sm glass-card" [class.shell__sidebar--open]="menuOpen()">
+    <div class="card-body d-grid gap-4 h-100">
+      <div class="shell__brand">
+        <div class="brand-mark">AR</div>
+        <div>
+          <strong>Atelie de Receitas</strong>
+          <p>Operacao culinaria em uma interface clara.</p>
+        </div>
       </div>
-    </div>
 
-    <nav class="shell__nav">
-      @for (item of navigation(); track item.route) {
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="is-active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="shell__nav-link"
-          (click)="closeMenu()">
-          <span class="shell__nav-badge">{{ item.badge }}</span>
-          <span class="shell__nav-copy">
-            <strong>{{ item.label }}</strong>
-            <small>{{ item.description }}</small>
+      <nav class="nav flex-column gap-2 shell__nav">
+        @for (item of navigation(); track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="nav-link shell__nav-link d-flex align-items-center gap-3"
+            (click)="closeMenu()">
+            <span class="shell__nav-badge">{{ item.badge }}</span>
+            <span class="shell__nav-copy">
+              <strong>{{ item.label }}</strong>
+              <small>{{ item.description }}</small>
+            </span>
+          </a>
+        }
+      </nav>
+
+      <section class="card border-0 bg-body-tertiary shell__sidebar-card">
+        <div class="card-body d-grid gap-3">
+          <span class="eyebrow">Sessao</span>
+          <h3>{{ authStore.displayName() }}</h3>
+          <p class="mb-0">{{ authStore.session()?.email || 'usuario autenticado' }}</p>
+          <span class="badge rounded-pill w-auto" [class.app-badge-accent]="authStore.isAdmin()" [class.app-badge-muted]="!authStore.isAdmin()">
+            {{ authStore.isAdmin() ? 'Perfil administrador' : 'Perfil usuario' }}
           </span>
-        </a>
-      }
-    </nav>
+        </div>
+      </section>
 
-    <section class="shell__sidebar-card">
-      <span class="eyebrow">Sessao</span>
-      <h3>{{ authStore.displayName() }}</h3>
-      <p>{{ authStore.session()?.email || 'usuario autenticado' }}</p>
-      <span class="pill" [class.pill-accent]="authStore.isAdmin()" [class.pill-muted]="!authStore.isAdmin()">
-        {{ authStore.isAdmin() ? 'Perfil administrador' : 'Perfil usuario' }}
-      </span>
-    </section>
-
-    <button type="button" class="button button-secondary shell__logout" (click)="signOut()">
-      Encerrar sessao
-    </button>
+      <button type="button" class="btn btn-outline-secondary w-100" (click)="signOut()">
+        Encerrar sessao
+      </button>
+    </div>
   </aside>
 
   <div class="shell__main">
-    <header class="shell__topbar">
-      <button type="button" class="shell__menu-button" (click)="toggleMenu()">
-        Menu
-      </button>
+    <header class="card border-0 shadow-sm shell__topbar">
+      <div class="card-body d-flex align-items-center justify-content-between gap-3">
+        <button type="button" class="btn btn-outline-secondary shell__menu-button" (click)="toggleMenu()">
+          Menu
+        </button>
 
-      <div class="shell__topbar-copy">
-        <span class="eyebrow">Painel principal</span>
-        <strong>{{ currentDateLabel }}</strong>
-      </div>
+        <div class="shell__topbar-copy">
+          <span class="eyebrow">Painel principal</span>
+          <strong>{{ currentDateLabel }}</strong>
+        </div>
 
-      <div class="shell__user-pill">
-        <span>{{ authStore.displayName().slice(0, 1) }}</span>
-        <div>
-          <strong>{{ authStore.displayName() }}</strong>
-          <small>{{ authStore.isAdmin() ? 'Admin' : 'Usuario' }}</small>
+        <div class="shell__user-pill">
+          <span>{{ authStore.displayName().slice(0, 1) }}</span>
+          <div>
+            <strong>{{ authStore.displayName() }}</strong>
+            <small>{{ authStore.isAdmin() ? 'Admin' : 'Usuario' }}</small>
+          </div>
         </div>
       </div>
     </header>

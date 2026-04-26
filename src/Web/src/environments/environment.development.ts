@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   appName: 'Atelie de Receitas',
-  apiUrl: '/api'
+  apiUrl: 'http://localhost:5184/api'
 };
 

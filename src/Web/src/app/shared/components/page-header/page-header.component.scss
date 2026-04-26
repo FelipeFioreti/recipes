@@ -1,36 +1,4 @@
-.page-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
 .page-header__copy {
-  display: grid;
-  gap: 0.8rem;
   max-width: 42rem;
-}
-
-.page-header__copy p {
-  margin: 0;
-  color: var(--text-soft);
-  line-height: 1.7;
-}
-
-.page-header__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-@media (max-width: 720px) {
-  .page-header {
-    flex-direction: column;
-  }
-
-  .page-header__actions {
-    width: 100%;
-    justify-content: stretch;
-  }
 }
 

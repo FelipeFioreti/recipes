@@ -24,6 +24,7 @@ using Recipes.Api.Presentation.Models;
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>()!;
 var jwtKey = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+const string DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -103,6 +104,16 @@ builder.Services.AddAuthorizationBuilder()
         policy.RequireRole(nameof(Roles.ADMIN));
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(DevelopmentCorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
@@ -126,6 +137,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
+    app.UseCors(DevelopmentCorsPolicy);
 }
 
 app.UseGlobalExceptionHandling();
