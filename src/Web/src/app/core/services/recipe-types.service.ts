@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { RecipeType, SaveRecipeTypePayload } from '../models/recipe-type.model';
-import {environment} from "../../../../environments/environment";
+import {environment} from "../../../environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class RecipeTypesService {

@@ -1,6 +1,6 @@
 export const environment = {
-  production: true,
-  appName: 'Atelie de Receitas',
-  apiUrl: '/api'
+    production: true,
+    appName: 'Receitas',
+    apiUrl: '/api'
 };
 
