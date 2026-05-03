@@ -12,14 +12,14 @@ import {RecipesService} from "../../core/services/recipes.service";
 import {AuthStore} from "../../core/services/auth.store";
 
 @Component({
-    selector: 'app-dashboard',
+    selector: 'app-home',
     standalone: true,
     imports: [RouterLink, DatePipe, PageHeaderComponent, StatCardComponent, EmptyStateComponent],
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DashboardComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
     readonly loading = signal(true);
     readonly recipes = signal<Recipe[]>([]);

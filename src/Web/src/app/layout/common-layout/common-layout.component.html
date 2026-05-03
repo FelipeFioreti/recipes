@@ -1,0 +1,65 @@
+<div class="sidebar" [class.close]="!menuOpen()">
+    <div class="logo-details">
+        <div class="logo">
+            <i class='bx bx-restaurant'></i>
+        </div>
+        <i class='bx bx-menu' id="btn" (click)="toggleMenu()"></i>
+    </div>
+    <ul class="nav-links">
+        @for (item of navigation(); track item.label) {
+            <li [class.showMenu]="isSubMenuOpen(item.label)">
+                @if (item.children && item.children.length > 0) {
+                    <div class="iocn-link">
+                        <a href="javascript:void(0)" (click)="toggleSubMenu(item.label)">
+                            <i class='bx' [class]="item.icon"></i>
+                            <span class="link_name">{{ item.label }}</span>
+                        </a>
+                        <i class='bx bxs-chevron-down arrow' (click)="toggleSubMenu(item.label)"></i>
+                    </div>
+                    <ul class="sub-menu">
+                        <li><a class="link_name" href="javascript:void(0)">{{ item.label }}</a></li>
+                        @for (child of item.children; track child.label) {
+                            <li><a [routerLink]="child.route">{{ child.label }}</a></li>
+                        }
+                    </ul>
+                } @else {
+                    <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                        <i class='bx' [class]="item.icon"></i>
+                        <span class="link_name">{{ item.label }}</span>
+                    </a>
+                    <ul class="sub-menu blank">
+                        <li><a class="link_name" [routerLink]="item.route">{{ item.label }}</a></li>
+                    </ul>
+                }
+            </li>
+        }
+        
+        <li>
+            <div class="profile-details">
+                <div class="profile-content">
+                    <span class="profile-initials">{{ authStore.displayName().slice(0, 1) }}</span>
+                </div>
+                <div class="name-job">
+                    <div class="profile_name">{{ authStore.displayName() }}</div>
+                    <div class="job">{{ authStore.isAdmin() ? 'Administrador' : 'Usuário' }}</div>
+                </div>
+                <i class='bx bx-log-out' (click)="signOut()"></i>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<section class="home-section">
+    <div class="home-content">
+        <span class="text">{{ currentDateLabel }}</span>
+    </div>
+
+    <main class="shell__content px-3 px-lg-4 py-3">
+        <router-outlet></router-outlet>
+    </main>
+</section>
+
+@if (!menuOpen()) {
+    <!-- Optional backdrop for mobile if needed, but the user's design seems to be a push/shrink sidebar -->
+}

@@ -49,7 +49,7 @@ export class SignInComponent {
             .pipe(finalize(() => this.isSubmitting.set(false)))
             .subscribe({
                 next: () => {
-                    void this.router.navigateByUrl('/app/dashboard');
+                    void this.router.navigateByUrl('/app/home');
                 },
                 error: (error: HttpErrorResponse) => {
                     this.errorMessage.set(extractErrorMessage(error));

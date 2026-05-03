@@ -2,8 +2,8 @@ import {Routes} from '@angular/router';
 import {authGuard} from './core/guards/auth.guard';
 import {guestGuard} from './core/guards/guest.guard';
 import {adminGuard} from './core/guards/admin.guard';
-import {ShellLayoutComponent} from './layout/shell-layout/shell-layout.component';
 import {AuthLayoutComponent} from './layout/auth-layout/auth-layout.component';
+import {CommonLayoutComponent} from "./layout/common-layout/common-layout.component";
 
 export const routes: Routes = [
     {
@@ -35,13 +35,13 @@ export const routes: Routes = [
     },
     {
         path: 'app',
-        component: ShellLayoutComponent,
+        component: CommonLayoutComponent,
         canActivate: [authGuard],
         children: [
             {
-                path: 'dashboard',
+                path: 'home',
                 loadComponent: () =>
-                    import('./entities/dashboard/dashboard.component').then((m) => m.DashboardComponent)
+                    import('./entities/home/home.component').then((m) => m.HomeComponent)
             },
             {
                 path: 'recipes',
@@ -59,13 +59,13 @@ export const routes: Routes = [
             {
                 path: '',
                 pathMatch: 'full',
-                redirectTo: 'dashboard'
+                redirectTo: 'home'
             }
         ]
     },
     {
         path: '**',
-        redirectTo: 'app/dashboard'
+        redirectTo: 'app/home'
     }
 ];
 
