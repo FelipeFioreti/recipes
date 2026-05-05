@@ -27,28 +27,26 @@ export class CommonLayoutComponent {
         const items: NavigationItem[] = [
             {
                 label: 'Inicio',
-                description: 'Resumo operacional',
+                description: 'Tela inicial',
                 route: '/app/home',
-                badge: 'DB',
+                badge: 'HM',
                 icon: 'bx-grid-alt'
             },
             {
                 label: 'Receitas',
-                description: 'Catalogo e edicao',
-                icon: 'bx-collection',
-                children: [
-                    {label: 'Todas as Receitas', route: '/app/recipes'},
-                    {label: 'Nova Receita', route: '/app/recipes/new'}
-                ]
+                description: 'Receitas',
+                route: '/app/recipes',
+                badge: 'RC',
+                icon: 'bx-collection'
             }
         ];
 
         if (this.authStore.isAdmin()) {
             items.push({
-                label: 'Categorias',
-                description: 'Curadoria do acervo',
-                route: '/app/categories',
-                badge: 'CT',
+                label: 'Tipos de receitas',
+                description: 'Tipos de receitas',
+                route: '/app/recipe-types',
+                badge: 'TP',
                 icon: 'bx-book-alt'
             });
         }

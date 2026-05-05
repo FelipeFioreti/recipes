@@ -1,103 +1,18 @@
 <div class="d-grid gap-4">
-  <app-page-header
-    eyebrow="Dashboard"
-    title="Uma visao rapida da operacao culinaria"
-    description="Use este painel para entender o volume do acervo, o ritmo de atualizacoes e o estado atual das suas receitas.">
-    <div page-actions>
-      <a routerLink="/app/recipes" class="btn btn-primary">Abrir catalogo</a>
-    </div>
-  </app-page-header>
+    <app-page-header
+            eyebrow="Inicio"
+            title="Home"
+            description="Acesse rapidamente as telas principais do sistema.">
+    </app-page-header>
 
-  <section class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-    <div class="col">
-      <app-stat-card
-        label="Receitas ativas"
-        [value]="activeRecipes().length.toString()"
-        helper="Preparos disponiveis para consulta"
-        tone="accent" />
-    </div>
-    <div class="col">
-      <app-stat-card
-        label="Cobertura de categorias"
-        [value]="categoryCoverage().toString()"
-        [helper]="authStore.isAdmin() ? 'Categorias ativas sob sua curadoria' : 'Categorias diferentes utilizadas no seu acervo'"
-        tone="neutral" />
-    </div>
-    <div class="col">
-      <app-stat-card
-        label="Arquivadas"
-        [value]="archivedRecipes().length.toString()"
-        helper="Receitas preservadas apenas no historico"
-        tone="success" />
-    </div>
-  </section>
-
-  <div class="row g-4 align-items-start">
-    <div class="col-12 col-xl-8">
-      <section class="card border-0 shadow-sm stagger-in h-100">
-        <div class="card-body d-grid gap-4">
-          <div class="d-flex flex-column flex-lg-row align-items-start justify-content-between gap-3">
-            <div class="d-grid gap-2">
-              <span class="eyebrow">Movimento recente</span>
-              <h2>Ultimas receitas atualizadas</h2>
-            </div>
-            <a routerLink="/app/recipes" class="btn btn-outline-secondary">Ver tudo</a>
-          </div>
-
-          @if (loading()) {
-            <p class="mb-0 text-body-secondary">Carregando dados do painel...</p>
-          } @else if (recentRecipes().length > 0) {
-            <div class="list-group list-group-flush">
-              @for (recipe of recentRecipes(); track recipe.id; let first = $first) {
-                <article class="list-group-item px-0 d-flex flex-column flex-md-row align-items-start gap-3" [class.border-top-0]="first">
-                  <div class="d-flex align-items-start gap-3 flex-grow-1">
-                    <div class="dashboard-timeline__marker mt-2 flex-shrink-0"></div>
-                    <div class="d-grid gap-1">
-                      <strong>{{ recipe.name }}</strong>
-                      <p class="mb-0 text-body-secondary">{{ recipe.description || 'Sem observacoes adicionais.' }}</p>
-                    </div>
-                  </div>
-                  <small class="text-body-secondary text-nowrap"> {{ recipe.updatedAt | date: 'dd/MM/yyyy' }} </small>
-                </article>
-              }
-            </div>
-          } @else {
-            <app-empty-state
-              title="Seu dashboard ainda esta em branco"
-              description="Assim que receitas forem adicionadas ou atualizadas, o painel passa a destacar o que merece atencao."
-              actionLabel="Criar primeira receita"
-              (actionTriggered)="goToRecipes()" />
-          }
+    <section class="card border-0 shadow-sm">
+        <div class="card-body d-flex flex-wrap gap-2">
+            <a routerLink="/app/recipes" class="btn btn-outline-secondary">Receitas</a>
+            <a routerLink="/app/recipes/new" class="btn btn-primary">Adicionar receita</a>
+            @if (authStore.isAdmin()) {
+                <a routerLink="/app/recipe-types" class="btn btn-outline-secondary">Listagem de tipos</a>
+                <a routerLink="/app/recipe-types/new" class="btn btn-primary">Adicionar tipo</a>
+            }
         </div>
-      </section>
-    </div>
-
-    <div class="col-12 col-xl-4">
-      <section class="card border-0 shadow-sm stagger-in h-100">
-        <div class="card-body d-grid gap-3">
-          <span class="eyebrow">Leitura rapida</span>
-          <h2>Ritmo do acervo</h2>
-          <p class="mb-0 text-body-secondary">
-            {{ activeRecipes().length > 0
-              ? 'Seu acervo ja tem base suficiente para operacao. Use as atualizacoes recentes para manter o padrao de execucao.'
-              : 'Vale comecar pelas receitas mais recorrentes da operacao para criar uma base confiavel.' }}
-          </p>
-
-          <div class="progress" role="progressbar" aria-label="Ritmo do acervo">
-            <div class="progress-bar app-progress-bar" [style.width.%]="activeRecipes().length === 0 ? 12 : 100"></div>
-          </div>
-
-          <ul class="ps-3 mb-0 d-grid gap-2 text-body-secondary">
-            <li>Priorize nomes claros e descricoes com contexto de servico.</li>
-            <li>Mantenha categorias enxutas para facilitar busca e edicao.</li>
-            <li>Arquive apenas o que saiu de operacao, sem apagar historico util.</li>
-          </ul>
-
-          @if (authStore.isAdmin()) {
-            <a routerLink="/app/categories" class="btn btn-outline-secondary">Ajustar categorias</a>
-          }
-        </div>
-      </section>
-    </div>
-  </div>
+    </section>
 </div>

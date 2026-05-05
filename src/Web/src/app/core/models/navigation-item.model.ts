@@ -4,5 +4,4 @@ export interface NavigationItem {
     route?: string;
     badge?: string;
     icon?: string;
-    children?: NavigationItem[];
 }

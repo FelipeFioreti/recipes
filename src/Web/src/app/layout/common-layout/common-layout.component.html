@@ -8,32 +8,14 @@
     <ul class="nav-links">
         @for (item of navigation(); track item.label) {
             <li [class.showMenu]="isSubMenuOpen(item.label)">
-                @if (item.children && item.children.length > 0) {
-                    <div class="iocn-link">
-                        <a href="javascript:void(0)" (click)="toggleSubMenu(item.label)">
-                            <i class='bx' [class]="item.icon"></i>
-                            <span class="link_name">{{ item.label }}</span>
-                        </a>
-                        <i class='bx bxs-chevron-down arrow' (click)="toggleSubMenu(item.label)"></i>
-                    </div>
-                    <ul class="sub-menu">
-                        <li><a class="link_name" href="javascript:void(0)">{{ item.label }}</a></li>
-                        @for (child of item.children; track child.label) {
-                            <li><a [routerLink]="child.route">{{ child.label }}</a></li>
-                        }
-                    </ul>
-                } @else {
-                    <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                        <i class='bx' [class]="item.icon"></i>
-                        <span class="link_name">{{ item.label }}</span>
-                    </a>
-                    <ul class="sub-menu blank">
-                        <li><a class="link_name" [routerLink]="item.route">{{ item.label }}</a></li>
-                    </ul>
-                }
+                <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                    <i class='bx' [class]="item.icon"></i>
+                    <span class="link_name">{{ item.label }}</span>
+                </a>
+
             </li>
         }
-        
+
         <li>
             <div class="profile-details">
                 <div class="profile-content">

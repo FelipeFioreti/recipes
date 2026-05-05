@@ -46,14 +46,27 @@ export const routes: Routes = [
             {
                 path: 'recipes',
                 loadComponent: () =>
-                    import('./entities/recipes/recipes-page.component').then((m) => m.RecipesPageComponent)
+                    import('./entities/recipes/recipes-list-page.component').then((m) => m.RecipesListPageComponent)
             },
             {
-                path: 'categories',
+                path: 'recipes/new',
+                loadComponent: () =>
+                    import('./entities/recipes/recipe-create-page.component').then((m) => m.RecipeCreatePageComponent)
+            },
+            {
+                path: 'recipe-types',
                 canActivate: [adminGuard],
                 loadComponent: () =>
-                    import('./entities/recipe-types/recipe-types-page.component').then(
-                        (m) => m.RecipeTypesPageComponent
+                    import('./entities/recipe-types/recipe-types-list-page.component').then(
+                        (m) => m.RecipeTypesListPageComponent
+                    )
+            },
+            {
+                path: 'recipe-types/new',
+                canActivate: [adminGuard],
+                loadComponent: () =>
+                    import('./entities/recipe-types/recipe-type-create-page.component').then(
+                        (m) => m.RecipeTypeCreatePageComponent
                     )
             },
             {

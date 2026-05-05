@@ -1,0 +1,55 @@
+<div class="d-grid gap-4">
+    <app-page-header
+            eyebrow="Receitas"
+            title="Receitas"
+            description="Visualize as receitas cadastradas em uma tabela paginada.">
+        <div page-actions>
+            <a routerLink="/app/recipes/new" class="btn btn-primary">Adicionar receita</a>
+        </div>
+    </app-page-header>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-body">
+            @if (loading()) {
+                <p class="mb-0">Carregando receitas...</p>
+            } @else if (paginatedRecipes().length === 0) {
+                <p class="mb-0">Nenhuma receita encontrada.</p>
+            } @else {
+                <div class="table-responsive">
+                    <table class="table table-striped align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Tipo</th>
+                            <th>Status</th>
+                            <th>Atualizacao</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @for (recipe of paginatedRecipes(); track recipe.id) {
+                                <tr>
+                                    <td>{{ recipe.name }}</td>
+                                    <td>{{ recipeTypeName(recipe.recipeTypeId) }}</td>
+                                    <td>{{ recipe.deletedAt ? 'Arquivada' : 'Ativa' }}</td>
+                                    <td>{{ recipe.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="d-flex justify-content-between align-items-center">
+        <small class="text-body-secondary">Pagina {{ currentPage() }} de {{ totalPages() }}</small>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() === 1"
+                    (click)="previousPage()">Anterior
+            </button>
+            <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() === totalPages()"
+                    (click)="nextPage()">Proxima
+            </button>
+        </div>
+    </section>
+</div>

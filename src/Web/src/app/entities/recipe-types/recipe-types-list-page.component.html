@@ -1,0 +1,49 @@
+<div class="d-grid gap-4">
+  <app-page-header
+    eyebrow="Tipos"
+    title="Listagem de tipos de receita"
+    description="Visualize os tipos cadastrados em uma tabela paginada.">
+    <div page-actions>
+      <a routerLink="/app/recipe-types/new" class="btn btn-primary">Adicionar tipo</a>
+    </div>
+  </app-page-header>
+
+  <section class="card border-0 shadow-sm">
+    <div class="card-body">
+      @if (loading()) {
+        <p class="mb-0">Carregando tipos...</p>
+      } @else if (paginatedRecipeTypes().length === 0) {
+        <p class="mb-0">Nenhum tipo encontrado.</p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-striped align-middle mb-0">
+            <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Status</th>
+              <th>Atualizacao</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (recipeType of paginatedRecipeTypes(); track recipeType.id) {
+                <tr>
+                  <td>{{ recipeType.name }}</td>
+                  <td>{{ recipeType.deletedAt ? 'Arquivado' : 'Ativo' }}</td>
+                  <td>{{ recipeType.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="d-flex justify-content-between align-items-center">
+    <small class="text-body-secondary">Pagina {{ currentPage() }} de {{ totalPages() }}</small>
+    <div class="d-flex gap-2">
+      <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() === 1" (click)="previousPage()">Anterior</button>
+      <button type="button" class="btn btn-outline-secondary" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Proxima</button>
+    </div>
+  </section>
+</div>
