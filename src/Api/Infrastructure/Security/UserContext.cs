@@ -1,5 +1,5 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Exceptions;
 using Recipes.Api.Domain.Interfaces.Auth;
 
@@ -7,20 +7,32 @@ namespace Recipes.Api.Infrastructure.Security;
 
 public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContext
 {
-    private ClaimsPrincipal? Principal => httpContextAccessor.HttpContext?.User;
-
-    public int? UserId =>
-        TryGetIntClaim(ClaimTypes.NameIdentifier, JwtRegisteredClaimNames.Sub, "id");
+    private ClaimsPrincipal Principal =>
+        httpContextAccessor.HttpContext?.User
+        ?? throw new UnauthorizedException("Authenticated user not found.");
 
     public int GetUserId()
     {
-        return UserId ?? throw new UnauthorizedException("Authenticated user id claim is missing.");
+        IsAuthenticated();
+
+        var claimValue = Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        return int.TryParse(claimValue, out var userId)
+            ? userId
+            : throw new UnauthorizedException("Authenticated user id claim is missing.");
     }
 
-    private int? TryGetIntClaim(params string[] claimTypes)
+    public bool IsAdmin()
     {
-        var value = Principal.FindFirstValueByTypes(claimTypes);
+        IsAuthenticated();
 
-        return int.TryParse(value, out var userId) ? userId : null;
+        return Principal.IsInRole(nameof(Roles.ADMIN));
+    }
+
+    private void IsAuthenticated()
+    {
+        if (Principal.Identity?.IsAuthenticated != true)
+            throw new UnauthorizedException(
+                "User is not authenticated.");
     }
 }

@@ -1,8 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,7 +9,6 @@ using Microsoft.OpenApi;
 using Recipes.Api.Application.Services.Auth;
 using Recipes.Api.Application.Services.Recipes;
 using Recipes.Api.Application.Services.Users;
-using Recipes.Api.Domain.Constants;
 using Recipes.Api.Domain.Entities.Settings;
 using Recipes.Api.Domain.Interfaces.Auth;
 using Recipes.Api.Domain.Interfaces.Recipes;
@@ -24,7 +22,7 @@ using Recipes.Api.Presentation.Models;
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>()!;
 var jwtKey = Encoding.UTF8.GetBytes(jwtSettings.Secret);
-const string DevelopmentCorsPolicy = "DevelopmentCorsPolicy";
+const string developmentCorsPolicy = "DevelopmentCorsPolicy";
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -81,21 +79,14 @@ builder.Services
             ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            NameClaimType = JwtRegisteredClaimNames.UniqueName,
-            RoleClaimType = "role"
+            NameClaimType = ClaimTypes.Name,
+            RoleClaimType = ClaimTypes.Role
         };
     });
 
-builder.Services.AddAuthorizationBuilder()
-    .SetFallbackPolicy(new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build())
-    .AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy => policy.RequireApplicationUser())
-    .AddPolicy(AuthorizationPolicies.AdminOnly, policy => policy.RequireAdminUser());
-
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(DevelopmentCorsPolicy, policy =>
+    options.AddPolicy(developmentCorsPolicy, policy =>
     {
         policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
@@ -134,7 +125,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
-    app.UseCors(DevelopmentCorsPolicy);
+    app.UseCors(developmentCorsPolicy);
 }
 
 app.UseGlobalExceptionHandling();

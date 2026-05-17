@@ -9,7 +9,14 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
 {
     private readonly DbSet<Recipe> _dbSet = context.Recipes;
 
-    public async Task<IEnumerable<Recipe>> GetAll(int userId)
+    public async Task<IEnumerable<Recipe>> GetAll()
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<Recipe>> GetAllForUser(int userId)
     {
         return await _dbSet
             .AsNoTracking()
@@ -17,12 +24,18 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
             .ToListAsync();
     }
 
-
-    public async Task<Recipe?> GetById(int id, int userId)
+    public async Task<Recipe?> GetByIdForUser(int id, int userId)
     {
         return await _dbSet
             .AsNoTracking()
             .FirstOrDefaultAsync(recipe => recipe.Id == id && recipe.UserId == userId);
+    }
+
+    public async Task<Recipe?> GetById(int id)
+    {
+        return await _dbSet
+            .AsNoTracking()
+            .FirstOrDefaultAsync(recipe => recipe.Id == id);
     }
 
     public async Task<Recipe?> Create(Recipe recipe)

@@ -9,9 +9,9 @@ using Recipes.Api.Presentation.Models;
 
 namespace Recipes.Api.Presentation.Middlewares;
 
-public class GlobalExceptionHandlingMiddleware(
+public class ExceptionHandler(
     RequestDelegate next,
-    ILogger<GlobalExceptionHandlingMiddleware> logger,
+    ILogger<ExceptionHandler> logger,
     IHostEnvironment environment)
 {
     public async Task InvokeAsync(HttpContext context)

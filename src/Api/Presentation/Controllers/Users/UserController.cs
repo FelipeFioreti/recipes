@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Recipes.Api.Domain.Constants;
 using Recipes.Api.Domain.DTOs.Users;
+using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Exceptions;
 using Recipes.Api.Domain.Interfaces.Users;
 
 namespace Recipes.Api.Presentation.Controllers.Users;
 
 [ApiController]
-[Authorize(Policy = AuthorizationPolicies.AdminOnly)]
+[Authorize(Roles = nameof(Roles.ADMIN))]
 [Route("api/[controller]")]
 public class UserController(IUserService userService) : ControllerBase
 {

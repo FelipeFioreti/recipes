@@ -13,8 +13,10 @@ public class RecipeService(
     public async Task<IEnumerable<RecipeResponse>> GetAll()
     {
         logger.LogDebug("GetAll()");
-        
-        var recipes = await recipeRepository.GetAll(userContext.GetUserId());
+
+        var recipes = userContext.IsAdmin()
+            ? await recipeRepository.GetAll()
+            : await recipeRepository.GetAllForUser(userContext.GetUserId());
 
         return recipes.Select(ToResponse);
     }
@@ -22,8 +24,10 @@ public class RecipeService(
     public async Task<RecipeResponse?> GetById(int id)
     {
         logger.LogDebug("GetById()");
-        
-        var recipe = await recipeRepository.GetById(id, userContext.GetUserId());
+
+        var recipe = userContext.IsAdmin()
+            ? await recipeRepository.GetById(id)
+            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
 
         return recipe == null ? null : ToResponse(recipe);
     }
@@ -31,7 +35,7 @@ public class RecipeService(
     public async Task<RecipeResponse?> Create(CreateRecipeRequest request)
     {
         logger.LogDebug("Create()");
-        
+
         var recipe = await recipeRepository.Create(
             new Recipe(request.Name, request.Description, request.RecipeTypeId, userContext.GetUserId()));
 
@@ -42,7 +46,9 @@ public class RecipeService(
     {
         logger.LogDebug("Update()");
 
-        var existingRecipe = await recipeRepository.GetById(id, userContext.GetUserId());
+        var existingRecipe = userContext.IsAdmin()
+            ? await recipeRepository.GetById(id)
+            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
 
         if (existingRecipe == null)
             return null;
@@ -58,7 +64,9 @@ public class RecipeService(
     {
         logger.LogDebug("Disable()");
 
-        var recipe = await recipeRepository.GetById(id, userContext.GetUserId());
+        var recipe = userContext.IsAdmin()
+            ? await recipeRepository.GetById(id)
+            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
 
         if (recipe == null)
             return false;
@@ -68,6 +76,7 @@ public class RecipeService(
 
         return true;
     }
+
     private static RecipeResponse ToResponse(Recipe recipe)
     {
         return new RecipeResponse(recipe);
