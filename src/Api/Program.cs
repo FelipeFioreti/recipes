@@ -1,4 +1,4 @@
-using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Recipes.Api.Application.Services.Auth;
 using Recipes.Api.Application.Services.Recipes;
 using Recipes.Api.Application.Services.Users;
 using Recipes.Api.Domain.Constants;
-using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Settings;
 using Recipes.Api.Domain.Interfaces.Auth;
 using Recipes.Api.Domain.Interfaces.Recipes;
@@ -81,8 +81,8 @@ builder.Services
             ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
-            NameClaimType = ClaimTypes.Name,
-            RoleClaimType = ClaimTypes.Role
+            NameClaimType = JwtRegisteredClaimNames.UniqueName,
+            RoleClaimType = "role"
         };
     });
 
@@ -90,19 +90,8 @@ builder.Services.AddAuthorizationBuilder()
     .SetFallbackPolicy(new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         .Build())
-    .AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim(ClaimTypes.NameIdentifier);
-        policy.RequireClaim(ClaimTypes.Email);
-    })
-    .AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim(ClaimTypes.NameIdentifier);
-        policy.RequireClaim(ClaimTypes.Email);
-        policy.RequireRole(nameof(Roles.ADMIN));
-    });
+    .AddPolicy(AuthorizationPolicies.AuthenticatedUser, policy => policy.RequireApplicationUser())
+    .AddPolicy(AuthorizationPolicies.AdminOnly, policy => policy.RequireAdminUser());
 
 builder.Services.AddCors(options =>
 {
@@ -116,26 +105,34 @@ builder.Services.AddCors(options =>
 
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IRecipeService, RecipeService>();
-builder.Services.AddScoped<IRecipeTypeService, RecipeTypeService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserContext, UserContext>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IRecipeTypeService, RecipeTypeService>();
+
 
 // Add Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IRecipeTypeRepository, RecipeTypeRepository>();
 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Recipes API",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
     app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
     app.UseCors(DevelopmentCorsPolicy);
 }
