@@ -1,10 +1,11 @@
-import {BaseEntity, IBaseEntity} from "./base-entity.model";
+﻿import {BaseEntity, IBaseEntity} from "./base-entity.model";
 
-export interface IRecipeType extends IBaseEntity {
+export interface IUser extends IBaseEntity {
     Name?: string;
+    Email?: string;
 }
 
-export class RecipeType extends BaseEntity implements IRecipeType {
+export class User extends BaseEntity implements IUser {
     constructor(
         Id?: number,
         Uuid?: string,

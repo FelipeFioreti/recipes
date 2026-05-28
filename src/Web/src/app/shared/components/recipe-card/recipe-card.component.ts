@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {DatePipe} from '@angular/common';
-import {Recipe} from "../../../core/models/recipe.model";
+import {IRecipe} from "../../../core/models/recipe.model";
 
 @Component({
     selector: 'app-recipe-card',
@@ -11,7 +11,7 @@ import {Recipe} from "../../../core/models/recipe.model";
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RecipeCardComponent {
-    readonly recipe = input.required<Recipe>();
+    readonly recipe = input.required<IRecipe>();
     readonly categoryName = input('Sem categoria');
     readonly selected = input(false);
     readonly editRequested = output<void>();

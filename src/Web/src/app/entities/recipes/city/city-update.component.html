@@ -1,0 +1,115 @@
+<div class="row justify-content-center">
+  <div class="col-12" *ngIf="city">
+
+    <div class="card-header">
+      <span jhiTranslate="city.home.{{!!city.id ? 'editLabel' : 'createLabel'}}"></span>
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col-12">
+          <form #cityForm="ngForm" name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+
+            <div class="form-row">
+              <!-- active -->
+              <div *dmHasAnyAuthority="'SYSTEM_ADMIN'" class="form-group col-md-6 pb-1">
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input" id="active"
+                         name="active" formControlName="active">
+                  <label class="custom-control-label" for="active"
+                         jhiTranslate="global.field.active"></label>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- state -->
+            <div class="form-group pb-1">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <label class="input-group-text required" jhiTranslate="city.state"></label>
+                </div>
+                <div class="form-control selector" [ngClass]="{'is-invalid': isInvalidAndTouched('state')}">
+                  <ng-select [items]="states" formControlName="state" bindLabel="_label">
+                    <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+                      <div class="option-item" [title]="item._label">
+                        <span>
+                          <input id="item-{{index}}" type="checkbox" [ngModel]="item$.selected"
+                                 [ngModelOptions]="{ standalone : true }"/>
+                        </span>
+                        <label for="item-{{index}}">{{ item._label }}</label>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+              </div>
+
+              <div *ngIf="isInvalidAndTouched('state')">
+                <small class="form-text text-danger"
+                       *ngIf="editForm.get('state')?.errors?.required"
+                       jhiTranslate="entity.validation.required">
+                </small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-12 pb-1">
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <label class="input-group-text required" jhiTranslate="global.field.name"></label>
+                  </div>
+                  <input type="text" class="form-control" name="name" maxlength="255" required
+                         formControlName="name" [ngClass]="{'is-invalid': isInvalidAndTouched('name')}">
+                </div>
+                <div *ngIf="isInvalidAndTouched('name')">
+                  <small class="form-text text-danger"
+                         *ngIf="editForm.get('name')?.errors?.required"
+                         jhiTranslate="entity.validation.required">
+                  </small>
+
+                  <small class="form-text text-danger"
+                         *ngIf="editForm.get('name')?.errors?.minlength"
+                         jhiTranslate="entity.validation.minlength"
+                         [translateValues]="{ min: 1 }">
+                  </small>
+
+                  <small class="form-text text-danger"
+                         *ngIf="editForm.get('name')?.errors?.maxlength"
+                         jhiTranslate="entity.validation.maxlength"
+                         [translateValues]="{ max: 255 }">
+                  </small>
+                </div>
+              </div>
+            </div>
+
+          </form>
+        </div>
+        <ngb-accordion class="col-12 entity-details" *ngIf="city.id">
+          <ngb-panel id="panelAudit">
+            <ng-template ngbPanelTitle>
+              <fa-icon fixedWidth="true" icon="exclamation-circle"></fa-icon>
+              &nbsp;
+              <span>{{ 'entity.panels.audit' | translate }}</span>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="row justify-content-center">
+                <dl class="col-12">
+                  <dt><span jhiTranslate="global.field.uuid"></span></dt>
+                  <dd>{{ city.uuid }}</dd>
+                  <dt><span jhiTranslate="global.field.createdBy"></span></dt>
+                  <dd>{{ city.createdBy }}</dd>
+                  <dt><span jhiTranslate="global.field.createdDate"></span></dt>
+                  <dd>{{ city.createdDate | date:'dd/MM/yyyy HH:mm' }}</dd>
+                  <dt><span jhiTranslate="global.field.lastModifiedBy"></span></dt>
+                  <dd>{{ city.lastModifiedBy }}</dd>
+                  <dt><span jhiTranslate="global.field.lastModifiedDate"></span></dt>
+                  <dd>{{ city.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</dd>
+                </dl>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+    </div>
+  </div>
+</div>

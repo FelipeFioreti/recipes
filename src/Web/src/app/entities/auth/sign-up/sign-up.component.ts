@@ -62,12 +62,12 @@ export class SignUpComponent {
         this.errorMessage.set('');
 
         this.authService
-            .signUp(payload)
+            .register(payload)
             .pipe(finalize(() => this.isSubmitting.set(false)))
             .subscribe({
                 next: () => {
                     this.notificationService.success('Conta criada', 'Agora voce pode entrar e comecar a catalogar receitas.');
-                    void this.router.navigateByUrl('/auth/sign-in');
+                    void this.router.navigateByUrl('/auth/login');
                 },
                 error: (error: HttpErrorResponse) => {
                     this.errorMessage.set(extractErrorMessage(error));

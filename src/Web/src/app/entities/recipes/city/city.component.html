@@ -1,0 +1,92 @@
+<div *ngIf="cities" class="row justify-content-center">
+  <div class="col-12">
+
+    <div class="card-header" *ngIf="totalItems > 0" [ngClass]="{'with-pagination': cities}">
+      <div class="d-flex justify-content-between">
+        <fa-icon fixedWidth icon="filter" *ngIf="filter"></fa-icon>
+        <span *ngIf="!cities.length" jhiTranslate="global.empty.list.title"></span>
+        <jhi-item-count *ngIf="cities.length" [page]="page" [total]="totalItems"
+                        [itemsPerPage]="itemsPerPage"></jhi-item-count>
+        <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                        [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)" size="sm"></ngb-pagination>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div *ngIf="!cities.length" class="alert alert-warning" role="alert">
+        <span jhiTranslate="global.empty.list.desc"></span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover" aria-describedby="city-management-page-heading">
+          <thead class="thead-light">
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="transition.bind(this)">
+            <th scope="col" jhiSortBy="name">
+              <span jhiTranslate="global.field.name"></span>
+              <fa-icon *ngIf="predicate === 'name'" [icon]="ascending ? 'sort-up' : 'sort-down'"></fa-icon>
+            </th>
+            <th scope="col" jhiSortBy="state">
+              <span jhiTranslate="city.state"></span>
+              <fa-icon *ngIf="predicate === 'state'" [icon]="ascending ? 'sort-up' : 'sort-down'"></fa-icon>
+            </th>
+            <th scope="col"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let city of cities; trackBy: trackIdentity" [class]="{'notActive': !city.active}">
+
+            <td>{{ city.name }}</td>
+
+            <td>
+              <app-view-route-link [entity]="city.state" route="loc/states" target="_blank"></app-view-route-link>
+            </td>
+
+            <td class="text-right">
+              <div class="btn-group">
+                <button type="button" title="{{'entity.action.edit' | translate}}" (click)="goToEdit(city)"
+                        class="btn btn-default btn-sm" [disabled]="!cityActionsService.hasPrivilegeToEdit()">
+                  <fa-icon icon="edit" fixedWidth="true"></fa-icon>
+                </button>
+
+                <div class="btn-group" ngbDropdown role="group" container="body" placement="left-top">
+                  <button class="btn btn-default btn-sm dropdown-toggle-split" ngbDropdownToggle></button>
+                  <div class="dropdown-menu" ngbDropdownMenu>
+                    <a class="dropdown-item" (click)="goToView(city)">
+                      <fa-icon fixedWidth="true" icon="list-alt"></fa-icon>
+                      &nbsp;
+                      <span jhiTranslate="entity.action.view"></span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a *ngIf="cityActionsService.hasPrivilegeToDelete()" class="dropdown-item"
+                       (click)="delete(city)">
+                      <fa-icon fixedWidth="true" icon="times"></fa-icon>
+                      &nbsp;
+                      <span jhiTranslate="entity.action.delete"></span>
+                    </a>
+                    <a *ngIf="!cityActionsService.hasPrivilegeToDelete()" class="dropdown-item disabled">
+                      <fa-icon fixedWidth="true" icon="times"></fa-icon>
+                      &nbsp;
+                      <span jhiTranslate="entity.action.delete"></span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-header footer-pagination" *ngIf="totalItems > 0" [ngClass]="{'with-pagination': cities}">
+    <div class="d-flex justify-content-between">
+      <fa-icon fixedWidth icon="filter" *ngIf="filter"></fa-icon>
+      <span *ngIf="!cities.length" jhiTranslate="global.empty.list.title"></span>
+      <jhi-item-count *ngIf="cities.length" [page]="page" [total]="totalItems"
+                      [itemsPerPage]="itemsPerPage"></jhi-item-count>
+      <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5"
+                      [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)" size="sm"></ngb-pagination>
+    </div>
+  </div>
+</div>

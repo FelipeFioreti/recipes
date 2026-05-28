@@ -1,49 +1,92 @@
-import { HttpClient, HttpContext } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { SKIP_ERROR_TOAST } from '../http/http-context.tokens';
-import { UserSession, AuthApiResponse } from '../models/user-session.model';
-import { AuthStore } from './auth.store';
+import {HttpClient, HttpContext} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {Observable, tap} from 'rxjs';
+import {environment} from '../../../environments/environment';
+import {SKIP_ERROR_TOAST} from '../http/http-context.tokens';
+import {TOKEN_KEY} from '../constants/keys.constants'
+import {AuthResponse} from "../models/auth.model";
+import {StorageService} from "./storage.service";
+import {jwtDecode} from "jwt-decode";
+import {AppJwtPayload} from "../models/jwt-payload.model";
+import {Role} from "../enums/role";
 
-export interface SignInPayload {
-  email: string;
-  password: string;
-}
-
-export interface SignUpPayload {
-  name: string;
-  email: string;
-  password: string;
-}
-
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class AuthService {
-  private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
-  private readonly authStore = inject(AuthStore);
-  private readonly accountUrl = `${environment.apiUrl}/account`;
 
-  signIn(payload: SignInPayload): Observable<UserSession> {
-    return this.http
-      .post<AuthApiResponse>(`${this.accountUrl}/authenticate`, payload, {
-        context: new HttpContext().set(SKIP_ERROR_TOAST, true)
-      })
-      .pipe(map((response) => this.authStore.setSession(response)));
-  }
+    constructor(
+        private storageService: StorageService,
+        private http: HttpClient,
+        private router: Router,
+    ) {
+    }
 
-  signUp(payload: SignUpPayload): Observable<void> {
-    return this.http
-      .post(`${this.accountUrl}/register`, payload, {
-        context: new HttpContext().set(SKIP_ERROR_TOAST, true)
-      })
-      .pipe(map(() => void 0));
-  }
+    private readonly accountUrl = `${environment.apiUrl}/account`;
 
-  signOut(): void {
-    this.authStore.clear();
-    void this.router.navigateByUrl('/auth/sign-in');
-  }
+    login(payload: {
+        email: string,
+        password: string,
+    }): Observable<AuthResponse> {
+        return this.http
+            .post<AuthResponse>(`${this.accountUrl}/authenticate`, payload,
+                {
+                    context: new HttpContext().set(SKIP_ERROR_TOAST, true)
+                })
+            .pipe(tap((response) => {
+                this.storageService.setStorageItem(TOKEN_KEY, response.token);
+            }));
+    }
+
+    register(payload: {
+        name: string,
+        email: string,
+        password: string,
+    }): Observable<void> {
+        return this.http
+            .post<void>(`${this.accountUrl}/register`, payload);
+    }
+
+    logout(): void {
+        this.storageService.removeStorageItem(TOKEN_KEY);
+
+        void this.router.navigateByUrl('/auth/login');
+    }
+
+    getToken(): string | null {
+        return this.storageService.getStorageItem(TOKEN_KEY);
+    }
+
+    isAuthenticated(): boolean {
+
+        const jwtPayload = this.getJwtPayload();
+
+        if (!jwtPayload?.exp) {
+            return false;
+        }
+
+        return jwtPayload.exp * 1000 > Date.now();
+    }
+
+    getJwtPayload(): AppJwtPayload | null {
+
+        const token = this.getToken();
+
+        if (!token) {
+            return null;
+        }
+
+        return jwtDecode<AppJwtPayload>(token);
+    }
+
+    getRole(): Role | null {
+
+        const jwtPayload = this.getJwtPayload();
+
+        return jwtPayload?.role ?? null;
+    }
+
+    isAdmin(): boolean {
+        return this.getRole() === Role.ADMIN;
+    }
 }
 

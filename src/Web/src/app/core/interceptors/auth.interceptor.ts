@@ -1,20 +1,20 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { AuthStore } from '../services/auth.store';
+import {HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {StorageService} from "../services/storage.service";
 
-export const authInterceptor: HttpInterceptorFn = (request, next) => {
-  const session = inject(AuthStore).session();
+@Injectable()
+export class AuthInterceptor implements HttpInterceptor {
 
-  if (!session?.token || !request.url.startsWith('/api')) {
-    return next(request);
-  }
+    constructor(private storageService: StorageService) {
+    }
 
-  return next(
-    request.clone({
-      setHeaders: {
-        Authorization: `Bearer ${session.token}`
-      }
-    })
-  );
-};
-
+    intercept(req: HttpRequest<any>, next: HttpHandler) {
+        const token = this.storageService.getStorageItem('token');
+        if (token) {
+            req = req.clone({
+                setHeaders: {Authorization: `Bearer ${token}`}
+            });
+        }
+        return next.handle(req);
+    }
+}           
