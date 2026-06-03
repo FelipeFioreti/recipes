@@ -1,8 +1,13 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, RouterModule} from '@angular/router';
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {map, switchMap} from "rxjs/operators";
+import {CommonModule} from "@angular/common";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {TranslateModule} from "@ngx-translate/core";
+import {NgSelectModule} from "@ng-select/ng-select";
+import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {RecipeActionsService} from "./recipe-actions.service";
 import {RecipeService} from "../../../core/services/recipeService";
@@ -13,7 +18,16 @@ import {IRecipeType} from "../../../core/models/recipe-type.model";
 @Component({
     selector: 'app-rec-recipe-update',
     templateUrl: './recipe-update.component.html',
-    standalone: false,
+    standalone: true,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FontAwesomeModule,
+        TranslateModule,
+        NgSelectModule,
+        NgbAccordionModule,
+        RouterModule
+    ]
 })
 export class RecipeUpdateComponent implements OnInit {
     private readonly fb = inject(FormBuilder);

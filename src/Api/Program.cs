@@ -2,7 +2,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -17,7 +16,7 @@ using Recipes.Api.Infrastructure.Data.Context;
 using Recipes.Api.Infrastructure.Repositories;
 using Recipes.Api.Infrastructure.Security;
 using Recipes.Api.Presentation.Extensions;
-using Recipes.Api.Presentation.Models;
+using Recipes.Api.Presentation.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>()!;
@@ -33,28 +32,6 @@ builder.Services.AddControllers()
         );
     });
 
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.InvalidModelStateResponseFactory = context =>
-    {
-        var errors = context.ModelState
-            .Where(entry => entry.Value?.Errors.Count > 0)
-            .ToDictionary(
-                entry => entry.Key,
-                entry => entry.Value!.Errors
-                    .Select(error =>
-                        string.IsNullOrWhiteSpace(error.ErrorMessage) ? "Invalid value." : error.ErrorMessage)
-                    .ToArray());
-
-        return new BadRequestObjectResult(new ErrorResponse
-        {
-            StatusCode = StatusCodes.Status400BadRequest,
-            Message = "Validation failed.",
-            TraceId = context.HttpContext.TraceIdentifier,
-            Errors = errors
-        });
-    };
-});
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -119,6 +96,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

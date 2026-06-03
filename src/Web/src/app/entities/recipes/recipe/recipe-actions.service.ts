@@ -4,23 +4,20 @@ import {RecipeService} from "../../../core/services/recipeService";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {IRecipe} from "../../../core/models/recipe.model";
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class RecipeActionsService {
-    private static readonly FILTER_KEY = 'rec-recipes';
+  private static readonly FILTER_KEY = 'rec-recipes';
 
-    private readonly destroyRef = inject(DestroyRef);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly recipeService = inject(RecipeService);
+  private readonly router = inject(Router);
 
-    constructor(
-        private recipeService: RecipeService,
-        private router: Router,
-    ) {
-    }
-
-    delete(recipe: IRecipe, successCallback?: Function): void {
-        this.recipeService.delete(recipe.Id!)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe(result => successCallback && successCallback(result));
-    }
+  delete(recipe: IRecipe, successCallback?: Function): void {
+    this.recipeService
+      .delete(recipe.Id!)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => successCallback && successCallback(result));
+  }
 
     goToList(): void {
         this.router.navigate(['/rec/recipes']);

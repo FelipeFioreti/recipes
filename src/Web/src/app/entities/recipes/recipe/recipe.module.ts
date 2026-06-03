@@ -20,9 +20,7 @@ import { recipeRoute } from "./recipe.route";
         TranslateModule,
         NgSelectModule,
         NgbAccordionModule,
-        RouterModule.forChild(recipeRoute)
-    ],
-    declarations: [
+        RouterModule.forChild(recipeRoute),
         RecipeComponent,
         RecipeDetailComponent,
         RecipeUpdateComponent

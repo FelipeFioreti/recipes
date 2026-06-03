@@ -1,4 +1,4 @@
-@if (recipes) {
+@if (recipes()) {
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="card-body">
@@ -9,15 +9,12 @@
                             <th scope="col">
                                 <span translate="global.field.name"></span>
                             </th>
-                            <th scope="col">
-                                <span translate="city.state"></span>
-                            </th>
                             <th scope="col"></th>
                         </tr>
                         </thead>
                         <tbody>
 
-                            @for (recipe of recipes; track recipe.Id) {
+                            @for (recipe of recipes(); track recipe.Id) {
 
                                 <tr [class.notActive]="!recipe.DeletedAt">
 
@@ -31,7 +28,7 @@
                                                     title="{{ 'entity.action.edit' | translate }}"
                                                     (click)="goToEdit(recipe)"
                                                     class="btn btn-default btn-sm">
-                                                <fa-icon icon="edit" fixedWidth="true"></fa-icon>
+                                                <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
                                             </button>
 
                                             <div class="btn-group"
@@ -48,7 +45,7 @@
                                                 <div class="dropdown-menu" ngbDropdownMenu>
 
                                                     <a class="dropdown-item" (click)="goToView(recipe)">
-                                                        <fa-icon fixedWidth="true" icon="list-alt"></fa-icon>
+                                                        <fa-icon [fixedWidth]="true" icon="list-alt"></fa-icon>
                                                         &nbsp;
                                                         <span translate="entity.action.view"></span>
                                                     </a>
@@ -56,7 +53,7 @@
                                                     <div class="dropdown-divider"></div>
 
                                                     <a class="dropdown-item" (click)="delete(recipe)">
-                                                        <fa-icon fixedWidth="true" icon="times"></fa-icon>
+                                                        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
                                                         &nbsp;
                                                         <span translate="entity.action.delete"></span>
                                                     </a>
@@ -71,7 +68,7 @@
 
                                 <tr>
                                     <td colspan="3" class="text-center">
-                                        No recipes found
+                                        Nenhuma Receita encontrada
                                     </td>
                                 </tr>
                             }

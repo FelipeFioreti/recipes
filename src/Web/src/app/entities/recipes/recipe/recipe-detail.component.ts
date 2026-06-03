@@ -1,56 +1,37 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-
-import {ICity} from 'app/shared/model/location/city.model';
-import {Subscription} from 'rxjs';
-import {PageService} from 'app/shared/layout/window/page.service';
-import {Page} from 'app/shared/layout/window/page.model';
-import {ButtonBuilder} from 'app/shared/layout/window/button-builder';
-import {unsubscribe} from 'app/shared/util/react-util';
-import {CityActionsService} from 'app/entities/location/city/city-actions.service';
+import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {ActivatedRoute, RouterModule} from '@angular/router';
+import {IRecipe} from "../../../core/models/recipe.model";
+import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {CommonModule} from "@angular/common";
+import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
+import {TranslateModule} from "@ngx-translate/core";
+import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
-    selector: 'app-loc-city-detail',
+    selector: 'app-recipe-detail',
     templateUrl: './recipe-detail.component.html',
-    standalone: false,
+    standalone: true,
+    imports: [
+        CommonModule,
+        RouterModule,
+        FontAwesomeModule,
+        TranslateModule,
+        NgbAccordionModule
+    ]
 })
-export class RecipeDetailComponent implements OnInit, OnDestroy {
-    city: ICity | null = null;
+export class RecipeDetailComponent implements OnInit {
+    recipe = signal<IRecipe | null>(null);
 
-    private subscriptions: Subscription[] = [];
-
-    constructor(private route: ActivatedRoute, private pageService: PageService, private cityActionsService: CityActionsService) {
-    }
+    private readonly route = inject(ActivatedRoute);
+    private readonly destroyRef = inject(DestroyRef);
 
     ngOnInit(): void {
-        this.subscriptions.push(this.route.data.subscribe(({city}) => (this.city = city)));
-        this.setupPage();
+        this.route.data.pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(({recipe}) => this.recipe.set(recipe));
     }
 
-    private setupPage(): void {
-        this.pageService.setCurrentPage(
-            new Page(
-                () => 'map-signs',
-                () => 'sidebar.admin.city',
-                () => (this.city ? this.city.name! : ''),
-                () => undefined,
-                () => false,
-                [
-                    ButtonBuilder.back(() => this.cityActionsService.goToList()),
-                    ButtonBuilder.edit(
-                        () => this.city && this.cityActionsService.goToEdit(this.city),
-                        () => !!this.city && this.cityActionsService.hasPrivilegeToEdit()
-                    ),
-                    ButtonBuilder.new(
-                        () => this.cityActionsService.goToNew(),
-                        () => this.cityActionsService.hasPrivilegeToCreate()
-                    )
-                ]
-            )
-        );
-    }
-
-    ngOnDestroy(): void {
-        unsubscribe(this.subscriptions);
+    previousState(): void {
+        window.history.back();
     }
 }

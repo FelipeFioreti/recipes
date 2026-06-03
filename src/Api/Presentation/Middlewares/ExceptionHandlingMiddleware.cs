@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Runtime.ExceptionServices;
 using System.Text.Json;
@@ -9,9 +8,9 @@ using Recipes.Api.Presentation.Models;
 
 namespace Recipes.Api.Presentation.Middlewares;
 
-public class ExceptionHandler(
+public class ExceptionHandlingMiddleware(
     RequestDelegate next,
-    ILogger<ExceptionHandler> logger,
+    ILogger<ExceptionHandlingMiddleware> logger,
     IHostEnvironment environment)
 {
     public async Task InvokeAsync(HttpContext context)

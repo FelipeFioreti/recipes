@@ -1,62 +1,66 @@
 <div class="row justify-content-center">
-  <div class="col-12" *ngIf="city">
+    @if (recipe(); as recipeRef) {
+        <div class="col-12">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="h4">{{ 'recipe.detail.title' | translate }}</span>
+                <div>
+                    <button type="button" class="btn btn-info btn-sm me-2"
+                            [routerLink]="['/app/recipes', recipeRef.Id, 'edit']">
+                        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>{{ 'entity.action.edit' | translate }}</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="previousState()">
+                        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>{{ 'entity.action.back' | translate }}</span>
+                    </button>
+                </div>
+            </div>
 
-    <div class="card-header">
-      <span jhiTranslate="city.detail.title"></span>
-    </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <dl class="row">
+                            <dt class="col-sm-3"><span>{{ 'global.field.name' | translate }}</span></dt>
+                            <dd class="col-sm-9"><span>{{ recipeRef.Name }}</span></dd>
 
-    <div class="card-body">
-      <div class="row justify-content-center">
+                            <dt class="col-sm-3"><span>{{ 'recipe.description' | translate }}</span></dt>
+                            <dd class="col-sm-9"><span>{{ recipeRef.Description }}</span></dd>
 
-        <ngb-accordion class="col-12 entity-details" activeIds="panelEntity">
-          <ngb-panel id="panelEntity">
-            <ng-template ngbPanelTitle>
-              <fa-icon fixedWidth="true" icon="list-alt"></fa-icon>
-              &nbsp;
-              <span>{{ 'entity.panels.details' | translate }}</span>
-            </ng-template>
-            <ng-template ngbPanelContent>
-              <div class="row justify-content-center">
-                <dl class="col-12">
-                  <dt><span jhiTranslate="global.field.title"></span></dt>
-                  <dd><span>{{ city.name }}</span></dd>
-                  <dt><span jhiTranslate="city.state"></span></dt>
-                  <dd>
-                    <app-view-route-link [entity]="city.state" route="loc/states" target="_blank"></app-view-route-link>
-                  </dd>
-                </dl>
-              </div>
-            </ng-template>
-          </ngb-panel>
-          <ngb-panel id="panelAudit">
-            <ng-template ngbPanelTitle>
-              <fa-icon fixedWidth="true" icon="exclamation-circle"></fa-icon>
-              &nbsp;
-              <span>{{ 'entity.panels.audit' | translate }}</span>
-            </ng-template>
-            <ng-template ngbPanelContent>
-              <div class="row justify-content-center">
-                <dl class="col-12">
-                  <dt><span jhiTranslate="global.field.uuid"></span></dt>
-                  <dd>{{ city.uuid }}</dd>
-                  <dt><span jhiTranslate="global.field.active"></span></dt>
-                  <dd>
-                    <app-bool-icon [value]="city.active"></app-bool-icon>
-                  </dd>
-                  <dt><span jhiTranslate="global.field.createdBy"></span></dt>
-                  <dd>{{ city.createdBy }}</dd>
-                  <dt><span jhiTranslate="global.field.createdDate"></span></dt>
-                  <dd>{{ city.createdDate | date:'dd/MM/yyyy HH:mm' }}</dd>
-                  <dt><span jhiTranslate="global.field.lastModifiedBy"></span></dt>
-                  <dd>{{ city.lastModifiedBy }}</dd>
-                  <dt><span jhiTranslate="global.field.lastModifiedDate"></span></dt>
-                  <dd>{{ city.lastModifiedDate | date:'dd/MM/yyyy HH:mm' }}</dd>
-                </dl>
-              </div>
-            </ng-template>
-          </ngb-panel>
-        </ngb-accordion>
-      </div>
-    </div>
-  </div>
+                            <dt class="col-sm-3"><span>{{ 'recipe.recipeType' | translate }}</span></dt>
+                            <dd class="col-sm-9">
+                                <span>{{ recipeRef.RecipeType?.Name ?? "" }}</span>
+                            </dd>
+                        </dl>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <div ngbAccordion>
+                            <div ngbAccordionItem [collapsed]="false">
+                                <h2 ngbAccordionHeader>
+                                    <button ngbAccordionButton>
+                                        <fa-icon icon="circle-info" class="me-2"></fa-icon>
+                                        {{ 'entity.panels.audit' | translate }}
+                                    </button>
+                                </h2>
+                                <div ngbAccordionCollapse>
+                                    <div ngbAccordionBody>
+                                        <ng-template>
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-4">{{ 'global.field.uuid' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.Uuid }}</dd>
+
+                                                <dt class="col-sm-4">{{ 'global.field.createdDate' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.CreatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+
+                                                <dt class="col-sm-4">{{ 'global.field.lastModifiedDate' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.UpdatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+                                            </dl>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
 </div>

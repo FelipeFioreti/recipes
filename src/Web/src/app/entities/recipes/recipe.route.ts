@@ -2,17 +2,17 @@ import {Routes} from "@angular/router";
 
 export const RECIPES_ROUTES: Routes = [
     {
-        path: '',
+        path: 'recipes',
         loadComponent: () =>
             import('./recipe/recipe.module').then(
                 (m) => m.AppRecipeModule
             )
     },
     {
-        path: 'new',
+        path: 'recipes-types',
         loadComponent: () =>
-            import('./recipe-create-page.component').then(
-                (m) => m.RecipeCreatePageComponent
+            import('./recipe-type/recipe-type.module').then(
+                (m) => m.AppRecipeTypeModule
             )
     }
 ];
