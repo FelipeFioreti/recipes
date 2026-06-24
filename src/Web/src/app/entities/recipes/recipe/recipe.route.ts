@@ -1,6 +1,6 @@
 import {ResolveFn, Router, Routes} from '@angular/router';
 import {IRecipe, Recipe} from "../../../core/models/recipe.model";
-import {RecipeService} from "../../../core/services/recipeService";
+import {RecipeService} from "../../../core/services/recipe-service";
 import {catchError, EMPTY, mergeMap, of} from "rxjs";
 import {HttpResponse} from "@angular/common/http";
 import {RecipeComponent} from "./recipe.component";

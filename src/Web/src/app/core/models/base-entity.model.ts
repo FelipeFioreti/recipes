@@ -1,18 +1,18 @@
 export interface IBaseEntity {
-    Id?: number;
-    Uuid?: string;
-    CreatedAt?: Date;
-    UpdatedAt?: Date;
-    DeletedAt?: Date | null;
+    id?: number;
+    uuid?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    deletedAt?: Date | null;
 }
 
 export abstract class BaseEntity implements IBaseEntity {
     protected constructor(
-        public Id?: number,
-        public Uuid?: string,
-        public CreatedAt?: Date,
-        public UpdatedAt?: Date,
-        public DeletedAt?: Date | null,
+        public id?: number,
+        public uuid?: string,
+        public createdAt?: Date,
+        public updatedAt?: Date,
+        public deletedAt?: Date | null,
     ) {
     }
 }

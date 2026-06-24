@@ -2,7 +2,7 @@
     @if (recipeType(); as currentRecipeType) {
         <div class="col-12">
             <div class="card-header">
-                <span class="h4">{{ (currentRecipeType.Id ? 'recipe.home.editLabel' : 'recipe.home.createLabel') | translate }}</span>
+                <span class="h4">{{ (currentRecipeType.id ? 'recipe.home.editLabel' : 'recipe.home.createLabel') | translate }}</span>
             </div>
 
             <div class="card-body">
@@ -45,7 +45,7 @@
                         </form>
                     </div>
 
-                    @if (currentRecipeType.Id) {
+                    @if (currentRecipeType.id) {
                         <div class="col-12 mt-4">
                             <div ngbAccordion>
                                 <div ngbAccordionItem [collapsed]="true">
@@ -60,13 +60,13 @@
                                             <ng-template>
                                                 <dl class="row mb-0">
                                                     <dt class="col-sm-4">{{ 'global.field.uuid' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.Uuid }}</dd>
+                                                    <dd class="col-sm-8">{{ currentRecipeType.uuid }}</dd>
 
                                                     <dt class="col-sm-4">{{ 'global.field.createdDate' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.CreatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+                                                    <dd class="col-sm-8">{{ currentRecipeType.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd>
 
                                                     <dt class="col-sm-4">{{ 'global.field.lastModifiedDate' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.UpdatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+                                                    <dd class="col-sm-8">{{ currentRecipeType.updatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
                                                 </dl>
                                             </ng-template>
                                         </div>

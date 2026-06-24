@@ -1,18 +1,18 @@
 import {BaseEntity, IBaseEntity} from "./base-entity.model";
 
 export interface IRecipeType extends IBaseEntity {
-    Name?: string;
+    name?: string;
 }
 
 export class RecipeType extends BaseEntity implements IRecipeType {
     constructor(
-        Id?: number,
-        Uuid?: string,
-        CreatedAt?: Date,
-        UpdatedAt?: Date,
-        DeletedAt?: Date | null,
-        public Name?: string,
+        id?: number,
+        uuid?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
+        deletedAt?: Date | null,
+        public name?: string,
     ) {
-        super(Id, Uuid, CreatedAt, UpdatedAt, DeletedAt);
+        super(id, uuid, createdAt, updatedAt, deletedAt);
     }
 }

@@ -3,24 +3,24 @@ import {IRecipeType} from "./recipe-type.model";
 import {IUser} from "./user.model";
 
 export interface IRecipe extends IBaseEntity {
-    Name?: string;
-    Description?: string;
-    RecipeType?: IRecipeType;
-    User?: IUser;
+    name?: string;
+    description?: string;
+    recipeType?: IRecipeType;
+    user?: IUser;
 }
 
 export class Recipe extends BaseEntity implements IRecipe {
     constructor(
-        Id?: number,
-        Uuid?: string,
-        CreatedAt?: Date,
-        UpdatedAt?: Date,
-        DeletedAt?: Date | null,
-        public Name?: string,
-        public Description?: string,
-        public RecipeType?: IRecipeType,
-        public User?: IUser,
+        id?: number,
+        uuid?: string,
+        createdAt?: Date,
+        updatedAt?: Date,
+        deletedAt?: Date | null,
+        public name?: string,
+        public description?: string,
+        public recipeType?: IRecipeType,
+        public user?: IUser,
     ) {
-        super(Id, Uuid, CreatedAt, UpdatedAt, DeletedAt);
+        super(id, uuid, createdAt, updatedAt, deletedAt);
     }
 }

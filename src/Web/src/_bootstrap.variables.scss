@@ -1,0 +1,35 @@
+$primary: #d8782e;
+$primary-dark: #b85c28;
+$primary-soft: rgba(216, 120, 46, 0.14);
+
+$secondary: #6d5a4a;
+$tertiary: #fff4e5;
+
+$info: #4d7890;
+$warning: #d69b2d;
+$success: #35745c;
+$danger: #b1453b;
+
+$light: #fffaf3;
+$dark: #2f241d;
+
+$body-bg: #f6f0e5;
+$body-bg-strong: #efe4d2;
+$body-color: #2c2018;
+
+$border-color: rgba(62, 46, 39, 0.12);
+$border-color-strong: rgba(62, 46, 39, 0.2);
+
+$theme-colors: (
+  'primary': $primary,
+  'primary-dark': $primary-dark,
+  'primary-soft': $primary-soft,
+  'secondary': $secondary,
+  'tertiary': $tertiary,
+  'success': $success,
+  'danger': $danger,
+  'info': $info,
+  'warning': $warning,
+  'light': $light,
+  'dark': $dark
+);

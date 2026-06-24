@@ -14,11 +14,11 @@
                         </thead>
                         <tbody>
 
-                            @for (recipe of recipes(); track recipe.Id) {
+                            @for (recipe of recipes(); track recipe.id) {
 
-                                <tr [class.notActive]="!recipe.DeletedAt">
+                                <tr [class.notActive]="!recipe.deletedAt">
 
-                                    <td>{{ recipe.Name }}</td>
+                                    <td>{{ recipe.name }}</td>
 
                                     <td class="text-right">
 

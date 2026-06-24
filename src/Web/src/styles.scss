@@ -1,24 +1,41 @@
-@use 'bootstrap/scss/bootstrap';
+@use 'sass:color';
+@use './bootstrap.variables' as theme;
+@use 'bootstrap/scss/bootstrap' with (
+  $primary: theme.$primary,
+  $secondary: theme.$secondary,
+  $info: theme.$info,
+  $warning: theme.$warning,
+  $success: theme.$success,
+  $danger: theme.$danger,
+  $light: theme.$light,
+  $dark: theme.$dark,
+  $body-bg: theme.$body-bg,
+  $body-color: theme.$body-color,
+  $border-color: theme.$border-color,
+  $theme-colors: theme.$theme-colors
+);
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
   color-scheme: light;
-  --bg: #f6f0e5;
-  --bg-strong: #efe4d2;
-  --surface: rgba(255, 252, 247, 0.82);
-  --surface-strong: #fffaf3;
-  --surface-dark: #2f241d;
+  --bg: #{theme.$body-bg};
+  --bg-strong: #{theme.$body-bg-strong};
+  --surface: #{theme.$tertiary};
+  --surface-strong: #{theme.$light};
+  --surface-dark: #{theme.$dark};
   --surface-muted: rgba(62, 46, 39, 0.08);
-  --text: #2c2018;
-  --text-soft: #6d5a4a;
-  --text-inverse: #fffaf3;
-  --line: rgba(62, 46, 39, 0.12);
-  --line-strong: rgba(62, 46, 39, 0.2);
-  --accent: #d8782e;
-  --accent-deep: #b85c28;
-  --accent-soft: rgba(216, 120, 46, 0.14);
-  --success: #35745c;
-  --danger: #b1453b;
+  --text: #{theme.$body-color};
+  --text-soft: #{theme.$secondary};
+  --text-inverse: #{theme.$light};
+  --line: #{theme.$border-color};
+  --line-strong: #{theme.$border-color-strong};
+  --accent: #{theme.$primary};
+  --accent-deep: #{theme.$primary-dark};
+  --accent-soft: #{theme.$primary-soft};
+  --info: #{theme.$info};
+  --warning: #{theme.$warning};
+  --success: #{theme.$success};
+  --danger: #{theme.$danger};
   --shadow-lg: 0 24px 60px rgba(65, 40, 24, 0.12);
   --shadow-md: 0 16px 30px rgba(65, 40, 24, 0.08);
   --radius-xl: 32px;
@@ -30,20 +47,26 @@
   --bs-body-color: var(--text);
   --bs-body-bg: var(--bg);
   --bs-primary: var(--accent);
-  --bs-primary-rgb: 216, 120, 46;
+  --bs-primary-rgb: #{color.channel(theme.$primary, "red", $space: rgb)}, #{color.channel(theme.$primary, "green", $space: rgb)}, #{color.channel(theme.$primary, "blue", $space: rgb)};
   --bs-secondary: var(--text-soft);
-  --bs-secondary-rgb: 109, 90, 74;
+  --bs-secondary-rgb: #{color.channel(theme.$secondary, "red", $space: rgb)}, #{color.channel(theme.$secondary, "green", $space: rgb)}, #{color.channel(theme.$secondary, "blue", $space: rgb)};
+  --bs-tertiary: #{theme.$tertiary};
+  --bs-tertiary-rgb: #{color.channel(theme.$tertiary, "red", $space: rgb)}, #{color.channel(theme.$tertiary, "green", $space: rgb)}, #{color.channel(theme.$tertiary, "blue", $space: rgb)};
+  --bs-info: var(--info);
+  --bs-info-rgb: #{color.channel(theme.$info, "red", $space: rgb)}, #{color.channel(theme.$info, "green", $space: rgb)}, #{color.channel(theme.$info, "blue", $space: rgb)};
+  --bs-warning: var(--warning);
+  --bs-warning-rgb: #{color.channel(theme.$warning, "red", $space: rgb)}, #{color.channel(theme.$warning, "green", $space: rgb)}, #{color.channel(theme.$warning, "blue", $space: rgb)};
   --bs-success: var(--success);
-  --bs-success-rgb: 53, 116, 92;
+  --bs-success-rgb: #{color.channel(theme.$success, "red", $space: rgb)}, #{color.channel(theme.$success, "green", $space: rgb)}, #{color.channel(theme.$success, "blue", $space: rgb)};
   --bs-danger: var(--danger);
-  --bs-danger-rgb: 177, 69, 59;
+  --bs-danger-rgb: #{color.channel(theme.$danger, "red", $space: rgb)}, #{color.channel(theme.$danger, "green", $space: rgb)}, #{color.channel(theme.$danger, "blue", $space: rgb)};
   --bs-light: var(--surface-strong);
-  --bs-light-rgb: 255, 250, 243;
+  --bs-light-rgb: #{color.channel(theme.$light, "red", $space: rgb)}, #{color.channel(theme.$light, "green", $space: rgb)}, #{color.channel(theme.$light, "blue", $space: rgb)};
   --bs-dark: var(--surface-dark);
-  --bs-dark-rgb: 47, 36, 29;
+  --bs-dark-rgb: #{color.channel(theme.$dark, "red", $space: rgb)}, #{color.channel(theme.$dark, "green", $space: rgb)}, #{color.channel(theme.$dark, "blue", $space: rgb)};
   --bs-border-color: var(--line);
   --bs-secondary-color: var(--text-soft);
-  --bs-tertiary-bg: rgba(255, 252, 247, 0.82);
+  --bs-tertiary-bg: var(--surface);
   --bs-card-bg: rgba(255, 252, 247, 0.82);
   --bs-card-border-color: var(--line);
   --bs-card-border-radius: var(--radius-lg);

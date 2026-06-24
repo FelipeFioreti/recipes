@@ -10,7 +10,7 @@ import {NgbDropdownModule} from '@ng-bootstrap/ng-bootstrap';
 import {ITEMS_PER_PAGE} from '../../../core/constants/pagination.constants';
 import {IRecipe} from '../../../core/models/recipe.model';
 import {RecipeTypeActionsService} from './recipe-type-actions.service';
-import {RecipeService} from '../../../core/services/recipeService';
+import {RecipeService} from '../../../core/services/recipe-service';
 
 @Component({
     selector: 'app-rec-recipe',

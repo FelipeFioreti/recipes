@@ -9,7 +9,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {RecipeTypeActionsService} from "./recipe-type-actions.service";
-import {RecipeService} from "../../../core/services/recipeService";
+import {RecipeService} from "../../../core/services/recipe-service";
 import {RecipeTypesService} from "../../../core/services/recipe-types.service";
 import {IRecipeType, RecipeType} from "../../../core/models/recipe-type.model";
 
@@ -48,7 +48,7 @@ export class RecipeTypeUpdateComponent {
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(data => {
             const recipeType = data['recipeType'] as IRecipeType;
-            this.bindRecipe(recipeType && recipeType.Id ? recipeType : new RecipeType());
+            this.bindRecipe(recipeType && recipeType.id ? recipeType : new RecipeType());
         });
     }
 
@@ -68,7 +68,7 @@ export class RecipeTypeUpdateComponent {
         this.isSaving.set(true);
         this.updateRecipeType(recipeType);
 
-        const request = recipeType.Id
+        const request = recipeType.id
             ? this.recipeService.update(recipeType)
             : this.recipeService.create(recipeType);
 
@@ -80,13 +80,13 @@ export class RecipeTypeUpdateComponent {
 
     private updateForm(recipeType: IRecipeType): void {
         this.editForm.patchValue({
-            Id: recipeType.Id,
-            Name: recipeType.Name,
+            Id: recipeType.id,
+            Name: recipeType.name,
         });
     }
 
     private updateRecipeType(recipeType: IRecipeType): void {
-        recipeType.Name = this.editForm.get(['Name'])!.value;
+        recipeType.name = this.editForm.get(['Name'])!.value;
     }
 
     private onSaveSuccess(recipe: IRecipeType): void {

@@ -10,7 +10,7 @@ import {NgSelectModule} from "@ng-select/ng-select";
 import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {RecipeActionsService} from "./recipe-actions.service";
-import {RecipeService} from "../../../core/services/recipeService";
+import {RecipeService} from "../../../core/services/recipe-service";
 import {RecipeTypesService} from "../../../core/services/recipe-types.service";
 import {IRecipe, Recipe} from "../../../core/models/recipe.model";
 import {IRecipeType} from "../../../core/models/recipe-type.model";
@@ -60,7 +60,7 @@ export class RecipeUpdateComponent implements OnInit {
             )
             .subscribe(data => {
                 const recipe = data['recipe'] as IRecipe;
-                this.bindRecipe(recipe && recipe.Id ? recipe : new Recipe());
+                this.bindRecipe(recipe && recipe.id ? recipe : new Recipe());
             });
     }
 
@@ -80,7 +80,7 @@ export class RecipeUpdateComponent implements OnInit {
         this.isSaving.set(true);
         this.updateRecipe(recipe);
 
-        const request = recipe.Id
+        const request = recipe.id
             ? this.recipeService.update(recipe)
             : this.recipeService.create(recipe);
 
@@ -92,17 +92,17 @@ export class RecipeUpdateComponent implements OnInit {
 
     private updateForm(recipe: IRecipe): void {
         this.editForm.patchValue({
-            Id: recipe.Id,
-            Name: recipe.Name,
-            Description: recipe.Description,
-            RecipeType: recipe.RecipeType
+            Id: recipe.id,
+            Name: recipe.name,
+            Description: recipe.description,
+            RecipeType: recipe.recipeType
         });
     }
 
     private updateRecipe(recipe: IRecipe): void {
-        recipe.Name = this.editForm.get(['Name'])!.value;
-        recipe.Description = this.editForm.get(['Description'])!.value;
-        recipe.RecipeType = this.editForm.get(['RecipeType'])!.value;
+        recipe.name = this.editForm.get(['Name'])!.value;
+        recipe.description = this.editForm.get(['Description'])!.value;
+        recipe.recipeType = this.editForm.get(['RecipeType'])!.value;
     }
 
     private onSaveSuccess(recipe: IRecipe): void {

@@ -1,5 +1,5 @@
 import {ResolveFn, Router, Routes} from '@angular/router';
-import {RecipeService} from "../../../core/services/recipeService";
+import {RecipeService} from "../../../core/services/recipe-service";
 import {catchError, EMPTY, mergeMap, of} from "rxjs";
 import {HttpResponse} from "@angular/common/http";
 import {RecipeTypeComponent} from "./recipe-type.component";
