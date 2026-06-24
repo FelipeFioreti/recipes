@@ -75,7 +75,11 @@ export class AuthService {
             return null;
         }
 
-        return jwtDecode<AppJwtPayload>(token);
+        try {
+            return jwtDecode<AppJwtPayload>(token);
+        } catch {
+            return null;
+        }
     }
 
     getRole(): Role | null {
@@ -84,6 +88,14 @@ export class AuthService {
 
         return jwtPayload?.role ?? null;
     }
+
+    getDisplayName(): string | null {
+
+        const jwtPayload = this.getJwtPayload();
+
+        return jwtPayload?.unique_name ?? null;
+    }
+
 
     isAdmin(): boolean {
         return this.getRole() === Role.ADMIN;

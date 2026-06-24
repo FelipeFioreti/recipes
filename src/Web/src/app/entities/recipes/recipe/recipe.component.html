@@ -1,83 +1,80 @@
-@if (recipes()) {
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="thead-light">
-                        <tr>
-                            <th scope="col">
-                                <span translate="global.field.name"></span>
-                            </th>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
+<div class="row justify-content-center">
+    <div class="card-body">
+        <div class="table-responsive">
+            @if (recipes()) {
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col">
+                            <span>{{ 'global.field.name' | translate }}</span>
+                        </th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                            @for (recipe of recipes(); track recipe.Id) {
+                        @for (recipe of recipes(); track recipe.Id) {
 
-                                <tr [class.notActive]="!recipe.DeletedAt">
+                            <tr [class.notActive]="!recipe.DeletedAt">
 
-                                    <td>{{ recipe.Name }}</td>
+                                <td>{{ recipe.Name }}</td>
 
-                                    <td class="text-right">
+                                <td class="text-right">
 
-                                        <div class="btn-group">
+                                    <div class="btn-group">
 
-                                            <button type="button"
-                                                    title="{{ 'entity.action.edit' | translate }}"
-                                                    (click)="goToEdit(recipe)"
-                                                    class="btn btn-default btn-sm">
-                                                <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                                        <button type="button"
+                                                title="{{ 'entity.action.edit' | translate }}"
+                                                (click)="goToEdit(recipe)"
+                                                class="btn btn-default btn-sm">
+                                            <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                                        </button>
+
+                                        <div class="btn-group"
+                                             ngbDropdown
+                                             role="group"
+                                             container="body"
+                                             placement="left-top">
+
+                                            <button
+                                                    class="btn btn-default btn-sm dropdown-toggle-split"
+                                                    ngbDropdownToggle>
                                             </button>
 
-                                            <div class="btn-group"
-                                                 ngbDropdown
-                                                 role="group"
-                                                 container="body"
-                                                 placement="left-top">
+                                            <div class="dropdown-menu" ngbDropdownMenu>
 
-                                                <button
-                                                        class="btn btn-default btn-sm dropdown-toggle-split"
-                                                        ngbDropdownToggle>
-                                                </button>
+                                                <a class="dropdown-item" (click)="goToView(recipe)">
+                                                    <fa-icon [fixedWidth]="true" icon="list-alt"></fa-icon>
+                                                    &nbsp;
+                                                    <span>{{ 'entity.action.view' | translate }}</span>
+                                                </a>
 
-                                                <div class="dropdown-menu" ngbDropdownMenu>
+                                                <div class="dropdown-divider"></div>
 
-                                                    <a class="dropdown-item" (click)="goToView(recipe)">
-                                                        <fa-icon [fixedWidth]="true" icon="list-alt"></fa-icon>
-                                                        &nbsp;
-                                                        <span translate="entity.action.view"></span>
-                                                    </a>
+                                                <a class="dropdown-item" (click)="delete(recipe)">
+                                                    <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
+                                                    &nbsp;
+                                                    <span>{{ 'entity.action.delete' | translate }}</span>
+                                                </a>
 
-                                                    <div class="dropdown-divider"></div>
-
-                                                    <a class="dropdown-item" (click)="delete(recipe)">
-                                                        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
-                                                        &nbsp;
-                                                        <span translate="entity.action.delete"></span>
-                                                    </a>
-
-                                                </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </td>
+                            </tr>
 
-                            } @empty {
+                        } @empty {
 
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        Nenhuma Receita encontrada
-                                    </td>
-                                </tr>
-                            }
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    {{ 'recipe.notFound' | translate }}
+                                </td>
+                            </tr>
+                        }
 
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                    </tbody>
+                </table>
+            }
         </div>
     </div>
-}
-
+</div>

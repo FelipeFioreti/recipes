@@ -1,5 +1,7 @@
 :host {
-  display: block;
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
   width: 100%;
 }
 

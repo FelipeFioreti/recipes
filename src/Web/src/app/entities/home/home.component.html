@@ -4,15 +4,4 @@
             title="Home"
             description="Acesse rapidamente as telas principais do sistema.">
     </app-page-header>
-
-    <section class="card border-0 shadow-sm">
-        <div class="card-body d-flex flex-wrap gap-2">
-            <a routerLink="/app/recipes" class="btn btn-outline-secondary">Receitas</a>
-            <a routerLink="/app/recipes/new" class="btn btn-primary">Adicionar receita</a>
-            @if (authStore.isAdmin()) {
-                <a routerLink="/app/recipe-types" class="btn btn-outline-secondary">Listagem de tipos</a>
-                <a routerLink="/app/recipe-types/new" class="btn btn-primary">Adicionar tipo</a>
-            }
-        </div>
-    </section>
 </div>

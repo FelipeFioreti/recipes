@@ -14,7 +14,11 @@ export class StorageService {
             return null;
         }
 
-        return JSON.parse(item) as T;
+        try {
+            return JSON.parse(item) as T;
+        } catch {
+            return item as unknown as T;
+        }
     }
 
     removeStorageItem(key: string): void {

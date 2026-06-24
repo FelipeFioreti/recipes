@@ -2,7 +2,6 @@ import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@ang
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {NavigationItem} from '../../core/models/navigation-item.model';
 import {AuthService} from '../../core/services/auth.service';
-import {AuthStore} from '../../core/services/auth.store';
 
 @Component({
     selector: 'app-shell-layout',
@@ -13,7 +12,6 @@ import {AuthStore} from '../../core/services/auth.store';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SidebarComponent {
-    readonly authStore = inject(AuthStore);
     readonly menuOpen = signal(true);
     readonly openSubMenus = signal<Set<string>>(new Set());
     readonly currentDateLabel = new Intl.DateTimeFormat('pt-BR', {
@@ -39,11 +37,11 @@ export class SidebarComponent {
             }
         ];
 
-        if (this.authStore.isAdmin()) {
+        if (this.authService.isAdmin()) {
             items.push({
                 label: 'Tipos de receitas',
                 description: 'Tipos de receitas',
-                route: '/app/recipe-types',
+                route: '/app/recipes-types',
                 badge: 'TP',
                 icon: 'bx-book-alt'
             });
@@ -51,7 +49,7 @@ export class SidebarComponent {
 
         return items;
     });
-    private readonly authService = inject(AuthService);
+    readonly authService = inject(AuthService);
 
     toggleMenu(): void {
         this.menuOpen.update((value) => !value);

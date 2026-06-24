@@ -1,0 +1,93 @@
+{
+  "global": {
+    "title": "Recipes",
+    "menu": {
+      "home": "Inicio",
+      "entities": "Entidades",
+      "recipes": "Receitas",
+      "recipe-types": "Tipos de Receita",
+      "account": "Conta",
+      "login": "Entrar",
+      "register": "Registrar",
+      "logout": "Sair"
+    },
+    "field": {
+      "id": "ID",
+      "uuid": "UUID",
+      "name": "Nome",
+      "email": "E-mail",
+      "password": "Senha",
+      "description": "Descricao",
+      "createdDate": "Criado em",
+      "lastModifiedDate": "Alterado em"
+    },
+    "action": {
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "view": "Visualizar",
+      "back": "Voltar",
+      "add": "Adicionar",
+      "create": "Criar"
+    },
+    "messages": {
+      "info": {
+        "authenticated": "Autenticado com sucesso"
+      },
+      "error": {
+        "required": "Este campo e obrigatorio.",
+        "minlength": "Este campo deve ter pelo menos {min} caracteres.",
+        "maxlength": "Este campo nao pode ter mais de {max} caracteres.",
+        "email": "Informe um e-mail valido.",
+        "invalid": "Valor invalido."
+      }
+    }
+  },
+  "entity": {
+    "action": {
+      "edit": "Editar",
+      "delete": "Excluir",
+      "view": "Visualizar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "back": "Voltar"
+    },
+    "delete": {
+      "title": "Confirmar operacao de exclusao",
+      "question": "Tem certeza de que deseja excluir este item?"
+    },
+    "detail": {
+      "title": "Detalhes"
+    },
+    "panels": {
+      "audit": "Auditoria"
+    },
+    "validation": {
+      "required": "Este campo e obrigatorio.",
+      "minlength": "Este campo deve ter pelo menos {{ min }} caracteres.",
+      "maxlength": "Este campo nao pode ter mais de {{ max }} caracteres."
+    }
+  },
+  "recipe": {
+    "detail": {
+      "title": "Receita"
+    },
+    "home": {
+      "createLabel": "Criar receita",
+      "editLabel": "Editar receita"
+    },
+    "description": "Descricao",
+    "recipeType": "Tipo de receita",
+    "recipeTypePlaceholder": "Selecione um tipo de receita",
+    "notFound": "Nenhuma receita encontrada"
+  },
+  "login": {
+    "title": "Entre na cozinha digital",
+    "subtitle": "Consulte o acervo, acompanhe o ritmo da operacao e edite receitas sem sair do fluxo.",
+    "button": "Entrar",
+    "logging-in": "Entrando...",
+    "new-user": "Novo por aqui?",
+    "create-account": "Crie sua conta"
+  }
+}

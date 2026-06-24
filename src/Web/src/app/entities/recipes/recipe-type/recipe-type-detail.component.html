@@ -1,0 +1,58 @@
+<div class="row justify-content-center">
+    @if (recipeType(); as recipeRef) {
+        <div class="col-12">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="h4">{{ 'recipe.detail.title' | translate }}</span>
+                <div>
+                    <button type="button" class="btn btn-info btn-sm me-2"
+                            [routerLink]="['/app/recipes-types', recipeRef.Id, 'edit']">
+                        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>{{ 'entity.action.edit' | translate }}</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm" (click)="previousState()">
+                        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>{{ 'entity.action.back' | translate }}</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <dl class="row">
+                            <dt class="col-sm-3"><span>{{ 'global.field.name' | translate }}</span></dt>
+                            <dd class="col-sm-9"><span>{{ recipeRef.Name }}</span></dd>
+                        </dl>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <div ngbAccordion>
+                            <div ngbAccordionItem [collapsed]="false">
+                                <h2 ngbAccordionHeader>
+                                    <button ngbAccordionButton>
+                                        <fa-icon icon="circle-info" class="me-2"></fa-icon>
+                                        {{ 'entity.panels.audit' | translate }}
+                                    </button>
+                                </h2>
+                                <div ngbAccordionCollapse>
+                                    <div ngbAccordionBody>
+                                        <ng-template>
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-4">{{ 'global.field.uuid' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.Uuid }}</dd>
+
+                                                <dt class="col-sm-4">{{ 'global.field.createdDate' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.CreatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+
+                                                <dt class="col-sm-4">{{ 'global.field.lastModifiedDate' | translate }}</dt>
+                                                <dd class="col-sm-8">{{ recipeRef.UpdatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+                                            </dl>
+                                        </ng-template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

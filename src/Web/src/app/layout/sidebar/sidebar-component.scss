@@ -193,23 +193,9 @@
   width: calc(100% - 78px);
 }
 
-.home-section .home-content {
-  height: 60px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-}
-
-.home-section .home-content .text {
-  color: var(--text);
-  font-size: 26px;
-  font-weight: 600;
-  font-family: 'Fraunces', serif;
-}
-
 @media (max-width: 420px) {
 }
 
-.shell__content {
+.shell-content {
   min-height: calc(100vh - 60px);
 }

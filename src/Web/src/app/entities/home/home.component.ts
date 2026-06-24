@@ -1,20 +1,18 @@
 import {ChangeDetectionStrategy, Component} from '@angular/core';
-import {RouterLink} from '@angular/router';
 import {PageHeaderComponent} from "../../shared/components/page-header/page-header.component";
-import {AuthStore} from "../../core/services/auth.store";
+import {AuthService} from "../../core/services/auth.service";
 
 @Component({
     selector: 'app-home',
     standalone: true,
-    imports: [RouterLink, PageHeaderComponent],
+    imports: [PageHeaderComponent],
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HomeComponent {
 
     public constructor(
-        public authStore: AuthStore
+        public authService: AuthService
     ) {
     }
 }
