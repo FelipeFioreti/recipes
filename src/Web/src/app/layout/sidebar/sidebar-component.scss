@@ -21,13 +21,16 @@
   position: relative;
 }
 
-.sidebar .logo-details i {
+.sidebar .logo-details .sidebar-icon {
   font-size: 30px;
   color: var(--text-inverse);
   height: 50px;
   min-width: 78px;
   text-align: center;
   line-height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar .logo-details .logo_name {
@@ -90,15 +93,17 @@
   background: var(--surface-muted);
 }
 
-.sidebar .nav-links li i {
+.sidebar .nav-links li .sidebar-icon {
   height: 50px;
   min-width: 78px;
   text-align: center;
-  line-height: 50px;
   color: var(--text-inverse);
   font-size: 20px;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar .nav-links li a {
@@ -107,7 +112,7 @@
   text-decoration: none;
 }
 
-.sidebar .nav-links li a.active i,
+.sidebar .nav-links li a.active .sidebar-icon,
 .sidebar .nav-links li a.active .link_name {
   color: var(--accent);
 }
@@ -175,7 +180,7 @@
   opacity: .5;
 }
 
-.sidebar .profile-details i.bx {
+.sidebar .profile-details .sidebar-signout {
   min-width: 50px;
 }
 

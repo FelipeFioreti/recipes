@@ -2,7 +2,7 @@
     <div class="entity-page">
         <app-page-header
                 [eyebrow]="'global.menu.recipes' | translate"
-                [title]="recipeRef.name || ('recipe.detail.title' | translate)">
+                [title]="'recipe.detail.title' | translate">
             <button
                     type="button"
                     ngProjectAs="[page-actions]"
@@ -26,7 +26,6 @@
             <div class="d-grid gap-4">
                 <div class="d-flex flex-column flex-xl-row align-items-start justify-content-between gap-3">
                     <div class="d-grid gap-2">
-                        <span class="eyebrow">{{ 'recipe.detail.title' | translate }}</span>
                         <h2>{{ recipeRef.name }}</h2>
                     </div>
 
@@ -36,10 +35,6 @@
                 </div>
 
                 <div class="entity-detail-grid">
-                    <article class="entity-detail-item entity-detail-item-full">
-                        <span class="entity-detail-item-label">{{ 'global.field.name' | translate }}</span>
-                        <strong class="entity-detail-item-value">{{ recipeRef.name }}</strong>
-                    </article>
 
                     <article class="entity-detail-item entity-detail-item-full">
                         <span class="entity-detail-item-label">{{ 'recipe.description' | translate }}</span>

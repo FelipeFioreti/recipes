@@ -2,8 +2,7 @@
     <div class="entity-page">
         <app-page-header
                 [eyebrow]="'global.menu.recipe-types' | translate"
-                [title]="recipeRef.name || ('recipeType.detail.title' | translate)"
-                [description]="'Consulte os dados principais e o historico deste tipo de receita.'">
+                [title]="'recipeType.detail.title' | translate">
             <button
                     type="button"
                     ngProjectAs="[page-actions]"
@@ -25,16 +24,6 @@
 
         <section class="entity-card entity-card-hero">
             <div class="d-grid gap-4">
-                <div class="d-flex flex-column flex-xl-row align-items-start justify-content-between gap-3">
-                    <div class="d-grid gap-2">
-                        <span class="eyebrow">{{ 'recipeType.detail.title' | translate }}</span>
-                        <h2>{{ recipeRef.name }}</h2>
-                    </div>
-
-                    <div class="entity-pill">
-                        {{ 'recipeType.detail.title' | translate }}
-                    </div>
-                </div>
 
                 <div class="entity-detail-grid">
                     <article class="entity-detail-item entity-detail-item-full">

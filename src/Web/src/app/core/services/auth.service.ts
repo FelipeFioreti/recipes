@@ -82,11 +82,17 @@ export class AuthService {
         }
     }
 
-    getRole(): Role | null {
+    getRoles(): Role[] {
 
         const jwtPayload = this.getJwtPayload();
 
-        return jwtPayload?.role ?? null;
+        if (!jwtPayload?.role) {
+            return [];
+        }
+
+        return Array.isArray(jwtPayload.role)
+            ? jwtPayload.role
+            : [jwtPayload.role];
     }
 
     getDisplayName(): string | null {
@@ -98,7 +104,7 @@ export class AuthService {
 
 
     isAdmin(): boolean {
-        return this.getRole() === Role.ADMIN;
+        return this.getRoles().includes(Role.ADMIN);
     }
 }
 

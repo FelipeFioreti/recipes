@@ -73,7 +73,7 @@
   },
   "recipe": {
     "detail": {
-      "title": "Receita"
+      "title": "Detalhes da Receita"
     },
     "home": {
       "createLabel": "Criar receita",
@@ -86,7 +86,7 @@
   },
   "recipeType": {
     "detail": {
-      "title": "Tipo de receita"
+      "title": "Detalhes do tipo de receita"
     },
     "home": {
       "title": "Tipos de receita",

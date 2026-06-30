@@ -1,15 +1,15 @@
 <div class="sidebar" [class.close]="!menuOpen()">
     <div class="logo-details">
         <div class="logo">
-            <i class='bx bx-restaurant'></i>
+            <fa-icon [icon]="'utensils'" class="sidebar-icon"></fa-icon>
         </div>
-        <i class='bx bx-menu' id="btn" (click)="toggleMenu()"></i>
+        <fa-icon [icon]="'bars'" id="btn" class="sidebar-icon sidebar-toggle" (click)="toggleMenu()"></fa-icon>
     </div>
     <ul class="nav-links">
         @for (item of navigation(); track item.label) {
             <li [class.showMenu]="isSubMenuOpen(item.label)">
                 <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-                    <i class='bx' [class]="item.icon"></i>
+                    <fa-icon [icon]="item.icon" class="sidebar-icon" [fixedWidth]="true"></fa-icon>
                     <span class="link_name">{{ item.label }}</span>
                 </a>
 
@@ -25,7 +25,7 @@
                     <div class="profile_name">{{ authService.getDisplayName() }}</div>
                     <div class="job">{{ authService.isAdmin() ? 'Administrador' : 'Usuário' }}</div>
                 </div>
-                <i class='bx bx-log-out' (click)="signOut()"></i>
+                <fa-icon [icon]="'right-from-bracket'" class="sidebar-icon sidebar-signout" (click)="signOut()"></fa-icon>
             </div>
         </li>
 

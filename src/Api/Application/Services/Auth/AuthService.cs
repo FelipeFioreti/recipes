@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Recipes.Api.Domain.DTOs.Auth;
 using Recipes.Api.Domain.DTOs.Users;
+using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Settings;
 using Recipes.Api.Domain.Entities.Users;
 using Recipes.Api.Domain.Interfaces.Auth;
@@ -59,20 +60,24 @@ public class AuthService(
     {
         logger.LogDebug("GenerateJwtToken()");
 
+        var claims = new List<Claim>
+        {
+            new(JwtRegisteredClaimNames.Sub, user.Id.ToString(CultureInfo.InvariantCulture)),
+            new(ClaimTypes.NameIdentifier, user.Id.ToString(CultureInfo.InvariantCulture)),
+            new(ClaimTypes.Name, user.Name),
+            new(JwtRegisteredClaimNames.Email, user.Email),
+            new(ClaimTypes.Role, user.Role.ToString()),
+            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
+        if (user.Role == Roles.ADMIN) claims.Add(new Claim(ClaimTypes.Role, nameof(Roles.USER)));
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.UTF8.GetBytes(_appSettings.Secret);
         var now = DateTime.UtcNow;
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(
-            [
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString(CultureInfo.InvariantCulture)),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString(CultureInfo.InvariantCulture)),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            ]),
+            Subject = new ClaimsIdentity(claims),
             Issuer = _appSettings.Issuer,
             Audience = _appSettings.Audience,
             Expires = now.AddDays(_appSettings.TokenExpirationDays),

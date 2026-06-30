@@ -1,12 +1,13 @@
 import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NavigationItem} from '../../core/models/navigation-item.model';
 import {AuthService} from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-shell-layout',
     standalone: true,
-    imports: [RouterOutlet, RouterLink, RouterLinkActive],
+    imports: [RouterOutlet, RouterLink, RouterLinkActive, FontAwesomeModule],
     templateUrl: './sidebar-component.html',
     styleUrls: ['./sidebar-component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,14 +27,14 @@ export class SidebarComponent {
                 description: 'Tela inicial',
                 route: '/app/home',
                 badge: 'HM',
-                icon: 'bx-grid-alt'
+                icon: 'house'
             },
             {
                 label: 'Receitas',
                 description: 'Receitas',
                 route: '/app/recipes',
                 badge: 'RC',
-                icon: 'bx-collection'
+                icon: 'book-open'
             }
         ];
 
@@ -43,7 +44,7 @@ export class SidebarComponent {
                 description: 'Tipos de receitas',
                 route: '/app/recipes-types',
                 badge: 'TP',
-                icon: 'bx-book-alt'
+                icon: 'tags'
             });
         }
 
