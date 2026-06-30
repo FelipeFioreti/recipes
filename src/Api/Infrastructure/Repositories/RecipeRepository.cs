@@ -27,14 +27,14 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
     public async Task<Recipe?> GetByIdForUser(int id, int userId)
     {
         return await _dbSet
-            .AsNoTracking()
+            .Include(recipe => recipe.RecipeType)
             .FirstOrDefaultAsync(recipe => recipe.Id == id && recipe.UserId == userId);
     }
 
     public async Task<Recipe?> GetById(int id)
     {
         return await _dbSet
-            .AsNoTracking()
+            .Include(recipe => recipe.RecipeType)
             .FirstOrDefaultAsync(recipe => recipe.Id == id);
     }
 

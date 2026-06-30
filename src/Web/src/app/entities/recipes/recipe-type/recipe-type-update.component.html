@@ -1,82 +1,72 @@
-<div class="row justify-content-center">
-    @if (recipeType(); as currentRecipeType) {
-        <div class="col-12">
-            <div class="card-header">
-                <span class="h4">{{ (currentRecipeType.id ? 'recipe.home.editLabel' : 'recipe.home.createLabel') | translate }}</span>
-            </div>
+@if (recipeType(); as currentRecipeType) {
+    <div class="entity-page">
+        <app-page-header
+                [eyebrow]="'global.menu.recipe-types' | translate"
+                [title]="(currentRecipeType.id ? 'recipeType.home.editLabel' : 'recipeType.home.createLabel') | translate"
+                [description]="'Defina o nome do tipo de receita e mantenha a navegacao de acoes sempre no topo.'">
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
+                    (click)="cancel()">
+                <fa-icon icon="ban"></fa-icon>
+                <span>{{ 'entity.action.cancel' | translate }}</span>
+            </button>
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+            <button
+                    type="submit"
+                    form="recipe-type-form"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
+                    [disabled]="editForm.invalid || isSaving()">
+                <fa-icon icon="save"></fa-icon>
+                <span>{{ 'entity.action.save' | translate }}</span>
+            </button>
+        </app-page-header>
 
-                            <div class="mb-3">
-                                <label class="form-label required">{{ 'global.field.name' | translate }}</label>
-                                <input type="text" class="form-control" name="Name" maxlength="255" required
-                                       formControlName="Name"
-                                       [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
+        <section class="entity-card">
+            <form
+                    id="recipe-type-form"
+                    name="editForm"
+                    role="form"
+                    class="entity-form"
+                    novalidate
+                    (ngSubmit)="save()"
+                    [formGroup]="editForm">
+                <div class="entity-form-intro">
+                    <h2 class="entity-form-intro-title">Dados do tipo</h2>
+                    <p class="entity-form-intro-copy">
+                        Um cadastro simples, com acoes padronizadas no topo e foco total no campo principal.
+                    </p>
+                </div>
 
-                                @if (isInvalidAndTouched('Name')) {
-                                    <div class="invalid-feedback">
-                                        @if (editForm.get('Name')?.errors?.['required']) {
-                                            <small>{{ 'entity.validation.required' | translate }}</small>
-                                        }
-                                        @if (editForm.get('Name')?.errors?.['minlength']) {
-                                            <small>{{ 'entity.validation.minlength' | translate: {min: 1} }}</small>
-                                        }
-                                        @if (editForm.get('Name')?.errors?.['maxlength']) {
-                                            <small>{{ 'entity.validation.maxlength' | translate: {max: 255} }}</small>
-                                        }
-                                    </div>
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <label class="form-label required">{{ 'global.field.name' | translate }}</label>
+                        <input type="text" class="form-control" name="Name" maxlength="255" required
+                               formControlName="Name"
+                               [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
+
+                        @if (isInvalidAndTouched('Name')) {
+                            <div class="invalid-feedback d-block">
+                                @if (editForm.get('Name')?.errors?.['required']) {
+                                    <small>{{ 'entity.validation.required' | translate }}</small>
+                                }
+                                @if (editForm.get('Name')?.errors?.['minlength']) {
+                                    <small>{{ 'entity.validation.minlength' | translate: {min: 1} }}</small>
+                                }
+                                @if (editForm.get('Name')?.errors?.['maxlength']) {
+                                    <small>{{ 'entity.validation.maxlength' | translate: {max: 255} }}</small>
                                 }
                             </div>
-
-                            <div class="mt-4">
-                                <button type="button" class="btn btn-secondary me-2" (click)="cancel()">
-                                    <fa-icon
-                                            icon="ban"></fa-icon>&nbsp;<span>{{ 'entity.action.cancel' | translate }}</span>
-                                </button>
-                                <button type="submit" [disabled]="editForm.invalid || isSaving()"
-                                        class="btn btn-primary">
-                                    <fa-icon
-                                            icon="save"></fa-icon>&nbsp;<span>{{ 'entity.action.save' | translate }}</span>
-                                </button>
-                            </div>
-                        </form>
+                        }
                     </div>
-
-                    @if (currentRecipeType.id) {
-                        <div class="col-12 mt-4">
-                            <div ngbAccordion>
-                                <div ngbAccordionItem [collapsed]="true">
-                                    <h2 ngbAccordionHeader>
-                                        <button ngbAccordionButton>
-                                            <fa-icon icon="circle-info" class="me-2"></fa-icon>
-                                            {{ 'entity.panels.audit' | translate }}
-                                        </button>
-                                    </h2>
-                                    <div ngbAccordionCollapse>
-                                        <div ngbAccordionBody>
-                                            <ng-template>
-                                                <dl class="row mb-0">
-                                                    <dt class="col-sm-4">{{ 'global.field.uuid' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.uuid }}</dd>
-
-                                                    <dt class="col-sm-4">{{ 'global.field.createdDate' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd>
-
-                                                    <dt class="col-sm-4">{{ 'global.field.lastModifiedDate' | translate }}</dt>
-                                                    <dd class="col-sm-8">{{ currentRecipeType.updatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
-                                                </dl>
-                                            </ng-template>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 </div>
-            </div>
-        </div>
-    }
-</div>
+            </form>
+        </section>
+
+        @if (currentRecipeType.id) {
+            <app-entity-audit-accordion [entity]="currentRecipeType"></app-entity-audit-accordion>
+        }
+    </div>
+}

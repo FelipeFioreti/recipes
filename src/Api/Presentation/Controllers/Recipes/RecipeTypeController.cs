@@ -8,10 +8,10 @@ using Recipes.Api.Domain.Interfaces.Recipes;
 namespace Recipes.Api.Presentation.Controllers.Recipes;
 
 [ApiController]
-[Authorize(Roles = nameof(Roles.ADMIN))]
 [Route("api/[controller]")]
 public class RecipeTypeController(IRecipeTypeService recipeTypeService) : ControllerBase
 {
+    [Authorize(Roles = nameof(Roles.USER))]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<RecipeTypeResponse>> Get(int id)
     {
@@ -22,12 +22,14 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
             : Ok(recipeType);
     }
 
+    [Authorize(Roles = nameof(Roles.USER))]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RecipeTypeResponse>>> GetAll()
     {
         return Ok(await recipeTypeService.GetAll());
     }
 
+    [Authorize(Roles = nameof(Roles.ADMIN))]
     [HttpPost]
     public async Task<ActionResult<RecipeTypeResponse>> Create([FromBody] CreateRecipeTypeRequest request)
     {
@@ -38,6 +40,7 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
             : Ok(recipeType);
     }
 
+    [Authorize(Roles = nameof(Roles.ADMIN))]
     [HttpPut("{id:int}")]
     public async Task<ActionResult<RecipeTypeResponse>> Update(int id, [FromBody] UpdateRecipeTypeRequest request)
     {
@@ -48,14 +51,12 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
             : Ok(recipeType);
     }
 
+    [Authorize(Roles = nameof(Roles.ADMIN))]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Disable(int id)
     {
         var disabled = await recipeTypeService.Disable(id);
 
-        if (!disabled)
-            throw new NotFoundException($"Recipe type with id '{id}' was not found.");
-
-        return NoContent();
+        return !disabled ? throw new NotFoundException($"Recipe type with id '{id}' was not found.") : NoContent();
     }
 }

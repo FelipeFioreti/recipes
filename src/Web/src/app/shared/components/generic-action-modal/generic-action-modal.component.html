@@ -1,0 +1,35 @@
+<div class="generic-modal">
+    <div class="modal-header border-0 pb-2">
+        <div class="d-grid gap-2">
+            <span class="eyebrow">Confirmacao</span>
+            <h2 class="modal-title">{{ title }}</h2>
+        </div>
+
+        <button
+                type="button"
+                class="btn-close"
+                aria-label="Close"
+                (click)="cancel()">
+        </button>
+    </div>
+
+    <div class="modal-body pt-0">
+        <p class="generic-modal-message mb-0">{{ message }}</p>
+    </div>
+
+    <div class="modal-footer border-0 pt-2">
+        <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="cancel()">
+            {{ cancelLabel }}
+        </button>
+
+        <button
+                type="button"
+                class="btn btn-primary"
+                (click)="confirm()">
+            {{ actionLabel }}
+        </button>
+    </div>
+</div>

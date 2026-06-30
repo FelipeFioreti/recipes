@@ -1,65 +1,74 @@
-@if (recipes()) {
-    <div class="row justify-content-center">
-        <div class="col-12">
-            <div class="card-body">
+<div class="d-grid gap-4">
+    <app-page-header
+            [eyebrow]="'Tipos de receita'"
+            [title]="'Tipos de receita'"
+            [description]="'Organize as categorias usadas para classificar as receitas.'">
+        <button
+                type="button"
+                ngProjectAs="[page-actions]"
+                class="btn btn-primary"
+                (click)="recipeActionsService.goToNew()">
+            <span>{{ 'recipeType.home.createLabel' | translate }}</span>
+        </button>
+    </app-page-header>
+
+    @if (recipeTypes()) {
+        <section class="entity-card entity-list-card">
+            <div class="row justify-content-center">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover entity-list-table align-middle mb-0">
                         <thead class="thead-light">
                         <tr>
                             <th scope="col">
                                 <span translate="global.field.name"></span>
                             </th>
-                            <th scope="col"></th>
+                            <th scope="col" class="text-end">
+                                <span>Acoes</span>
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
 
-                            @for (recipe of recipes(); track recipe.id) {
+                            @for (recipeType of recipeTypes(); track recipeType.id) {
 
-                                <tr [class.notActive]="!recipe.deletedAt">
+                                <tr [class.notActive]="!recipeType.deletedAt">
 
-                                    <td>{{ recipe.name }}</td>
+                                    <td>
+                                        <span class="entity-list-table-title">{{ recipeType.name }}</span>
+                                    </td>
 
-                                    <td class="text-right">
+                                    <td class="text-end">
+                                        <div class="list-actions">
 
-                                        <div class="btn-group">
+                                            <button type="button"
+                                                    title="{{ 'entity.action.view' | translate }}"
+                                                    (click)="goToView(recipeType)"
+                                                    class="btn list-action list-action-view">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="list" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                <span>{{ 'entity.action.view' | translate }}</span>
+                                            </button>
 
                                             <button type="button"
                                                     title="{{ 'entity.action.edit' | translate }}"
-                                                    (click)="goToEdit(recipe)"
-                                                    class="btn btn-default btn-sm">
-                                                <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                                                    (click)="goToEdit(recipeType)"
+                                                    class="btn list-action list-action-edit">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                <span>{{ 'entity.action.edit' | translate }}</span>
                                             </button>
 
-                                            <div class="btn-group"
-                                                 ngbDropdown
-                                                 role="group"
-                                                 container="body"
-                                                 placement="left-top">
-
-                                                <button
-                                                        class="btn btn-default btn-sm dropdown-toggle-split"
-                                                        ngbDropdownToggle>
-                                                </button>
-
-                                                <div class="dropdown-menu" ngbDropdownMenu>
-
-                                                    <a class="dropdown-item" (click)="goToView(recipe)">
-                                                        <fa-icon [fixedWidth]="true" icon="list-alt"></fa-icon>
-                                                        &nbsp;
-                                                        <span translate="entity.action.view"></span>
-                                                    </a>
-
-                                                    <div class="dropdown-divider"></div>
-
-                                                    <a class="dropdown-item" (click)="delete(recipe)">
-                                                        <fa-icon [fixedWidth]="true" icon="times"></fa-icon>
-                                                        &nbsp;
-                                                        <span translate="entity.action.delete"></span>
-                                                    </a>
-
-                                                </div>
-                                            </div>
+                                            <button type="button"
+                                                    title="{{ 'entity.action.delete' | translate }}"
+                                                    (click)="delete(recipeType)"
+                                                    class="btn list-action list-action-delete">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="times" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                <span>{{ 'entity.action.delete' | translate }}</span>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -68,7 +77,7 @@
 
                                 <tr>
                                     <td colspan="3" class="text-center">
-                                        Nenhuma Receita encontrada
+                                        {{ 'recipeType.notFound' | translate }}
                                     </td>
                                 </tr>
                             }
@@ -77,7 +86,6 @@
                     </table>
                 </div>
             </div>
-        </div>
-    </div>
-}
-
+        </section>
+    }
+</div>

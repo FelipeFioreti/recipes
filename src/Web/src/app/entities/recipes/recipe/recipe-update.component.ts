@@ -1,19 +1,23 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, RouterModule} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {map, switchMap} from "rxjs/operators";
+import {catchError} from "rxjs/operators";
+import {of} from "rxjs";
 import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
 import {NgSelectModule} from "@ng-select/ng-select";
-import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {RecipeActionsService} from "./recipe-actions.service";
 import {RecipeService} from "../../../core/services/recipe-service";
 import {RecipeTypesService} from "../../../core/services/recipe-types.service";
 import {IRecipe, Recipe} from "../../../core/models/recipe.model";
 import {IRecipeType} from "../../../core/models/recipe-type.model";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {
+    EntityAuditAccordionComponent
+} from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 
 @Component({
     selector: 'app-rec-recipe-update',
@@ -25,8 +29,8 @@ import {IRecipeType} from "../../../core/models/recipe-type.model";
         FontAwesomeModule,
         TranslateModule,
         NgSelectModule,
-        NgbAccordionModule,
-        RouterModule
+        PageHeaderComponent,
+        EntityAuditAccordionComponent
     ]
 })
 export class RecipeUpdateComponent implements OnInit {
@@ -55,9 +59,12 @@ export class RecipeUpdateComponent implements OnInit {
         this.recipeTypesService.getAll()
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
-                map(res => this.recipeTypes.set(res || [])),
-                switchMap(() => this.route.data)
+                catchError(() => of([]))
             )
+            .subscribe(res => this.recipeTypes.set(res || []));
+
+        this.route.data
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(data => {
                 const recipe = data['recipe'] as IRecipe;
                 this.bindRecipe(recipe && recipe.id ? recipe : new Recipe());

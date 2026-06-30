@@ -27,7 +27,7 @@ public class Recipe : BaseEntity
     [ForeignKey("User")] [Required] public int UserId { get; private set; }
 
     public User User { get; set; } = null!;
-    public RecipeType RecipeType { get; set; } = null!;
+    public RecipeType? RecipeType { get; set; } = null!;
 
     public void Update(UpdateRecipeRequest request)
     {

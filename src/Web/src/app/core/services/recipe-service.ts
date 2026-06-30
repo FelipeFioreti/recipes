@@ -22,9 +22,10 @@ export class RecipeService {
     }
 
     get(id: string): Observable<EntityResponseType> {
-        return this.http.get<IRecipe>(`${this.baseUrl}/${id}`, {
+        const res = this.http.get<IRecipe>(`${this.baseUrl}/${id}`, {
             observe: 'response'
         });
+        return res;
     }
 
     create(recipe: IRecipe): Observable<EntityResponseType> {
@@ -34,7 +35,7 @@ export class RecipeService {
     }
 
     update(recipe: IRecipe): Observable<EntityResponseType> {
-        return this.http.put<IRecipe>(`${this.baseUrl}`, recipe, {
+        return this.http.put<IRecipe>(`${this.baseUrl}/${recipe.id}`, recipe, {
             observe: 'response'
         });
     }

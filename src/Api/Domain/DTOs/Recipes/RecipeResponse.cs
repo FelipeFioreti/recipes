@@ -4,16 +4,21 @@ namespace Recipes.Api.Domain.DTOs.Recipes;
 
 public record RecipeResponse
 {
-    public RecipeResponse(Recipe recipeType)
+    public RecipeResponse(Recipe recipe)
     {
-        Id = recipeType.Id;
-        Name = recipeType.Name;
-        Description = recipeType.Description;
-        RecipeTypeId = recipeType.RecipeTypeId;
-        UserId = recipeType.UserId;
-        CreatedAt = recipeType.CreatedAt;
-        UpdatedAt = recipeType.UpdatedAt;
-        DeletedAt = recipeType.DeletedAt;
+        Id = recipe.Id;
+        Name = recipe.Name;
+        Description = recipe.Description;
+        RecipeTypeId = recipe.RecipeTypeId;
+        UserId = recipe.UserId;
+
+        RecipeType = recipe.RecipeType is null
+            ? null
+            : new RecipeTypeResponse(recipe.RecipeType);
+
+        CreatedAt = recipe.CreatedAt;
+        UpdatedAt = recipe.UpdatedAt;
+        DeletedAt = recipe.DeletedAt;
     }
 
     public int Id { get; init; }
@@ -21,6 +26,9 @@ public record RecipeResponse
     public string Description { get; init; } = string.Empty;
     public int RecipeTypeId { get; init; }
     public int UserId { get; init; }
+
+    public RecipeTypeResponse? RecipeType { get; init; }
+
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }
     public DateTime? DeletedAt { get; init; }

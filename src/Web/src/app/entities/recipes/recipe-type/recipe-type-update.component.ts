@@ -1,17 +1,18 @@
-import {Component, DestroyRef, inject, signal} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute, RouterModule} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
-import {NgSelectModule} from "@ng-select/ng-select";
-import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 
 import {RecipeTypeActionsService} from "./recipe-type-actions.service";
-import {RecipeService} from "../../../core/services/recipe-service";
 import {RecipeTypesService} from "../../../core/services/recipe-types.service";
 import {IRecipeType, RecipeType} from "../../../core/models/recipe-type.model";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {
+    EntityAuditAccordionComponent
+} from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 
 @Component({
     selector: 'app-rec-recipe-type-update',
@@ -22,16 +23,14 @@ import {IRecipeType, RecipeType} from "../../../core/models/recipe-type.model";
         ReactiveFormsModule,
         FontAwesomeModule,
         TranslateModule,
-        NgSelectModule,
-        NgbAccordionModule,
-        RouterModule
+        PageHeaderComponent,
+        EntityAuditAccordionComponent
     ]
 })
-export class RecipeTypeUpdateComponent {
+export class RecipeTypeUpdateComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly recipeActionsService = inject(RecipeTypeActionsService);
-    private readonly recipeService = inject(RecipeService);
-    private readonly recipeTypesService = inject(RecipeTypesService);
+    private readonly recipeTypeService = inject(RecipeTypesService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
 
@@ -68,12 +67,12 @@ export class RecipeTypeUpdateComponent {
         this.isSaving.set(true);
         this.updateRecipeType(recipeType);
 
-        const request = recipeType.id
-            ? this.recipeService.update(recipeType)
-            : this.recipeService.create(recipeType);
+        const request = recipeType.id && recipeType.id > 0
+            ? this.recipeTypeService.update(recipeType.id, recipeType)
+            : this.recipeTypeService.create(recipeType);
 
         request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: (res) => this.onSaveSuccess(res.body!),
+            next: (res) => this.onSaveSuccess(res),
             error: () => this.onSaveError()
         });
     }

@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.generic-modal {
+  padding: 0.5rem;
+  background: #fff;
+  border-radius: var(--radius-lg);
+}
+
+.modal-title {
+  font-size: clamp(1.55rem, 2vw, 1.85rem);
+}
+
+.generic-modal-message {
+  color: var(--text-soft);
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.modal-footer {
+  gap: 0.75rem;
+}
+
+.btn-close {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 999px;
+  background-color: rgba(255, 250, 243, 0.92);
+  box-shadow: none;
+  opacity: 1;
+}
+
+.btn-close:focus {
+  box-shadow: 0 0 0 4px rgba(216, 120, 46, 0.12);
+}

@@ -5,6 +5,7 @@ import {routes} from './app.routes';
 import {AuthInterceptor} from "./core/interceptors/auth.interceptor";
 import {provideTranslateService} from "@ngx-translate/core";
 import {provideTranslateHttpLoader} from "@ngx-translate/http-loader";
+import {fontAwesomeProviders} from "./config/font-awesome.config";
 
 export const appConfig: ApplicationConfig = {
     providers: [
@@ -18,7 +19,8 @@ export const appConfig: ApplicationConfig = {
             lang: 'pt'
         }),
         provideRouter(routes),
-        {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+        {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+        ...fontAwesomeProviders
     ]
 };
 

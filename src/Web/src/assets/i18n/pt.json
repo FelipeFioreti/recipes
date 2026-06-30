@@ -15,6 +15,7 @@
       "id": "ID",
       "uuid": "UUID",
       "name": "Nome",
+      "type": "Tipo",
       "email": "E-mail",
       "password": "Senha",
       "description": "Descricao",
@@ -55,7 +56,8 @@
     },
     "delete": {
       "title": "Confirmar operacao de exclusao",
-      "question": "Tem certeza de que deseja excluir este item?"
+      "question": "Tem certeza de que deseja excluir este item?",
+      "questionWithName": "Tem certeza de que deseja excluir \"{{ name }}\"?"
     },
     "detail": {
       "title": "Detalhes"
@@ -81,6 +83,17 @@
     "recipeType": "Tipo de receita",
     "recipeTypePlaceholder": "Selecione um tipo de receita",
     "notFound": "Nenhuma receita encontrada"
+  },
+  "recipeType": {
+    "detail": {
+      "title": "Tipo de receita"
+    },
+    "home": {
+      "title": "Tipos de receita",
+      "createLabel": "Criar tipo de receita",
+      "editLabel": "Editar tipo de receita"
+    },
+    "notFound": "Nenhum tipo de receita encontrado"
   },
   "login": {
     "title": "Entre na cozinha digital",

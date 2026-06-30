@@ -1,41 +1,62 @@
 import {DestroyRef, inject, Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {RecipeService} from "../../../core/services/recipe-service";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {IRecipe} from "../../../core/models/recipe.model";
+import {IRecipeType} from "../../../core/models/recipe-type.model";
+import {RecipeTypesService} from "../../../core/services/recipe-types.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {TranslateService} from "@ngx-translate/core";
+import {
+    GenericActionModalComponent
+} from "../../../shared/components/generic-action-modal/generic-action-modal.component";
 
 @Injectable({providedIn: 'root'})
 export class RecipeTypeActionsService {
     private static readonly FILTER_KEY = 'rec-recipes';
 
     private readonly destroyRef = inject(DestroyRef);
-    private readonly recipeService = inject(RecipeService);
+    private readonly recipeTypeService = inject(RecipeTypesService);
     private readonly router = inject(Router);
+    private readonly modalService = inject(NgbModal);
+    private readonly translateService = inject(TranslateService);
 
-    delete(recipe: IRecipe, successCallback?: Function): void {
-        this.recipeService
-            .delete(recipe.id!)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((result) => successCallback && successCallback(result));
+    delete(recipeType: IRecipeType, successCallback?: Function): void {
+        const modalRef = this.modalService.open(GenericActionModalComponent, {
+            backdrop: 'static',
+            windowClass: 'app-top-modal'
+        });
+
+        modalRef.componentInstance.title = this.translateService.instant('entity.delete.title');
+        modalRef.componentInstance.message =
+            this.translateService.instant('entity.delete.questionWithName', {
+                name: recipeType.name || this.translateService.instant('recipeType.detail.title')
+            });
+        modalRef.componentInstance.actionLabel = this.translateService.instant('entity.action.delete');
+
+        modalRef.componentInstance.confirmed.subscribe(() => {
+            this.recipeTypeService
+                .delete(recipeType.id!)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe((result) => successCallback && successCallback(result));
+        });
     }
 
     goToList(): void {
-        this.router.navigate(['/app/recipes']);
+        this.router.navigate(['/app/recipes-types']);
     }
 
-    goToView(recipe: IRecipe): void {
-        this.router.navigate(['/app/recipes', recipe.id!, 'view']);
+    goToView(recipeType: IRecipeType): void {
+        this.router.navigate(['/app/recipes-types', recipeType.id!, 'view']);
     }
 
-    goToViewOrList(recipe?: IRecipe): void {
-        recipe && recipe.id ? this.goToView(recipe) : this.goToList();
+    goToViewOrList(recipeType?: IRecipeType): void {
+        recipeType && recipeType.id ? this.goToView(recipeType) : this.goToList();
     }
 
     goToNew(): void {
-        this.router.navigate(['/app/recipes/new']);
+        this.router.navigate(['/app/recipes-types/new']);
     }
 
-    goToEdit(recipe: IRecipe): void {
-        this.router.navigate(['/app/recipes', recipe.id!, 'edit']);
+    goToEdit(recipeType: IRecipeType): void {
+        this.router.navigate(['/app/recipes-types', recipeType.id!, 'edit']);
     }
 }

@@ -4,8 +4,11 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
-import {NgbAccordionModule} from "@ng-bootstrap/ng-bootstrap";
 import {IRecipeType} from "../../../core/models/recipe-type.model";
+import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
+import {
+    EntityAuditAccordionComponent
+} from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 
 @Component({
     selector: 'app-recipe-type-detail',
@@ -16,7 +19,8 @@ import {IRecipeType} from "../../../core/models/recipe-type.model";
         RouterModule,
         FontAwesomeModule,
         TranslateModule,
-        NgbAccordionModule
+        PageHeaderComponent,
+        EntityAuditAccordionComponent
     ]
 })
 export class RecipeTypeDetailComponent implements OnInit {

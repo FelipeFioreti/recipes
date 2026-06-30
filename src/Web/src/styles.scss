@@ -14,6 +14,7 @@
   $border-color: theme.$border-color,
   $theme-colors: theme.$theme-colors
 );
+@import '@ng-select/ng-select/themes/default.theme.css';
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
@@ -91,10 +92,9 @@ body {
 body {
   font-family: var(--bs-body-font-family);
   color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(243, 193, 126, 0.32), transparent 34%),
-    radial-gradient(circle at right center, rgba(172, 190, 137, 0.22), transparent 28%),
-    linear-gradient(180deg, #fbf7ef 0%, #f6f0e5 48%, #efe4d2 100%);
+  background: radial-gradient(circle at top left, rgba(243, 193, 126, 0.32), transparent 34%),
+  radial-gradient(circle at right center, rgba(172, 190, 137, 0.22), transparent 28%),
+  linear-gradient(180deg, #fbf7ef 0%, #f6f0e5 48%, #efe4d2 100%);
   overflow-x: hidden;
 }
 
@@ -168,11 +168,10 @@ img {
 
 .btn {
   font-weight: 700;
-  transition:
-    transform var(--transition),
-    background-color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition);
+  transition: transform var(--transition),
+  background-color var(--transition),
+  border-color var(--transition),
+  box-shadow var(--transition);
 }
 
 .btn:hover {
@@ -221,14 +220,13 @@ img {
 .form-control,
 .form-select {
   border-color: var(--line);
-  background: rgba(255, 250, 243, 0.9);
+  background: #fff;
   color: var(--text);
   border-radius: 18px;
   padding: 0.95rem 1rem;
-  transition:
-    border-color var(--transition),
-    box-shadow var(--transition),
-    background-color var(--transition);
+  transition: border-color var(--transition),
+  box-shadow var(--transition),
+  background-color var(--transition);
 }
 
 textarea.form-control {
@@ -242,6 +240,89 @@ textarea.form-control {
   border-color: rgba(216, 120, 46, 0.65);
   box-shadow: 0 0 0 4px rgba(216, 120, 46, 0.12);
   background: var(--surface-strong);
+}
+
+.ng-select .ng-select-container {
+  border-color: var(--line) !important;
+  background: #fff !important;
+  color: var(--text);
+  border-radius: 18px !important;
+  padding: 0.3rem 1rem !important;
+  box-shadow: none !important;
+  transition: border-color var(--transition),
+  box-shadow var(--transition),
+  background-color var(--transition);
+}
+
+.ng-select .ng-select-container .ng-value-container {
+  padding: 0 !important;
+  gap: 0.35rem;
+}
+
+.ng-select .ng-select-container .ng-input {
+  padding: 0 !important;
+}
+
+.ng-select .ng-select-container .ng-placeholder {
+  color: var(--text-soft) !important;
+}
+
+.ng-select .ng-select-container .ng-value {
+  color: var(--text);
+}
+
+.ng-select .ng-arrow-wrapper {
+  padding-right: 0 !important;
+}
+
+.ng-select .ng-arrow-wrapper .ng-arrow {
+  border-color: var(--text-soft) transparent transparent !important;
+}
+
+.ng-select.ng-select-opened > .ng-select-container,
+.ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
+  border-color: rgba(216, 120, 46, 0.65) !important;
+  box-shadow: 0 0 0 4px rgba(216, 120, 46, 0.12) !important;
+  background: var(--surface-strong) !important;
+}
+
+.ng-select.ng-select-opened > .ng-select-container .ng-arrow {
+  border-color: transparent transparent var(--accent) !important;
+}
+
+.ng-select.is-invalid .ng-select-container {
+  border-color: rgba(var(--bs-danger-rgb), 0.65) !important;
+}
+
+.ng-select.is-invalid.ng-select-focused:not(.ng-select-opened) > .ng-select-container,
+.ng-select.is-invalid.ng-select-opened > .ng-select-container {
+  box-shadow: 0 0 0 4px rgba(var(--bs-danger-rgb), 0.12) !important;
+}
+
+.ng-dropdown-panel {
+  margin-top: 0.45rem;
+  border: 1px solid rgba(62, 46, 39, 0.08) !important;
+  border-radius: 18px !important;
+  background: rgba(255, 252, 247, 0.98) !important;
+  box-shadow: var(--shadow-md) !important;
+  overflow: hidden;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option {
+  padding: 0.85rem 1rem !important;
+  color: var(--text);
+  background: transparent !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
+  background: rgba(216, 120, 46, 0.1) !important;
+  color: var(--accent-deep) !important;
+}
+
+.ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
+  background: rgba(216, 120, 46, 0.14) !important;
+  color: var(--accent-deep) !important;
+  font-weight: 700;
 }
 
 .invalid-feedback {
@@ -353,3 +434,263 @@ h3 {
   }
 }
 
+.entity-page {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.entity-card {
+  padding: clamp(1.35rem, 2vw, 1.8rem);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 252, 247, 0.84);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(18px);
+}
+
+.entity-card-hero {
+  background: radial-gradient(circle at top right, rgba(243, 193, 126, 0.18), transparent 28%),
+  linear-gradient(180deg, rgba(255, 252, 247, 0.96), rgba(248, 239, 227, 0.88));
+}
+
+.entity-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-width: 12rem;
+  padding: 0.85rem 1rem;
+  border-radius: 999px;
+  background: rgba(216, 120, 46, 0.12);
+  border: 1px solid rgba(216, 120, 46, 0.18);
+  color: var(--accent-deep);
+  font-weight: 800;
+  text-align: center;
+}
+
+.entity-detail-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+}
+
+.entity-detail-item {
+  grid-column: span 6;
+  display: grid;
+  gap: 0.55rem;
+  min-height: 100%;
+  padding: 1.15rem 1.2rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 250, 243, 0.82);
+  border: 1px solid rgba(62, 46, 39, 0.08);
+}
+
+.entity-detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.entity-detail-item-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.entity-detail-item-value {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.55;
+}
+
+.entity-detail-item-value-body {
+  font-weight: 500;
+  white-space: pre-line;
+}
+
+.entity-form {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.entity-form-intro {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.entity-form-intro-title {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.entity-form-intro-copy {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.entity-form .form-control,
+.entity-form .ng-select-container {
+  min-height: 3.45rem;
+}
+
+.entity-list-card {
+  padding: clamp(1rem, 1.8vw, 1.35rem);
+}
+
+.entity-list-table {
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: transparent;
+  --bs-table-hover-bg: rgba(255, 248, 238, 0.72);
+  --bs-table-border-color: rgba(62, 46, 39, 0.08);
+  margin-bottom: 0;
+}
+
+.entity-list-table thead th {
+  padding: 0.95rem 1rem 1.1rem;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  border-bottom-width: 1px;
+}
+
+.entity-list-table tbody td {
+  padding: 1rem;
+  border-color: rgba(62, 46, 39, 0.08);
+  vertical-align: middle;
+}
+
+.entity-list-table-title {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.list-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.list-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.45rem 0.9rem 0.45rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid rgba(62, 46, 39, 0.1);
+  background: linear-gradient(180deg, rgba(255, 252, 250, 0.98), rgba(250, 252, 247, 0.94));
+  color: var(--text);
+  box-shadow: 0 8px 18px rgba(65, 40, 24, 0.05);
+  transition: transform var(--transition),
+  border-color var(--transition),
+  background var(--transition),
+  box-shadow var(--transition),
+  color var(--transition);
+}
+
+.list-action:hover {
+  border-color: rgba(62, 46, 39, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(252, 245, 237, 0.98));
+  box-shadow: 0 16px 26px rgba(65, 40, 24, 0.12);
+}
+
+.list-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  transition: transform var(--transition),
+  background-color var(--transition),
+  box-shadow var(--transition);
+}
+
+.list-action:hover .list-action-icon {
+  transform: scale(1.08);
+}
+
+.list-action-view {
+  color: var(--accent-deep);
+}
+
+.list-action-view .list-action-icon {
+  background: rgba(216, 120, 46, 0.14);
+}
+
+.list-action-view:hover {
+  border-color: rgba(216, 120, 46, 0.28);
+  color: #8f4318;
+}
+
+.list-action-view:hover .list-action-icon {
+  background: rgba(216, 120, 46, 0.22);
+}
+
+.list-action-edit {
+  color: #5c4a3a;
+}
+
+.list-action-edit .list-action-icon {
+  background: rgba(121, 107, 96, 0.12);
+}
+
+.list-action-edit:hover {
+  border-color: rgba(121, 107, 96, 0.24);
+  color: #3f3026;
+}
+
+.list-action-edit:hover .list-action-icon {
+  background: rgba(121, 107, 96, 0.2);
+}
+
+.list-action-delete {
+  color: var(--danger);
+}
+
+.list-action-delete .list-action-icon {
+  background: rgba(177, 69, 59, 0.12);
+}
+
+.list-action-delete:hover {
+  border-color: rgba(177, 69, 59, 0.28);
+  color: #8f2d22;
+}
+
+.list-action-delete:hover .list-action-icon {
+  background: rgba(177, 69, 59, 0.2);
+}
+
+.app-top-modal .modal-dialog {
+  margin-top: clamp(1rem, 4vh, 2.5rem);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 991px) {
+  .entity-detail-item {
+    grid-column: 1 / -1;
+  }
+
+  .entity-pill {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .entity-list-table thead th:last-child,
+  .entity-list-table tbody td:last-child {
+    text-align: left !important;
+  }
+
+  .list-actions {
+    justify-content: flex-start;
+  }
+}

@@ -1,66 +1,56 @@
-<div class="row justify-content-center">
-    @if (recipe(); as recipeRef) {
-        <div class="col-12">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="h4">{{ 'recipe.detail.title' | translate }}</span>
-                <div>
-                    <button type="button" class="btn btn-info btn-sm me-2"
-                            [routerLink]="['/app/recipes', recipeRef.id, 'edit']">
-                        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>{{ 'entity.action.edit' | translate }}</span>
-                    </button>
-                    <button type="button" class="btn btn-secondary btn-sm" (click)="previousState()">
-                        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>{{ 'entity.action.back' | translate }}</span>
-                    </button>
-                </div>
-            </div>
+@if (recipe(); as recipeRef) {
+    <div class="entity-page">
+        <app-page-header
+                [eyebrow]="'global.menu.recipes' | translate"
+                [title]="recipeRef.name || ('recipe.detail.title' | translate)">
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
+                    [routerLink]="['/app/recipes', recipeRef.id, 'edit']">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span>{{ 'entity.action.edit' | translate }}</span>
+            </button>
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <dl class="row">
-                            <dt class="col-sm-3"><span>{{ 'global.field.name' | translate }}</span></dt>
-                            <dd class="col-sm-9"><span>{{ recipeRef.name }}</span></dd>
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
+                    (click)="previousState()">
+                <fa-icon icon="arrow-left"></fa-icon>
+                <span>{{ 'entity.action.back' | translate }}</span>
+            </button>
+        </app-page-header>
 
-                            <dt class="col-sm-3"><span>{{ 'recipe.description' | translate }}</span></dt>
-                            <dd class="col-sm-9"><span>{{ recipeRef.description }}</span></dd>
-
-                            <dt class="col-sm-3"><span>{{ 'recipe.recipeType' | translate }}</span></dt>
-                            <dd class="col-sm-9">
-                                <span>{{ recipeRef.recipeType?.name ?? "" }}</span>
-                            </dd>
-                        </dl>
+        <section class="entity-card entity-card-hero">
+            <div class="d-grid gap-4">
+                <div class="d-flex flex-column flex-xl-row align-items-start justify-content-between gap-3">
+                    <div class="d-grid gap-2">
+                        <span class="eyebrow">{{ 'recipe.detail.title' | translate }}</span>
+                        <h2>{{ recipeRef.name }}</h2>
                     </div>
 
-                    <div class="col-12 mt-4">
-                        <div ngbAccordion>
-                            <div ngbAccordionItem [collapsed]="false">
-                                <h2 ngbAccordionHeader>
-                                    <button ngbAccordionButton>
-                                        <fa-icon icon="circle-info" class="me-2"></fa-icon>
-                                        {{ 'entity.panels.audit' | translate }}
-                                    </button>
-                                </h2>
-                                <div ngbAccordionCollapse>
-                                    <div ngbAccordionBody>
-                                        <ng-template>
-                                            <dl class="row mb-0">
-                                                <dt class="col-sm-4">{{ 'global.field.uuid' | translate }}</dt>
-                                                <dd class="col-sm-8">{{ recipeRef.uuid }}</dd>
+                    <div class="entity-pill">
+                        {{ recipeRef.recipeType?.name || 'Tipo nao informado' }}
+                    </div>
+                </div>
 
-                                                <dt class="col-sm-4">{{ 'global.field.createdDate' | translate }}</dt>
-                                                <dd class="col-sm-8">{{ recipeRef.createdAt | date:'dd/MM/yyyy HH:mm' }}</dd>
+                <div class="entity-detail-grid">
+                    <article class="entity-detail-item entity-detail-item-full">
+                        <span class="entity-detail-item-label">{{ 'global.field.name' | translate }}</span>
+                        <strong class="entity-detail-item-value">{{ recipeRef.name }}</strong>
+                    </article>
 
-                                                <dt class="col-sm-4">{{ 'global.field.lastModifiedDate' | translate }}</dt>
-                                                <dd class="col-sm-8">{{ recipeRef.updatedAt | date:'dd/MM/yyyy HH:mm' }}</dd>
-                                            </dl>
-                                        </ng-template>
-                                    </div>
-                                </div>
-                            </div>
+                    <article class="entity-detail-item entity-detail-item-full">
+                        <span class="entity-detail-item-label">{{ 'recipe.description' | translate }}</span>
+                        <div class="entity-detail-item-value entity-detail-item-value-body">
+                            {{ recipeRef.description || 'Essa receita ainda nao possui descricao cadastrada.' }}
                         </div>
-                    </div>
+                    </article>
                 </div>
             </div>
-        </div>
-    }
-</div>
+        </section>
+
+        <app-entity-audit-accordion [entity]="recipeRef" [collapsed]="false"></app-entity-audit-accordion>
+    </div>
+}

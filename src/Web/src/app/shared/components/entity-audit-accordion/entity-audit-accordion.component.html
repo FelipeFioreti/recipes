@@ -1,0 +1,45 @@
+@if (entity(); as entityRef) {
+    <section class="entity-card audit-card">
+        <div ngbAccordion class="audit-accordion">
+            <div ngbAccordionItem [collapsed]="collapsed()">
+                <h2 ngbAccordionHeader>
+                    <button ngbAccordionButton class="audit-accordion-button">
+                        <span class="audit-accordion-icon">
+                            <fa-icon icon="circle"></fa-icon>
+                        </span>
+                        <span>{{ 'entity.panels.audit' | translate }}</span>
+                    </button>
+                </h2>
+
+                <div ngbAccordionCollapse>
+                    <div ngbAccordionBody>
+                        <ng-template>
+                            <div class="audit-grid">
+                                <article class="audit-grid-item">
+                                    <span class="audit-grid-label">{{ 'global.field.uuid' | translate }}</span>
+                                    <strong class="audit-grid-value audit-grid-value-mono">
+                                        {{ entityRef.uuid || 'Nao informado' }}
+                                    </strong>
+                                </article>
+
+                                <article class="audit-grid-item">
+                                    <span class="audit-grid-label">{{ 'global.field.createdDate' | translate }}</span>
+                                    <strong class="audit-grid-value">
+                                        {{ entityRef.createdAt ? (entityRef.createdAt | date:'dd/MM/yyyy HH:mm') : 'Nao informado' }}
+                                    </strong>
+                                </article>
+
+                                <article class="audit-grid-item">
+                                    <span class="audit-grid-label">{{ 'global.field.lastModifiedDate' | translate }}</span>
+                                    <strong class="audit-grid-value">
+                                        {{ entityRef.updatedAt ? (entityRef.updatedAt | date:'dd/MM/yyyy HH:mm') : 'Nao informado' }}
+                                    </strong>
+                                </article>
+                            </div>
+                        </ng-template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
