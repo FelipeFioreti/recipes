@@ -33,11 +33,11 @@
 
                                 <tr [class.notActive]="!recipeType.deletedAt">
 
-                                    <td>
+                                    <td [attr.data-label]="'global.field.name' | translate">
                                         <span class="entity-list-table-title">{{ recipeType.name }}</span>
                                     </td>
 
-                                    <td class="text-center">
+                                    <td class="text-center entity-list-table-actions-cell" data-label="Acoes">
                                         <div class="list-actions">
 
                                             <button type="button"

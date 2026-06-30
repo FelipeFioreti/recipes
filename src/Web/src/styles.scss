@@ -680,6 +680,31 @@ h3 {
     grid-column: 1 / -1;
   }
 
+  app-page-header .card-body {
+    padding: 1.25rem;
+  }
+
+  app-page-header h1 {
+    font-size: clamp(1.8rem, 6vw, 2.4rem);
+  }
+
+  app-page-header .page-header-actions {
+    width: 100%;
+  }
+
+  app-page-header .page-header-actions .btn {
+    flex: 1 1 14rem;
+    justify-content: center;
+  }
+
+  .entity-card {
+    padding: 1.15rem;
+  }
+
+  .entity-detail-item {
+    padding: 1rem;
+  }
+
   .entity-pill {
     min-width: auto;
     width: 100%;
@@ -692,5 +717,108 @@ h3 {
 
   .list-actions {
     justify-content: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  body::before {
+    width: 16rem;
+    height: 16rem;
+    right: -6rem;
+  }
+
+  body::after {
+    width: 14rem;
+    height: 14rem;
+    left: -5rem;
+  }
+
+  .entity-page,
+  .entity-form {
+    gap: 1rem;
+  }
+
+  .entity-form .form-control,
+  .entity-form .ng-select-container {
+    min-height: 3.2rem;
+  }
+
+  .entity-list-card {
+    padding: 0.9rem;
+  }
+
+  .entity-list-table,
+  .entity-list-table tbody,
+  .entity-list-table tr,
+  .entity-list-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .entity-list-table thead {
+    display: none;
+  }
+
+  .entity-list-table tbody {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .entity-list-table tbody tr {
+    padding: 1rem;
+    border: 1px solid rgba(62, 46, 39, 0.08);
+    border-radius: var(--radius-md);
+    background: rgba(255, 250, 243, 0.82);
+  }
+
+  .entity-list-table tbody td {
+    padding: 0;
+    border: 0;
+    text-align: left !important;
+  }
+
+  .entity-list-table tbody td + td {
+    margin-top: 0.9rem;
+  }
+
+  .entity-list-table tbody td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+  }
+
+  .entity-list-table-actions-cell {
+    display: grid !important;
+    gap: 0.6rem;
+  }
+
+  .list-actions {
+    display: grid;
+    width: 100%;
+    gap: 0.65rem;
+  }
+
+  .list-action {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 575px) {
+  .btn {
+    width: 100%;
+  }
+
+  .entity-card {
+    border-radius: 20px;
+  }
+
+  .entity-detail-item-value {
+    font-size: 1rem;
   }
 }

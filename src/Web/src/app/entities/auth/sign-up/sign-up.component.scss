@@ -1,10 +1,22 @@
 :host {
   display: grid;
   place-items: center;
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
+  padding: 1rem;
 }
 
 .auth-card {
   max-width: 33rem;
+}
+
+@media (max-width: 575px) {
+  :host {
+    align-items: start;
+    padding: 1rem 0.85rem 2rem;
+  }
+
+  .auth-card {
+    border-radius: 24px;
+  }
 }

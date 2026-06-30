@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, computed, inject, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, HostListener, inject, OnInit, signal} from '@angular/core';
 import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NavigationItem} from '../../core/models/navigation-item.model';
@@ -12,14 +12,12 @@ import {AuthService} from '../../core/services/auth.service';
     styleUrls: ['./sidebar-component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
+    private readonly mobileBreakpoint = 991;
     readonly menuOpen = signal(true);
+    readonly isMobile = signal(false);
     readonly openSubMenus = signal<Set<string>>(new Set());
-    readonly currentDateLabel = new Intl.DateTimeFormat('pt-BR', {
-        weekday: 'long',
-        day: '2-digit',
-        month: 'long'
-    }).format(new Date());
+
     readonly navigation = computed<NavigationItem[]>(() => {
         const items: NavigationItem[] = [
             {
@@ -52,6 +50,10 @@ export class SidebarComponent {
     });
     readonly authService = inject(AuthService);
 
+    ngOnInit(): void {
+        this.syncViewportState();
+    }
+
     toggleMenu(): void {
         this.menuOpen.update((value) => !value);
     }
@@ -76,9 +78,38 @@ export class SidebarComponent {
         this.menuOpen.set(false);
     }
 
+    handleNavigation(): void {
+        if (this.isMobile()) {
+            this.closeMenu();
+        }
+    }
+
     signOut(): void {
         this.closeMenu();
         this.authService.logout();
+    }
+
+    @HostListener('window:resize')
+    onResize(): void {
+        this.syncViewportState();
+    }
+
+    private syncViewportState(): void {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const mobile = window.innerWidth <= this.mobileBreakpoint;
+        const wasMobile = this.isMobile();
+        this.isMobile.set(mobile);
+
+        if (mobile && !wasMobile) {
+            this.menuOpen.set(false);
+        }
+
+        if (!mobile && wasMobile) {
+            this.menuOpen.set(true);
+        }
     }
 }
 

@@ -47,3 +47,22 @@
   color: var(--text-soft);
   font-weight: 700;
 }
+
+@media (max-width: 575px) {
+  .toast-outlet {
+    left: 0.85rem;
+    right: 0.85rem;
+    bottom: 0.85rem;
+    width: auto;
+  }
+
+  .toast {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .toast__close {
+    justify-self: start;
+    padding: 0;
+  }
+}

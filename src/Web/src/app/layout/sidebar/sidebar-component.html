@@ -8,7 +8,10 @@
     <ul class="nav-links">
         @for (item of navigation(); track item.label) {
             <li [class.showMenu]="isSubMenuOpen(item.label)">
-                <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                <a [routerLink]="item.route"
+                   routerLinkActive="active"
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   (click)="handleNavigation()">
                     <fa-icon [icon]="item.icon" class="sidebar-icon" [fixedWidth]="true"></fa-icon>
                     <span class="link_name">{{ item.label }}</span>
                 </a>
@@ -32,7 +35,24 @@
     </ul>
 </div>
 
+<button
+        type="button"
+        class="sidebar-backdrop"
+        [class.sidebar-backdrop--visible]="isMobile() && menuOpen()"
+        (click)="closeMenu()"
+        aria-label="Fechar menu">
+</button>
+
 <section class="home-section">
+    <button
+            type="button"
+            class="mobile-menu-button"
+            [class.mobile-menu-button--hidden]="menuOpen()"
+            (click)="toggleMenu()"
+            aria-label="Abrir menu">
+        <fa-icon [icon]="'bars'"></fa-icon>
+    </button>
+
     <main class="shell-content px-3 px-lg-4 py-3">
         <router-outlet></router-outlet>
     </main>
