@@ -9,9 +9,14 @@ public class RecipeTypeRepository(ApplicationDbContext context) : IRecipeTypeRep
 {
     private readonly DbSet<RecipeType> _dbSet = context.RecipeTypes;
 
-    public async Task<IEnumerable<RecipeType>> GetAll()
+    public async Task<IEnumerable<RecipeType>> GetAll(int page = 0, int size = 10)
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(page * size)
+            .Take(size)
+            .ToListAsync();
     }
 
     public async Task<RecipeType?> GetById(int id)

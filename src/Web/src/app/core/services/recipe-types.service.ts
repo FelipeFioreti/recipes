@@ -1,8 +1,11 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {IRecipeType, RecipeType} from '../models/recipe-type.model';
 import {environment} from "../../../environments/environment";
+import {createRequestOption} from "../../shared/utils/request-util";
+
+type EntityArrayResponseType = HttpResponse<IRecipeType[]>;
 
 @Injectable({providedIn: 'root'})
 export class RecipeTypesService {
@@ -11,6 +14,15 @@ export class RecipeTypesService {
 
     getAll(): Observable<RecipeType[]> {
         return this.http.get<RecipeType[]>(this.baseUrl);
+    }
+
+    getAllPaged(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+
+        return this.http.get<IRecipeType[]>(this.baseUrl, {
+            params: options,
+            observe: 'response'
+        });
     }
 
     get(id: number | string): Observable<RecipeType> {

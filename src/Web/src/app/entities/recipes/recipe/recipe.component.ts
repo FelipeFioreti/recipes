@@ -72,7 +72,7 @@ export class RecipeComponent implements OnInit {
     }
 
     private onSuccess(recipes: IRecipe[] | null, headers: HttpHeaders): void {
-        this.totalItems.set(Number(headers.get('X-Total-Count')));
+        this.totalItems.set(Number(headers.get('X-Total-Count')) || recipes?.length || 0);
         this.recipes.set(recipes ?? []);
     }
 }

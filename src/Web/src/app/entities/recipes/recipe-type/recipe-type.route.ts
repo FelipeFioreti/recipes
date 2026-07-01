@@ -7,6 +7,7 @@ import {RecipeTypeDetailComponent} from "./recipe-type-detail.component";
 import {inject} from "@angular/core";
 import {IRecipeType, RecipeType} from "../../../core/models/recipe-type.model";
 import {RecipeTypesService} from "../../../core/services/recipe-types.service";
+import {pagingParamsResolver} from "../../../core/resolve/paging-params.resolver";
 
 export const recipeTypeResolve: ResolveFn<IRecipeType> = (route) => {
 
@@ -40,6 +41,9 @@ export const recipeTypeRoute: Routes = [
     {
         path: '',
         component: RecipeTypeComponent,
+        resolve: {
+            pagingParams: pagingParamsResolver
+        },
         data: {
             pageTitle: 'recipeType.home.title',
         },

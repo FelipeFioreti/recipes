@@ -10,13 +10,13 @@ public class RecipeService(
     IUserContext userContext,
     ILogger<RecipeService> logger) : IRecipeService
 {
-    public async Task<IEnumerable<RecipeResponse>> GetAll()
+    public async Task<IEnumerable<RecipeResponse>> GetAll(int page, int size)
     {
         logger.LogDebug("GetAll()");
 
         var recipes = userContext.IsAdmin()
-            ? await recipeRepository.GetAll()
-            : await recipeRepository.GetAllForUser(userContext.GetUserId());
+            ? await recipeRepository.GetAll(page, size)
+            : await recipeRepository.GetAllForUser(userContext.GetUserId(), page, size);
 
         return recipes.Select(ToResponse);
     }

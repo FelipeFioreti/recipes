@@ -23,9 +23,10 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RecipeResponse>>> GetAll()
+    public async Task<ActionResult<IEnumerable<RecipeResponse>>> GetAll([FromQuery] int page = 0,
+        [FromQuery] int size = 10)
     {
-        var recipes = await recipeService.GetAll();
+        var recipes = await recipeService.GetAll(0, 10);
 
         return Ok(recipes);
     }

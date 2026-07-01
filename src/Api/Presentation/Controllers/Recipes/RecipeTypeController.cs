@@ -24,9 +24,10 @@ public class RecipeTypeController(IRecipeTypeService recipeTypeService) : Contro
 
     [Authorize(Roles = nameof(Roles.USER))]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<RecipeTypeResponse>>> GetAll()
+    public async Task<ActionResult<IEnumerable<RecipeTypeResponse>>> GetAll([FromQuery] int page = 0,
+        [FromQuery] int size = 10)
     {
-        return Ok(await recipeTypeService.GetAll());
+        return Ok(await recipeTypeService.GetAll(page, size));
     }
 
     [Authorize(Roles = nameof(Roles.ADMIN))]

@@ -9,9 +9,14 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
 {
     private readonly DbSet<User> _dbSet = context.Users;
 
-    public async Task<IEnumerable<User>> GetAll()
+    public async Task<IEnumerable<User>> GetAll(int page = 1, int size = 10)
     {
-        return await _dbSet.ToListAsync();
+        return await _dbSet
+            .AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(page * size)
+            .Take(size)
+            .ToListAsync();
     }
 
     public async Task<User?> GetById(int id)

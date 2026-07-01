@@ -7,11 +7,11 @@ namespace Recipes.Api.Application.Services.Recipes;
 public class RecipeTypeService(IRecipeTypeRepository recipeTypeRepository, ILogger<RecipeTypeService> logger)
     : IRecipeTypeService
 {
-    public async Task<IEnumerable<RecipeTypeResponse>> GetAll()
+    public async Task<IEnumerable<RecipeTypeResponse>> GetAll(int page, int size)
     {
         logger.LogDebug("GetAll()");
 
-        var recipeTypes = await recipeTypeRepository.GetAll();
+        var recipeTypes = await recipeTypeRepository.GetAll(page, size);
 
         return recipeTypes.Select(ToResponse);
     }

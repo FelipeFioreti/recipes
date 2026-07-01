@@ -9,18 +9,24 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
 {
     private readonly DbSet<Recipe> _dbSet = context.Recipes;
 
-    public async Task<IEnumerable<Recipe>> GetAll()
+    public async Task<IEnumerable<Recipe>> GetAll(int page = 0, int size = 10)
     {
         return await _dbSet
             .AsNoTracking()
+            .OrderBy(x => x.Id)
+            .Skip(page * size)
+            .Take(size)
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Recipe>> GetAllForUser(int userId)
+    public async Task<IEnumerable<Recipe>> GetAllForUser(int userId, int page = 1, int size = 10)
     {
         return await _dbSet
             .AsNoTracking()
             .Where(recipe => recipe.UserId == userId)
+            .OrderBy(x => x.Id)
+            .Skip(page * size)
+            .Take(size)
             .ToListAsync();
     }
 
