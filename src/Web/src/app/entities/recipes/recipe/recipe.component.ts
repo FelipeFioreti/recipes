@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, computed, DestroyRef, HostListener, inject, OnInit, signal} from '@angular/core';
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -32,6 +32,8 @@ export class RecipeComponent implements OnInit {
     itemsPerPage = ITEMS_PER_PAGE;
     page = signal(1);
     filter = signal<any>(null);
+    isMobile = signal(false);
+    paginationMaxSize = computed(() => (this.isMobile() ? 3 : 5));
 
     private readonly destroyRef = inject(DestroyRef);
     private readonly activatedRoute = inject(ActivatedRoute);
@@ -40,6 +42,8 @@ export class RecipeComponent implements OnInit {
     public readonly recipeActionsService = inject(RecipeActionsService);
 
     ngOnInit(): void {
+        this.updateViewportState();
+
         this.activatedRoute.queryParamMap
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((params) => {
@@ -47,6 +51,11 @@ export class RecipeComponent implements OnInit {
                 this.page.set(page > 0 ? page : 1);
                 this.loadAll();
             });
+    }
+
+    @HostListener('window:resize')
+    onWindowResize(): void {
+        this.updateViewportState();
     }
 
     goToView(recipe: IRecipe): void {
@@ -101,5 +110,9 @@ export class RecipeComponent implements OnInit {
     private onSuccess(recipes: IRecipe[] | null, headers: HttpHeaders): void {
         this.totalItems.set(Number(headers.get('X-Total-Count')) || recipes?.length || 0);
         this.recipes.set(recipes ?? []);
+    }
+
+    private updateViewportState(): void {
+        this.isMobile.set(typeof window !== 'undefined' && window.innerWidth <= 767);
     }
 }

@@ -1,4 +1,4 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, computed, DestroyRef, HostListener, inject, OnInit, signal} from '@angular/core';
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
 import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -31,6 +31,8 @@ export class CategoryComponent implements OnInit {
     totalItems = signal(0);
     itemsPerPage = ITEMS_PER_PAGE;
     page = signal(1);
+    isMobile = signal(false);
+    paginationMaxSize = computed(() => (this.isMobile() ? 3 : 5));
 
     private readonly destroyRef = inject(DestroyRef);
     private readonly activatedRoute = inject(ActivatedRoute);
@@ -39,6 +41,8 @@ export class CategoryComponent implements OnInit {
     public readonly categoryActionsService = inject(CategoryActionsService);
 
     ngOnInit(): void {
+        this.updateViewportState();
+
         this.activatedRoute.queryParamMap
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe((params) => {
@@ -46,6 +50,11 @@ export class CategoryComponent implements OnInit {
                 this.page.set(page > 0 ? page : 1);
                 this.loadAll();
             });
+    }
+
+    @HostListener('window:resize')
+    onWindowResize(): void {
+        this.updateViewportState();
     }
 
     goToView(category: ICategory): void {
@@ -99,5 +108,9 @@ export class CategoryComponent implements OnInit {
     private onSuccess(categories: ICategory[] | null, headers: HttpHeaders): void {
         this.totalItems.set(Number(headers.get('X-Total-Count')) || categories?.length || 0);
         this.categories.set(categories ?? []);
+    }
+
+    private updateViewportState(): void {
+        this.isMobile.set(typeof window !== 'undefined' && window.innerWidth <= 767);
     }
 }

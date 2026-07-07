@@ -23,7 +23,9 @@
                                 <span>{{ 'global.field.name' | translate }}</span>
                             </th>
                             <th scope="col" class="text-center">
-                                <span>Acoes</span>
+                                @if (!isMobile()) {
+                                    <span>Ações</span>
+                                }
                             </th>
                         </tr>
                         </thead>
@@ -37,39 +39,48 @@
                                         <span class="entity-list-table-title">{{ recipe.name }}</span>
                                     </td>
 
-                                    <td class="text-center entity-list-table-actions-cell" data-label="Acoes">
+                                    <td class="text-center entity-list-table-actions-cell" [attr.data-label]="isMobile() ? null : 'Ações'">
                                         <div class="list-actions">
                                             <button
                                                     type="button"
                                                     title="{{ 'entity.action.view' | translate }}"
+                                                    aria-label="{{ 'entity.action.view' | translate }}"
                                                     (click)="goToView(recipe)"
                                                     class="btn list-action list-action-view">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="list" [fixedWidth]="true"></fa-icon>
                                                 </span>
-                                                <span>{{ 'entity.action.view' | translate }}</span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.view' | translate }}</span>
+                                                }
                                             </button>
 
                                             <button
                                                     type="button"
                                                     title="{{ 'entity.action.edit' | translate }}"
+                                                    aria-label="{{ 'entity.action.edit' | translate }}"
                                                     (click)="goToEdit(recipe)"
                                                     class="btn list-action list-action-edit">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
                                                 </span>
-                                                <span>{{ 'entity.action.edit' | translate }}</span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.edit' | translate }}</span>
+                                                }
                                             </button>
 
                                             <button
                                                     type="button"
                                                     title="{{ 'entity.action.delete' | translate }}"
+                                                    aria-label="{{ 'entity.action.delete' | translate }}"
                                                     (click)="delete(recipe)"
                                                     class="btn list-action list-action-delete">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="times" [fixedWidth]="true"></fa-icon>
                                                 </span>
-                                                <span>{{ 'entity.action.delete' | translate }}</span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.delete' | translate }}</span>
+                                                }
                                             </button>
                                         </div>
                                     </td>
@@ -84,17 +95,23 @@
         </section>
 
         <div class="entity-pagination-bar d-flex justify-content-between align-items-center px-3">
-            <span class="text-body-secondary small">
-                Mostrando {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+            <span class="entity-pagination-summary text-body-secondary small">
+                @if (isMobile()) {
+                    {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+                } @else {
+                    Mostrando {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+                }
             </span>
 
             <ngb-pagination
+                    class="entity-pagination"
                     [collectionSize]="totalItems()"
                     [page]="page()"
                     [pageSize]="itemsPerPage"
-                    [maxSize]="5"
-                    [ellipses]="true"
-                    [boundaryLinks]="true"
+                    [maxSize]="paginationMaxSize()"
+                    [ellipses]="!isMobile()"
+                    [boundaryLinks]="!isMobile()"
+                    [size]="isMobile() ? 'sm' : 'md'"
                     (pageChange)="navigateToPage($event)">
             </ngb-pagination>
         </div>
