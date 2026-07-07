@@ -38,8 +38,8 @@ export class SidebarComponent implements OnInit {
 
         if (this.authService.isAdmin()) {
             items.push({
-                label: 'Tipos de receitas',
-                description: 'Tipos de receitas',
+                label: 'Categorias',
+                description: 'Categorias',
                 route: '/app/recipes-types',
                 badge: 'TP',
                 icon: 'tags'

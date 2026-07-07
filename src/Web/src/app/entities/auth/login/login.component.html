@@ -2,10 +2,8 @@
     <div class="card-body d-grid gap-4 p-4 p-lg-5">
         <div class="d-grid gap-3">
             <span class="eyebrow">Acesso</span>
-            <h2>Entre na cozinha digital</h2>
-            <p class="mb-0 text-body-secondary">
-                Consulte o acervo, acompanhe o ritmo da operacao e edite receitas sem sair do fluxo.
-            </p>
+            <h2>Entre em Chef Archive</h2>
+
         </div>
 
         <form class="d-grid gap-3" [formGroup]="form" (ngSubmit)="submit()">
@@ -17,7 +15,7 @@
                         class="form-control"
                         [class.is-invalid]="form.controls.email.touched && form.controls.email.invalid"
                         formControlName="email"
-                        placeholder="chef@atelie.com"/>
+                        placeholder="email@gmail.com"/>
                 @if (form.controls.email.touched && form.controls.email.invalid) {
                     <div class="invalid-feedback d-block">Informe um email valido.</div>
                 }

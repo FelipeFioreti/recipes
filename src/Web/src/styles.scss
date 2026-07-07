@@ -24,19 +24,43 @@
   --surface: #{theme.$tertiary};
   --surface-strong: #{theme.$light};
   --surface-dark: #{theme.$dark};
+  --surface-card: rgba(255, 252, 247, 0.84);
+  --surface-card-strong: rgba(255, 252, 247, 0.96);
+  --surface-card-soft: rgba(255, 250, 243, 0.82);
+  --surface-overlay: rgba(255, 255, 255, 0.65);
   --surface-muted: rgba(62, 46, 39, 0.08);
+  --surface-muted-strong: rgba(62, 46, 39, 0.18);
   --text: #{theme.$body-color};
   --text-soft: #{theme.$secondary};
+  --text-soft-strong: #5c4a3a;
+  --text-soft-deep: #3f3026;
   --text-inverse: #{theme.$light};
   --line: #{theme.$border-color};
   --line-strong: #{theme.$border-color-strong};
+  --line-soft: rgba(62, 46, 39, 0.08);
+  --line-soft-strong: rgba(62, 46, 39, 0.1);
   --accent: #{theme.$primary};
   --accent-deep: #{theme.$primary-dark};
   --accent-soft: #{theme.$primary-soft};
+  --accent-softer: rgba(216, 120, 46, 0.1);
+  --accent-soft-strong: rgba(216, 120, 46, 0.18);
+  --accent-soft-hover: rgba(216, 120, 46, 0.22);
+  --accent-line-strong: rgba(216, 120, 46, 0.28);
+  --accent-focus-ring: 0 0 0 4px rgba(216, 120, 46, 0.12);
+  --success-soft: rgba(53, 116, 92, 0.12);
+  --success-line: rgba(53, 116, 92, 0.18);
+  --danger-soft: rgba(177, 69, 59, 0.12);
+  --danger-soft-strong: rgba(177, 69, 59, 0.1);
+  --danger-soft-hover: rgba(177, 69, 59, 0.2);
+  --danger-line: rgba(177, 69, 59, 0.18);
+  --danger-line-strong: rgba(177, 69, 59, 0.28);
   --info: #{theme.$info};
   --warning: #{theme.$warning};
   --success: #{theme.$success};
   --danger: #{theme.$danger};
+  --shadow-soft: 0 8px 18px rgba(65, 40, 24, 0.05);
+  --shadow-hover: 0 16px 26px rgba(65, 40, 24, 0.12);
+  --shadow-accent: 0 14px 28px rgba(184, 92, 40, 0.24);
   --shadow-lg: 0 24px 60px rgba(65, 40, 24, 0.12);
   --shadow-md: 0 16px 30px rgba(65, 40, 24, 0.08);
   --radius-xl: 32px;
@@ -163,7 +187,7 @@ img {
 
 .glass-card {
   background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.65);
+  border: 1px solid var(--surface-overlay);
 }
 
 .btn {
@@ -196,7 +220,7 @@ img {
   --bs-btn-color: var(--text-inverse);
   --bs-btn-hover-color: var(--text-inverse);
   --bs-btn-active-color: var(--text-inverse);
-  box-shadow: 0 14px 28px rgba(184, 92, 40, 0.2);
+  box-shadow: 0 14px 28px rgba(var(--bs-primary-rgb), 0.2);
 }
 
 .btn-outline-secondary {
@@ -204,10 +228,10 @@ img {
   --bs-btn-border-color: var(--line);
   --bs-btn-hover-color: var(--text);
   --bs-btn-hover-bg: rgba(255, 250, 243, 0.8);
-  --bs-btn-hover-border-color: rgba(62, 46, 39, 0.18);
+  --bs-btn-hover-border-color: var(--surface-muted-strong);
   --bs-btn-active-color: var(--text);
   --bs-btn-active-bg: rgba(255, 250, 243, 0.88);
-  --bs-btn-active-border-color: rgba(62, 46, 39, 0.18);
+  --bs-btn-active-border-color: var(--surface-muted-strong);
 }
 
 .form-label {
@@ -238,7 +262,7 @@ textarea.form-control {
 .form-select:focus {
   outline: none;
   border-color: rgba(216, 120, 46, 0.65);
-  box-shadow: 0 0 0 4px rgba(216, 120, 46, 0.12);
+  box-shadow: var(--accent-focus-ring);
   background: var(--surface-strong);
 }
 
@@ -282,7 +306,7 @@ textarea.form-control {
 .ng-select.ng-select-opened > .ng-select-container,
 .ng-select.ng-select-focused:not(.ng-select-opened) > .ng-select-container {
   border-color: rgba(216, 120, 46, 0.65) !important;
-  box-shadow: 0 0 0 4px rgba(216, 120, 46, 0.12) !important;
+  box-shadow: var(--accent-focus-ring) !important;
   background: var(--surface-strong) !important;
 }
 
@@ -301,7 +325,7 @@ textarea.form-control {
 
 .ng-dropdown-panel {
   margin-top: 0.45rem;
-  border: 1px solid rgba(62, 46, 39, 0.08) !important;
+  border: 1px solid var(--line-soft) !important;
   border-radius: 18px !important;
   background: rgba(255, 252, 247, 0.98) !important;
   box-shadow: var(--shadow-md) !important;
@@ -315,12 +339,12 @@ textarea.form-control {
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-marked {
-  background: rgba(216, 120, 46, 0.1) !important;
+  background: var(--accent-softer) !important;
   color: var(--accent-deep) !important;
 }
 
 .ng-dropdown-panel .ng-dropdown-panel-items .ng-option.ng-option-selected {
-  background: rgba(216, 120, 46, 0.14) !important;
+  background: var(--accent-soft) !important;
   color: var(--accent-deep) !important;
   font-weight: 700;
 }
@@ -339,13 +363,13 @@ textarea.form-control {
 .app-badge-accent {
   color: var(--accent-deep);
   background: var(--accent-soft);
-  border: 1px solid rgba(216, 120, 46, 0.18);
+  border: 1px solid var(--accent-soft-strong);
 }
 
 .app-badge-success {
   color: var(--success);
-  background: rgba(53, 116, 92, 0.12);
-  border: 1px solid rgba(53, 116, 92, 0.18);
+  background: var(--success-soft);
+  border: 1px solid var(--success-line);
 }
 
 .app-badge-muted {
@@ -360,15 +384,15 @@ textarea.form-control {
 }
 
 .alert-danger {
-  background: rgba(177, 69, 59, 0.1);
-  border-color: rgba(177, 69, 59, 0.16);
+  background: var(--danger-soft-strong);
+  border-color: var(--danger-line);
   font-size: 0.82rem;
 }
 
 .alert-warning {
   color: var(--accent-deep);
-  background: rgba(216, 120, 46, 0.1);
-  border-color: rgba(216, 120, 46, 0.16);
+  background: var(--accent-softer);
+  border-color: var(--accent-soft-strong);
 }
 
 .eyebrow {
@@ -439,11 +463,17 @@ h3 {
   gap: 1.5rem;
 }
 
+.entity-page--sticky-pagination {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 84px);
+}
+
 .entity-card {
   padding: clamp(1.35rem, 2vw, 1.8rem);
   border: 1px solid rgba(255, 255, 255, 0.72);
   border-radius: var(--radius-lg);
-  background: rgba(255, 252, 247, 0.84);
+  background: var(--surface-card);
   box-shadow: var(--shadow-md);
   backdrop-filter: blur(18px);
 }
@@ -461,8 +491,8 @@ h3 {
   min-width: 12rem;
   padding: 0.85rem 1rem;
   border-radius: 999px;
-  background: rgba(216, 120, 46, 0.12);
-  border: 1px solid rgba(216, 120, 46, 0.18);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-soft-strong);
   color: var(--accent-deep);
   font-weight: 800;
   text-align: center;
@@ -481,8 +511,8 @@ h3 {
   min-height: 100%;
   padding: 1.15rem 1.2rem;
   border-radius: var(--radius-md);
-  background: rgba(255, 250, 243, 0.82);
-  border: 1px solid rgba(62, 46, 39, 0.08);
+  background: var(--surface-card-soft);
+  border: 1px solid var(--line-soft);
 }
 
 .entity-detail-item-full {
@@ -539,11 +569,18 @@ h3 {
   padding: clamp(1rem, 1.8vw, 1.35rem);
 }
 
+.entity-list-card--fill {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .entity-list-table {
   --bs-table-bg: transparent;
   --bs-table-striped-bg: transparent;
   --bs-table-hover-bg: rgba(255, 248, 238, 0.72);
-  --bs-table-border-color: rgba(62, 46, 39, 0.08);
+  --bs-table-border-color: var(--line-soft);
   margin-bottom: 0;
 }
 
@@ -559,7 +596,7 @@ h3 {
 
 .entity-list-table tbody td {
   padding: 1rem;
-  border-color: rgba(62, 46, 39, 0.08);
+  border-color: var(--line-soft);
   vertical-align: middle;
 }
 
@@ -584,10 +621,10 @@ h3 {
   gap: 0.7rem;
   padding: 0.45rem 0.9rem 0.45rem 0.45rem;
   border-radius: 999px;
-  border: 1px solid rgba(62, 46, 39, 0.1);
+  border: 1px solid var(--line-soft-strong);
   background: linear-gradient(180deg, rgba(255, 252, 250, 0.98), rgba(250, 252, 247, 0.94));
   color: var(--text);
-  box-shadow: 0 8px 18px rgba(65, 40, 24, 0.05);
+  box-shadow: var(--shadow-soft);
   transition: transform var(--transition),
   border-color var(--transition),
   background var(--transition),
@@ -596,9 +633,9 @@ h3 {
 }
 
 .list-action:hover {
-  border-color: rgba(62, 46, 39, 0.18);
+  border-color: var(--surface-muted-strong);
   background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(252, 245, 237, 0.98));
-  box-shadow: 0 16px 26px rgba(65, 40, 24, 0.12);
+  box-shadow: var(--shadow-hover);
 }
 
 .list-action-icon {
@@ -623,20 +660,20 @@ h3 {
 }
 
 .list-action-view .list-action-icon {
-  background: rgba(216, 120, 46, 0.14);
+  background: var(--accent-soft);
 }
 
 .list-action-view:hover {
-  border-color: rgba(216, 120, 46, 0.28);
-  color: #8f4318;
+  border-color: var(--accent-line-strong);
+  color: var(--accent-deep);
 }
 
 .list-action-view:hover .list-action-icon {
-  background: rgba(216, 120, 46, 0.22);
+  background: var(--accent-soft-hover);
 }
 
 .list-action-edit {
-  color: #5c4a3a;
+  color: var(--text-soft-strong);
 }
 
 .list-action-edit .list-action-icon {
@@ -645,7 +682,7 @@ h3 {
 
 .list-action-edit:hover {
   border-color: rgba(121, 107, 96, 0.24);
-  color: #3f3026;
+  color: var(--text-soft-deep);
 }
 
 .list-action-edit:hover .list-action-icon {
@@ -657,16 +694,73 @@ h3 {
 }
 
 .list-action-delete .list-action-icon {
-  background: rgba(177, 69, 59, 0.12);
+  background: var(--danger-soft);
 }
 
 .list-action-delete:hover {
-  border-color: rgba(177, 69, 59, 0.28);
-  color: #8f2d22;
+  border-color: var(--danger-line-strong);
+  color: var(--danger);
 }
 
 .list-action-delete:hover .list-action-icon {
-  background: rgba(177, 69, 59, 0.2);
+  background: var(--danger-soft-hover);
+}
+
+.entity-pagination-bar {
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  padding-top: 1rem;
+}
+
+.entity-pagination-bar .pagination {
+  --bs-pagination-color: var(--accent-deep);
+  --bs-pagination-bg: var(--surface-card-strong);
+  --bs-pagination-border-color: var(--accent-soft-strong);
+  --bs-pagination-hover-color: var(--text-inverse);
+  --bs-pagination-hover-bg: var(--accent);
+  --bs-pagination-hover-border-color: var(--accent);
+  --bs-pagination-focus-color: var(--text-inverse);
+  --bs-pagination-focus-bg: var(--accent);
+  --bs-pagination-focus-box-shadow: var(--accent-focus-ring);
+  --bs-pagination-active-color: var(--text-inverse);
+  --bs-pagination-active-bg: var(--accent-deep);
+  --bs-pagination-active-border-color: var(--accent-deep);
+  --bs-pagination-disabled-color: rgba(62, 46, 39, 0.4);
+  --bs-pagination-disabled-bg: rgba(255, 252, 247, 0.74);
+  --bs-pagination-disabled-border-color: var(--line-soft);
+  gap: 0.35rem;
+}
+
+.entity-pagination-bar .page-link {
+  min-width: 2.5rem;
+  height: 2.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px !important;
+  font-weight: 700;
+  box-shadow: var(--shadow-soft);
+  transition: transform var(--transition),
+  background-color var(--transition),
+  border-color var(--transition),
+  color var(--transition),
+  box-shadow var(--transition);
+}
+
+.entity-pagination-bar .page-link:hover,
+.entity-pagination-bar .page-link:focus {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hover);
+}
+
+.entity-pagination-bar .page-item.active .page-link {
+  box-shadow: var(--shadow-accent);
+}
+
+.entity-pagination-bar .page-item.disabled .page-link {
+  box-shadow: none;
 }
 
 .app-top-modal .modal-dialog {
@@ -676,6 +770,10 @@ h3 {
 }
 
 @media (max-width: 991px) {
+  .entity-page--sticky-pagination {
+    min-height: calc(100dvh - 6rem);
+  }
+
   .entity-detail-item {
     grid-column: 1 / -1;
   }
@@ -741,6 +839,12 @@ h3 {
   .entity-form .form-control,
   .entity-form .ng-select-container {
     min-height: 3.2rem;
+  }
+
+  .entity-pagination-bar {
+    gap: 0.75rem;
+    flex-direction: column;
+    align-items: stretch !important;
   }
 
   .entity-list-card {

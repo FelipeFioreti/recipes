@@ -1,4 +1,4 @@
-<div class="d-grid gap-4">
+<div class="entity-page entity-page--sticky-pagination">
     <app-page-header
             [eyebrow]="'Tipos de receita'"
             [title]="'Tipos de receita'"
@@ -12,9 +12,9 @@
         </button>
     </app-page-header>
 
-    @if (recipeTypes()) {
-        <section class="entity-card entity-list-card">
-            <div class="row justify-content-center">
+    @if (recipeTypes().length > 0) {
+        <section class="entity-card entity-list-card entity-list-card--fill">
+            <div class="row justify-content-center flex-grow-1">
                 <div class="table-responsive">
                     <table class="table table-hover entity-list-table align-middle mb-0">
                         <thead class="thead-light">
@@ -85,6 +85,29 @@
                         </tbody>
                     </table>
                 </div>
+
+            </div>
+        </section>
+
+        <div class="entity-pagination-bar d-flex justify-content-between align-items-center px-3">
+            <span class="text-body-secondary small">
+                Mostrando {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+            </span>
+
+            <ngb-pagination
+                    [collectionSize]="totalItems()"
+                    [page]="page()"
+                    [pageSize]="itemsPerPage"
+                    [maxSize]="5"
+                    [ellipses]="true"
+                    [boundaryLinks]="true"
+                    (pageChange)="navigateToPage($event)">
+            </ngb-pagination>
+        </div>
+    } @else {
+        <section class="entity-card entity-list-card">
+            <div class="text-center text-body-secondary py-5">
+                {{ 'recipeType.notFound' | translate }}
             </div>
         </section>
     }

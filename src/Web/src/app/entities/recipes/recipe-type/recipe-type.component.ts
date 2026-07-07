@@ -1,10 +1,11 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {HttpHeaders, HttpResponse} from '@angular/common/http';
-import {ActivatedRoute, RouterModule} from '@angular/router';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from '@angular/common';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {TranslateModule} from '@ngx-translate/core';
+import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {ITEMS_PER_PAGE} from '../../../core/constants/pagination.constants';
 import {IRecipeType} from '../../../core/models/recipe-type.model';
@@ -21,6 +22,7 @@ import {PageHeaderComponent} from '../../../shared/components/page-header/page-h
         RouterModule,
         FontAwesomeModule,
         TranslateModule,
+        NgbPaginationModule,
         PageHeaderComponent,
     ],
 })
@@ -32,15 +34,16 @@ export class RecipeTypeComponent implements OnInit {
 
     private readonly destroyRef = inject(DestroyRef);
     private readonly activatedRoute = inject(ActivatedRoute);
+    private readonly router = inject(Router);
     private readonly recipeTypeService = inject(RecipeTypesService);
     public readonly recipeActionsService = inject(RecipeTypeActionsService);
 
     ngOnInit(): void {
-        this.activatedRoute.data
+        this.activatedRoute.queryParamMap
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((data) => {
-                const {page} = data['pagingParams'];
-                this.page.set(page);
+            .subscribe((params) => {
+                const page = Number(params.get('page') ?? 1);
+                this.page.set(page > 0 ? page : 1);
                 this.loadAll();
             });
     }
@@ -55,6 +58,30 @@ export class RecipeTypeComponent implements OnInit {
 
     delete(recipeType: IRecipeType): void {
         this.recipeActionsService.delete(recipeType, () => this.loadAll());
+    }
+
+    navigateToPage(page: number): void {
+        const nextPage = Math.max(1, page);
+
+        if (nextPage === this.page()) {
+            return;
+        }
+
+        this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+                page: nextPage === 1 ? null : nextPage,
+            },
+            queryParamsHandling: 'merge',
+        });
+    }
+
+    itemRangeStart(): number {
+        return this.totalItems() === 0 ? 0 : (this.page() - 1) * this.itemsPerPage + 1;
+    }
+
+    itemRangeEnd(): number {
+        return Math.min(this.page() * this.itemsPerPage, this.totalItems());
     }
 
     private loadAll(): void {
