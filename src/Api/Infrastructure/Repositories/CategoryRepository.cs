@@ -5,11 +5,11 @@ using Recipes.Api.Infrastructure.Data.Context;
 
 namespace Recipes.Api.Infrastructure.Repositories;
 
-public class RecipeTypeRepository(ApplicationDbContext context) : IRecipeTypeRepository
+public class CategoryRepository(ApplicationDbContext context) : ICategoryRepository
 {
-    private readonly DbSet<RecipeType> _dbSet = context.RecipeTypes;
+    private readonly DbSet<Category> _dbSet = context.Categories;
 
-    public async Task<IEnumerable<RecipeType>> GetAll(int page = 0, int size = 10)
+    public async Task<IEnumerable<Category>> GetAll(int page = 0, int size = 10)
     {
         return await _dbSet
             .AsNoTracking()
@@ -19,22 +19,22 @@ public class RecipeTypeRepository(ApplicationDbContext context) : IRecipeTypeRep
             .ToListAsync();
     }
 
-    public async Task<RecipeType?> GetById(int id)
+    public async Task<Category?> GetById(int id)
     {
         return await _dbSet.FindAsync(id);
     }
 
-    public async Task<RecipeType?> Create(RecipeType recipeType)
+    public async Task<Category?> Create(Category category)
     {
-        await _dbSet.AddAsync(recipeType);
+        await _dbSet.AddAsync(category);
         await context.SaveChangesAsync();
-        return recipeType;
+        return category;
     }
 
-    public async Task<RecipeType?> Update(RecipeType recipeType)
+    public async Task<Category?> Update(Category category)
     {
-        _dbSet.Update(recipeType);
+        _dbSet.Update(category);
         await context.SaveChangesAsync();
-        return recipeType;
+        return category;
     }
 }

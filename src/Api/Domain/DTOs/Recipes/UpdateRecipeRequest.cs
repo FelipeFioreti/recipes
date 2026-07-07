@@ -10,5 +10,5 @@ public record UpdateRecipeRequest
 
     [MaxLength(2000)] public string Description { get; init; } = string.Empty;
 
-    [Required] public int RecipeTypeId { get; init; }
+    [Required] public int CategoryId { get; init; }
 }

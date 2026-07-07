@@ -37,7 +37,7 @@ public class RecipeService(
         logger.LogDebug("Create()");
 
         var recipe = await recipeRepository.Create(
-            new Recipe(request.Name, request.Description, request.RecipeTypeId, userContext.GetUserId()));
+            new Recipe(request.Name, request.Description, request.CategoryId, userContext.GetUserId()));
 
         return recipe == null ? null : ToResponse(recipe);
     }

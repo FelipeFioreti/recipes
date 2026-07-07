@@ -12,5 +12,5 @@ public record CreateRecipeRequest
     public string Description { get; init; } = string.Empty;
 
     [Required]
-    public int RecipeTypeId { get; init; }
+    public int CategoryId { get; init; }
 }

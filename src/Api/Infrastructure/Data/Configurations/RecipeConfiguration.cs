@@ -20,14 +20,14 @@ public class RecipeConfiguration : IEntityTypeConfiguration<Recipe>
             .HasMaxLength(2000);
         builder.Property(e => e.UserId)
             .IsRequired();
-        builder.Property(e => e.RecipeTypeId)
+        builder.Property(e => e.CategoryId)
             .IsRequired();
         builder.HasOne(r => r.User)
             .WithMany(u => u.Recipes)
             .HasForeignKey(r => r.UserId);
-        builder.HasOne(r => r.RecipeType)
+        builder.HasOne(r => r.Category)
             .WithMany(u => u.Recipes)
-            .HasForeignKey(r => r.RecipeTypeId);
+            .HasForeignKey(r => r.CategoryId);
 
         builder.HasIndex(e => e.Name);
         builder.HasIndex(e => e.Description);

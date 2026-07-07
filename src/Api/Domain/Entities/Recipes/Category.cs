@@ -5,14 +5,14 @@ using Recipes.Api.Domain.Entities.BaseEntities;
 
 namespace Recipes.Api.Domain.Entities.Recipes;
 
-[Table("RecipeTypes")]
-public class RecipeType : BaseEntity
+[Table("Categories")]
+public class Category : BaseEntity
 {
-    public RecipeType()
+    public Category()
     {
     }
 
-    public RecipeType(string name)
+    public Category(string name)
     {
         Name = name;
     }
@@ -20,7 +20,7 @@ public class RecipeType : BaseEntity
     [MaxLength(255)] [Required] public string Name { get; set; } = string.Empty;
     public ICollection<Recipe>? Recipes { get; set; } = new List<Recipe>();
 
-    public void Update(UpdateRecipeTypeRequest request)
+    public void Update(UpdateCategoryRequest request)
     {
         Name = request.Name;
     }

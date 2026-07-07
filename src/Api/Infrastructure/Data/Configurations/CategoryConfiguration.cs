@@ -4,11 +4,11 @@ using Recipes.Api.Domain.Entities.Recipes;
 
 namespace Recipes.Api.Infrastructure.Data.Configurations;
 
-public class RecipeTypeConfiguration : IEntityTypeConfiguration<RecipeType>
+public class CategoryConfiguration : IEntityTypeConfiguration<Category>
 {
-    public void Configure(EntityTypeBuilder<RecipeType> builder)
+    public void Configure(EntityTypeBuilder<Category> builder)
     {
-        builder.ToTable("RecipeTypes");
+        builder.ToTable("Categories");
 
         builder.HasQueryFilter(e => e.DeletedAt == null);
 

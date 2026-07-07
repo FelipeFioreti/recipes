@@ -9,12 +9,12 @@ public record RecipeResponse
         Id = recipe.Id;
         Name = recipe.Name;
         Description = recipe.Description;
-        RecipeTypeId = recipe.RecipeTypeId;
+        CategoryId = recipe.CategoryId;
         UserId = recipe.UserId;
 
-        RecipeType = recipe.RecipeType is null
+        Category = recipe.Category is null
             ? null
-            : new RecipeTypeResponse(recipe.RecipeType);
+            : new CategoryResponse(recipe.Category);
 
         CreatedAt = recipe.CreatedAt;
         UpdatedAt = recipe.UpdatedAt;
@@ -24,10 +24,10 @@ public record RecipeResponse
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
-    public int RecipeTypeId { get; init; }
+    public int CategoryId { get; init; }
     public int UserId { get; init; }
 
-    public RecipeTypeResponse? RecipeType { get; init; }
+    public CategoryResponse? Category { get; init; }
 
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }

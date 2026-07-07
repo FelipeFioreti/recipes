@@ -2,16 +2,16 @@
 
 namespace Recipes.Api.Domain.DTOs.Recipes;
 
-public record RecipeTypeResponse
+public record CategoryResponse
 {
-    public RecipeTypeResponse(RecipeType recipeType)
+    public CategoryResponse(Category category)
     {
-        Id = recipeType.Id;
-        Name = recipeType.Name;
+        Id = category.Id;
+        Name = category.Name;
 
-        CreatedAt = recipeType.CreatedAt;
-        UpdatedAt = recipeType.UpdatedAt;
-        DeletedAt = recipeType.DeletedAt;
+        CreatedAt = category.CreatedAt;
+        UpdatedAt = category.UpdatedAt;
+        DeletedAt = category.DeletedAt;
     }
 
     public int Id { get; init; }

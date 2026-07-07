@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Recipes.Api.Domain.DTOs.Recipes;
 
-public record UpdateRecipeTypeRequest
+public record UpdateCategoryRequest
 {
     [Required]
     [MaxLength(255)]
