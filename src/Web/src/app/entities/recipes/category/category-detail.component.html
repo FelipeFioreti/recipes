@@ -1,13 +1,13 @@
-@if (recipeType(); as recipeRef) {
+@if (category(); as categoryRef) {
     <div class="entity-page">
         <app-page-header
-                [eyebrow]="'global.menu.recipe-types' | translate"
-                [title]="'recipeType.detail.title' | translate">
+                [eyebrow]="'global.menu.categories' | translate"
+                [title]="'category.detail.title' | translate">
             <button
                     type="button"
                     ngProjectAs="[page-actions]"
                     class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
-                    [routerLink]="['/app/recipes-types', recipeRef.id, 'edit']">
+                    [routerLink]="['/app/categories', categoryRef.id, 'edit']">
                 <fa-icon icon="pencil-alt"></fa-icon>
                 <span>{{ 'entity.action.edit' | translate }}</span>
             </button>
@@ -28,12 +28,12 @@
                 <div class="entity-detail-grid">
                     <article class="entity-detail-item entity-detail-item-full">
                         <span class="entity-detail-item-label">{{ 'global.field.name' | translate }}</span>
-                        <strong class="entity-detail-item-value">{{ recipeRef.name }}</strong>
+                        <strong class="entity-detail-item-value">{{ categoryRef.name }}</strong>
                     </article>
                 </div>
             </div>
         </section>
 
-        <app-entity-audit-accordion [entity]="recipeRef" [collapsed]="false"></app-entity-audit-accordion>
+        <app-entity-audit-accordion [entity]="categoryRef" [collapsed]="false"></app-entity-audit-accordion>
     </div>
 }

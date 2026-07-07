@@ -7,8 +7,8 @@ export const RECIPES_ROUTES: Routes = [
             import('./recipe/recipe.route').then((m) => m.recipeRoute)
     },
     {
-        path: 'recipes-types',
+        path: 'categories',
         loadChildren: () =>
-            import('./recipe-type/recipe-type.route').then((m) => m.recipeTypeRoute)
+            import('./category/category.route').then((m) => m.categoryRoute)
     }
 ];

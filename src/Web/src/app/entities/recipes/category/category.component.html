@@ -1,18 +1,18 @@
 <div class="entity-page entity-page--sticky-pagination">
     <app-page-header
-            [eyebrow]="'Tipos de receita'"
-            [title]="'Tipos de receita'"
+            [eyebrow]="'Categorias'"
+            [title]="'Categorias'"
             [description]="'Organize as categorias usadas para classificar as receitas.'">
         <button
                 type="button"
                 ngProjectAs="[page-actions]"
                 class="btn btn-primary"
-                (click)="recipeActionsService.goToNew()">
-            <span>{{ 'recipeType.home.createLabel' | translate }}</span>
+                (click)="categoryActionsService.goToNew()">
+            <span>{{ 'category.home.createLabel' | translate }}</span>
         </button>
     </app-page-header>
 
-    @if (recipeTypes().length > 0) {
+    @if (categories().length > 0) {
         <section class="entity-card entity-list-card entity-list-card--fill">
             <div class="row justify-content-center flex-grow-1">
                 <div class="table-responsive">
@@ -29,12 +29,12 @@
                         </thead>
                         <tbody>
 
-                            @for (recipeType of recipeTypes(); track recipeType.id) {
+                            @for (category of categories(); track category.id) {
 
-                                <tr [class.notActive]="!recipeType.deletedAt">
+                                <tr [class.notActive]="!category.deletedAt">
 
                                     <td [attr.data-label]="'global.field.name' | translate">
-                                        <span class="entity-list-table-title">{{ recipeType.name }}</span>
+                                        <span class="entity-list-table-title">{{ category.name }}</span>
                                     </td>
 
                                     <td class="text-center entity-list-table-actions-cell" data-label="Acoes">
@@ -42,7 +42,7 @@
 
                                             <button type="button"
                                                     title="{{ 'entity.action.view' | translate }}"
-                                                    (click)="goToView(recipeType)"
+                                                    (click)="goToView(category)"
                                                     class="btn list-action list-action-view">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="list" [fixedWidth]="true"></fa-icon>
@@ -52,7 +52,7 @@
 
                                             <button type="button"
                                                     title="{{ 'entity.action.edit' | translate }}"
-                                                    (click)="goToEdit(recipeType)"
+                                                    (click)="goToEdit(category)"
                                                     class="btn list-action list-action-edit">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
@@ -62,7 +62,7 @@
 
                                             <button type="button"
                                                     title="{{ 'entity.action.delete' | translate }}"
-                                                    (click)="delete(recipeType)"
+                                                    (click)="delete(category)"
                                                     class="btn list-action list-action-delete">
                                                 <span class="list-action-icon">
                                                     <fa-icon icon="times" [fixedWidth]="true"></fa-icon>
@@ -77,7 +77,7 @@
 
                                 <tr>
                                     <td colspan="3" class="text-center">
-                                        {{ 'recipeType.notFound' | translate }}
+                                        {{ 'category.notFound' | translate }}
                                     </td>
                                 </tr>
                             }
@@ -107,7 +107,7 @@
     } @else {
         <section class="entity-card entity-list-card">
             <div class="text-center text-body-secondary py-5">
-                {{ 'recipeType.notFound' | translate }}
+                {{ 'category.notFound' | translate }}
             </div>
         </section>
     }

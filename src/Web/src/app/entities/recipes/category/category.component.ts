@@ -8,14 +8,14 @@ import {TranslateModule} from '@ngx-translate/core';
 import {NgbPaginationModule} from '@ng-bootstrap/ng-bootstrap';
 
 import {ITEMS_PER_PAGE} from '../../../core/constants/pagination.constants';
-import {IRecipeType} from '../../../core/models/recipe-type.model';
-import {RecipeTypeActionsService} from './recipe-type-actions.service';
-import {RecipeTypesService} from '../../../core/services/recipe-types.service';
+import {ICategory} from '../../../core/models/category.model';
+import {CategoryActionsService} from './category-actions.service';
+import {CategoriesService} from '../../../core/services/categories.service';
 import {PageHeaderComponent} from '../../../shared/components/page-header/page-header.component';
 
 @Component({
-    selector: 'app-rec-recipe',
-    templateUrl: './recipe-type.component.html',
+    selector: 'app-rec-category',
+    templateUrl: './category.component.html',
     standalone: true,
     imports: [
         CommonModule,
@@ -26,8 +26,8 @@ import {PageHeaderComponent} from '../../../shared/components/page-header/page-h
         PageHeaderComponent,
     ],
 })
-export class RecipeTypeComponent implements OnInit {
-    recipeTypes = signal<IRecipeType[]>([]);
+export class CategoryComponent implements OnInit {
+    categories = signal<ICategory[]>([]);
     totalItems = signal(0);
     itemsPerPage = ITEMS_PER_PAGE;
     page = signal(1);
@@ -35,8 +35,8 @@ export class RecipeTypeComponent implements OnInit {
     private readonly destroyRef = inject(DestroyRef);
     private readonly activatedRoute = inject(ActivatedRoute);
     private readonly router = inject(Router);
-    private readonly recipeTypeService = inject(RecipeTypesService);
-    public readonly recipeActionsService = inject(RecipeTypeActionsService);
+    private readonly categoriesService = inject(CategoriesService);
+    public readonly categoryActionsService = inject(CategoryActionsService);
 
     ngOnInit(): void {
         this.activatedRoute.queryParamMap
@@ -48,16 +48,16 @@ export class RecipeTypeComponent implements OnInit {
             });
     }
 
-    goToView(recipeType: IRecipeType): void {
-        this.recipeActionsService.goToView(recipeType);
+    goToView(category: ICategory): void {
+        this.categoryActionsService.goToView(category);
     }
 
-    goToEdit(recipeType: IRecipeType): void {
-        this.recipeActionsService.goToEdit(recipeType);
+    goToEdit(category: ICategory): void {
+        this.categoryActionsService.goToEdit(category);
     }
 
-    delete(recipeType: IRecipeType): void {
-        this.recipeActionsService.delete(recipeType, () => this.loadAll());
+    delete(category: ICategory): void {
+        this.categoryActionsService.delete(category, () => this.loadAll());
     }
 
     navigateToPage(page: number): void {
@@ -85,19 +85,19 @@ export class RecipeTypeComponent implements OnInit {
     }
 
     private loadAll(): void {
-        this.recipeTypeService
+        this.categoriesService
             .getAllPaged({
                 page: this.page() - 1,
                 size: this.itemsPerPage,
             })
             .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe((response: HttpResponse<IRecipeType[]>) => {
+            .subscribe((response: HttpResponse<ICategory[]>) => {
                 this.onSuccess(response.body, response.headers);
             });
     }
 
-    private onSuccess(recipeTypes: IRecipeType[] | null, headers: HttpHeaders): void {
-        this.totalItems.set(Number(headers.get('X-Total-Count')) || recipeTypes?.length || 0);
-        this.recipeTypes.set(recipeTypes ?? []);
+    private onSuccess(categories: ICategory[] | null, headers: HttpHeaders): void {
+        this.totalItems.set(Number(headers.get('X-Total-Count')) || categories?.length || 0);
+        this.categories.set(categories ?? []);
     }
 }

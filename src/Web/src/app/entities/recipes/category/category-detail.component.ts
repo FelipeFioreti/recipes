@@ -4,15 +4,15 @@ import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
 import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
-import {IRecipeType} from "../../../core/models/recipe-type.model";
+import {ICategory} from "../../../core/models/category.model";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 
 @Component({
-    selector: 'app-recipe-type-detail',
-    templateUrl: './recipe-type-detail.component.html',
+    selector: 'app-category-detail',
+    templateUrl: './category-detail.component.html',
     standalone: true,
     imports: [
         CommonModule,
@@ -23,8 +23,8 @@ import {
         EntityAuditAccordionComponent
     ]
 })
-export class RecipeTypeDetailComponent implements OnInit {
-    recipeType = signal<IRecipeType | null>(null);
+export class CategoryDetailComponent implements OnInit {
+    category = signal<ICategory | null>(null);
 
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
@@ -32,7 +32,7 @@ export class RecipeTypeDetailComponent implements OnInit {
     ngOnInit(): void {
         this.route.data.pipe(
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(({recipeType}) => this.recipeType.set(recipeType));
+        ).subscribe(({category}) => this.category.set(category));
     }
 
     previousState(): void {

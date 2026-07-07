@@ -1,8 +1,8 @@
-@if (recipeType(); as currentRecipeType) {
+@if (category(); as currentCategory) {
     <div class="entity-page">
         <app-page-header
-                [eyebrow]="'global.menu.recipe-types' | translate"
-                [title]="(currentRecipeType.id ? 'recipeType.home.editLabel' : 'recipeType.home.createLabel') | translate">
+                [eyebrow]="'global.menu.categories' | translate"
+                [title]="(currentCategory.id ? 'category.home.editLabel' : 'category.home.createLabel') | translate">
             <button
                     type="button"
                     ngProjectAs="[page-actions]"
@@ -14,7 +14,7 @@
 
             <button
                     type="submit"
-                    form="recipe-type-form"
+                    form="category-form"
                     ngProjectAs="[page-actions]"
                     class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
                     [disabled]="editForm.invalid || isSaving()">
@@ -25,7 +25,7 @@
 
         <section class="entity-card">
             <form
-                    id="recipe-type-form"
+                    id="category-form"
                     name="editForm"
                     role="form"
                     class="entity-form"
@@ -58,8 +58,8 @@
             </form>
         </section>
 
-        @if (currentRecipeType.id) {
-            <app-entity-audit-accordion [entity]="currentRecipeType"></app-entity-audit-accordion>
+        @if (currentCategory.id) {
+            <app-entity-audit-accordion [entity]="currentCategory"></app-entity-audit-accordion>
         }
     </div>
 }

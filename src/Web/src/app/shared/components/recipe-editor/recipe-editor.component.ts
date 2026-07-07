@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, Component, input, output} from '@angular/core';
 import {ReactiveFormsModule, FormGroup} from '@angular/forms';
-import {RecipeType} from "../../../core/models/recipe-type.model";
+import {Category} from "../../../core/models/category.model";
 
 @Component({
     selector: 'app-recipe-editor',
@@ -12,7 +12,7 @@ import {RecipeType} from "../../../core/models/recipe-type.model";
 })
 export class RecipeEditorComponent {
     readonly form = input.required<FormGroup>();
-    readonly recipeTypes = input<RecipeType[]>([]);
+    readonly categories = input<Category[]>([]);
     readonly saving = input(false);
     readonly mode = input<'create' | 'edit'>('create');
     readonly categoriesUnavailableMessage = input('');

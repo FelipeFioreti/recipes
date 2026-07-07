@@ -6,17 +6,17 @@ import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
 
-import {RecipeTypeActionsService} from "./recipe-type-actions.service";
-import {RecipeTypesService} from "../../../core/services/recipe-types.service";
-import {IRecipeType, RecipeType} from "../../../core/models/recipe-type.model";
+import {CategoryActionsService} from "./category-actions.service";
+import {CategoriesService} from "../../../core/services/categories.service";
+import {Category, ICategory} from "../../../core/models/category.model";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 
 @Component({
-    selector: 'app-rec-recipe-type-update',
-    templateUrl: './recipe-type-update.component.html',
+    selector: 'app-rec-category-update',
+    templateUrl: './category-update.component.html',
     standalone: true,
     imports: [
         CommonModule,
@@ -27,14 +27,14 @@ import {
         EntityAuditAccordionComponent
     ]
 })
-export class RecipeTypeUpdateComponent implements OnInit {
+export class CategoryUpdateComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
-    private readonly recipeActionsService = inject(RecipeTypeActionsService);
-    private readonly recipeTypeService = inject(RecipeTypesService);
+    private readonly categoryActionsService = inject(CategoryActionsService);
+    private readonly categoriesService = inject(CategoriesService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
 
-    recipeType = signal<IRecipeType | null>(null);
+    category = signal<ICategory | null>(null);
     isSaving = signal(false);
 
     editForm = this.fb.group({
@@ -46,30 +46,30 @@ export class RecipeTypeUpdateComponent implements OnInit {
         this.route.data.pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(data => {
-            const recipeType = data['recipeType'] as IRecipeType;
-            this.bindRecipe(recipeType && recipeType.id ? recipeType : new RecipeType());
+            const category = data['category'] as ICategory;
+            this.bindCategory(category && category.id ? category : new Category());
         });
     }
 
-    private bindRecipe(recipe: IRecipeType): void {
-        this.recipeType.set(recipe);
-        this.updateForm(recipe);
+    private bindCategory(category: ICategory): void {
+        this.category.set(category);
+        this.updateForm(category);
     }
 
     cancel(): void {
-        this.recipeActionsService.goToViewOrList(this.recipeType()!);
+        this.categoryActionsService.goToViewOrList(this.category()!);
     }
 
     save(): void {
-        const recipeType = this.recipeType();
-        if (!recipeType) return;
+        const category = this.category();
+        if (!category) return;
 
         this.isSaving.set(true);
-        this.updateRecipeType(recipeType);
+        this.updateCategory(category);
 
-        const request = recipeType.id && recipeType.id > 0
-            ? this.recipeTypeService.update(recipeType.id, recipeType)
-            : this.recipeTypeService.create(recipeType);
+        const request = category.id && category.id > 0
+            ? this.categoriesService.update(category.id, category)
+            : this.categoriesService.create(category);
 
         request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (res) => this.onSaveSuccess(res),
@@ -77,20 +77,20 @@ export class RecipeTypeUpdateComponent implements OnInit {
         });
     }
 
-    private updateForm(recipeType: IRecipeType): void {
+    private updateForm(category: ICategory): void {
         this.editForm.patchValue({
-            Id: recipeType.id,
-            Name: recipeType.name,
+            Id: category.id,
+            Name: category.name,
         });
     }
 
-    private updateRecipeType(recipeType: IRecipeType): void {
-        recipeType.name = this.editForm.get(['Name'])!.value;
+    private updateCategory(category: ICategory): void {
+        category.name = this.editForm.get(['Name'])!.value;
     }
 
-    private onSaveSuccess(recipe: IRecipeType): void {
+    private onSaveSuccess(category: ICategory): void {
         this.isSaving.set(false);
-        this.recipeActionsService.goToView(recipe);
+        this.categoryActionsService.goToView(category);
     }
 
     private onSaveError(): void {

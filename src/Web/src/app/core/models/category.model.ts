@@ -1,10 +1,10 @@
 import {BaseEntity, IBaseEntity} from "./base-entity.model";
 
-export interface IRecipeType extends IBaseEntity {
+export interface ICategory extends IBaseEntity {
     name?: string;
 }
 
-export class RecipeType extends BaseEntity implements IRecipeType {
+export class Category extends BaseEntity implements ICategory {
     constructor(
         id?: number,
         uuid?: string,

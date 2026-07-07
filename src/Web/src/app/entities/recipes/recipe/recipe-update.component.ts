@@ -11,9 +11,9 @@ import {NgSelectModule} from "@ng-select/ng-select";
 
 import {RecipeActionsService} from "./recipe-actions.service";
 import {RecipeService} from "../../../core/services/recipe-service";
-import {RecipeTypesService} from "../../../core/services/recipe-types.service";
+import {CategoriesService} from "../../../core/services/categories.service";
 import {IRecipe, Recipe} from "../../../core/models/recipe.model";
-import {IRecipeType} from "../../../core/models/recipe-type.model";
+import {ICategory} from "../../../core/models/category.model";
 import {PageHeaderComponent} from "../../../shared/components/page-header/page-header.component";
 import {
     EntityAuditAccordionComponent
@@ -37,31 +37,31 @@ export class RecipeUpdateComponent implements OnInit {
     private readonly fb = inject(FormBuilder);
     private readonly recipeActionsService = inject(RecipeActionsService);
     private readonly recipeService = inject(RecipeService);
-    private readonly recipeTypesService = inject(RecipeTypesService);
+    private readonly categoriesService = inject(CategoriesService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
 
     recipe = signal<IRecipe | null>(null);
-    recipeTypes = signal<IRecipeType[]>([]);
+    categories = signal<ICategory[]>([]);
     isSaving = signal(false);
 
     editForm = this.fb.group({
         Id: [{value: 0, disabled: true}],
         Name: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
         Description: ["", [Validators.maxLength(2000)]],
-        RecipeType: this.fb.control<IRecipeType | null>(
+        Category: this.fb.control<ICategory | null>(
             null,
             [Validators.required]
         )
     });
 
     ngOnInit(): void {
-        this.recipeTypesService.getAll()
+        this.categoriesService.getAll()
             .pipe(
                 takeUntilDestroyed(this.destroyRef),
                 catchError(() => of([]))
             )
-            .subscribe(res => this.recipeTypes.set(res || []));
+            .subscribe(res => this.categories.set(res || []));
 
         this.route.data
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -102,14 +102,15 @@ export class RecipeUpdateComponent implements OnInit {
             Id: recipe.id,
             Name: recipe.name,
             Description: recipe.description,
-            RecipeType: recipe.recipeType
+            Category: recipe.category
         });
     }
 
     private updateRecipe(recipe: IRecipe): void {
         recipe.name = this.editForm.get(['Name'])!.value;
         recipe.description = this.editForm.get(['Description'])!.value;
-        recipe.recipeType = this.editForm.get(['RecipeType'])!.value;
+        recipe.category = this.editForm.get(['Category'])!.value ?? undefined;
+        recipe.categoryId = recipe.category?.id;
     }
 
     private onSaveSuccess(recipe: IRecipe): void {

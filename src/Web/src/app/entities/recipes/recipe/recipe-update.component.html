@@ -56,17 +56,17 @@
                     </div>
 
                     <div class="col-lg-5">
-                        <label class="form-label required">{{ 'recipe.recipeType' | translate }}</label>
-                        <ng-select [items]="recipeTypes()"
-                                   formControlName="RecipeType"
+                        <label class="form-label required">{{ 'recipe.category' | translate }}</label>
+                        <ng-select [items]="categories()"
+                                   formControlName="Category"
                                    bindLabel="name"
-                                   [placeholder]="'recipe.recipeTypePlaceholder' | translate"
-                                   [class.is-invalid]="isInvalidAndTouched('RecipeType')">
+                                   [placeholder]="'recipe.categoryPlaceholder' | translate"
+                                   [class.is-invalid]="isInvalidAndTouched('Category')">
                         </ng-select>
 
-                        @if (isInvalidAndTouched('RecipeType')) {
+                        @if (isInvalidAndTouched('Category')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('RecipeType')?.errors?.['required']) {
+                                @if (editForm.get('Category')?.errors?.['required']) {
                                     <small>{{ 'entity.validation.required' | translate }}</small>
                                 }
                             </div>

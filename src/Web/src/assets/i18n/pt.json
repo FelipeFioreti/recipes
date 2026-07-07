@@ -5,7 +5,7 @@
       "home": "Inicio",
       "entities": "Entidades",
       "recipes": "Receitas",
-      "recipe-types": "Tipos de Receita",
+      "categories": "Categorias",
       "account": "Conta",
       "login": "Entrar",
       "register": "Registrar",
@@ -80,20 +80,20 @@
       "editLabel": "Editar receita"
     },
     "description": "Descricao",
-    "recipeType": "Tipo de receita",
-    "recipeTypePlaceholder": "Selecione um tipo de receita",
+    "category": "Categoria",
+    "categoryPlaceholder": "Selecione uma categoria",
     "notFound": "Nenhuma receita encontrada"
   },
-  "recipeType": {
+  "category": {
     "detail": {
-      "title": "Detalhes do tipo de receita"
+      "title": "Detalhes da categoria"
     },
     "home": {
-      "title": "Tipos de receita",
-      "createLabel": "Criar tipo de receita",
-      "editLabel": "Editar tipo de receita"
+      "title": "Categorias",
+      "createLabel": "Criar categoria",
+      "editLabel": "Editar categoria"
     },
-    "notFound": "Nenhum tipo de receita encontrado"
+    "notFound": "Nenhuma categoria encontrada"
   },
   "login": {
     "title": "Entre na cozinha digital",

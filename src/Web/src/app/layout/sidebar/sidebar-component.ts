@@ -40,8 +40,8 @@ export class SidebarComponent implements OnInit {
             items.push({
                 label: 'Categorias',
                 description: 'Categorias',
-                route: '/app/recipes-types',
-                badge: 'TP',
+                route: '/app/categories',
+                badge: 'CT',
                 icon: 'tags'
             });
         }

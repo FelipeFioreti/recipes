@@ -31,18 +31,18 @@
       </div>
 
       <div>
-        <label class="form-label" for="recipeTypeId">Categoria</label>
+        <label class="form-label" for="categoryId">Categoria</label>
         <select
-          id="recipeTypeId"
+          id="categoryId"
           class="form-select"
-          [class.is-invalid]="form().get('recipeTypeId')?.touched && form().get('recipeTypeId')?.invalid"
-          formControlName="recipeTypeId">
+          [class.is-invalid]="form().get('categoryId')?.touched && form().get('categoryId')?.invalid"
+          formControlName="categoryId">
           <option value="0">Selecione uma categoria</option>
-        @for (type of recipeTypes(); track type.id) {
+        @for (type of categories(); track type.id) {
             <option [value]="type.id">{{ type.name }}</option>
         }
         </select>
-      @if (form().get('recipeTypeId')?.touched && form().get('recipeTypeId')?.invalid) {
+      @if (form().get('categoryId')?.touched && form().get('categoryId')?.invalid) {
           <div class="invalid-feedback d-block">Selecione uma categoria valida.</div>
       }
       </div>
@@ -63,7 +63,7 @@
       <button
         type="submit"
         class="btn btn-primary w-100"
-        [disabled]="saving() || recipeTypes().length === 0">
+        [disabled]="saving() || categories().length === 0">
         {{ saving() ? 'Salvando...' : mode() === 'create' ? 'Salvar receita' : 'Atualizar receita' }}
       </button>
     </form>

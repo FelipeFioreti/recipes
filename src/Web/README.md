@@ -21,7 +21,7 @@ Frontend Angular standalone para o backend `Recipes.Api`.
 - `src/app/core`: autenticacao, guards, interceptors, modelos e servicos globais
 - `src/app/layout`: cascas da aplicacao autenticada e telas publicas
 - `src/app/shared`: componentes reutilizaveis
-- `src/app/features`: dominios da interface (`auth`, `home`, `recipes`, `recipe-types`)
+- `src/app/features`: dominios da interface (`auth`, `home`, `recipes`, `categories`)
 
 ## Integracao local
 
