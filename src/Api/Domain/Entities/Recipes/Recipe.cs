@@ -25,9 +25,11 @@ public class Recipe : BaseEntity
     [MaxLength(2000)] public string Description { get; private set; } = string.Empty;
     [ForeignKey("Category")] [Required] public int CategoryId { get; private set; }
     [ForeignKey("User")] [Required] public int UserId { get; private set; }
-
     public User User { get; set; } = null!;
     public Category? Category { get; set; } = null!;
+
+    public ICollection<Ingredient> Ingredients { get; set; } = [];
+    public ICollection<Step> Steps { get; set; } = [];
 
     public void Update(UpdateRecipeRequest request)
     {

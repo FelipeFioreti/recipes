@@ -57,4 +57,9 @@ public class RecipeRepository(ApplicationDbContext context) : IRecipeRepository
         await context.SaveChangesAsync();
         return recipe;
     }
+
+    public async Task<bool> CanAccessRecipe(int recipeId, int userId)
+    {
+        return await _dbSet.AnyAsync(recipe => recipe.Id == recipeId && recipe.UserId == userId);
+    }
 }

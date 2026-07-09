@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Recipes.Api.Domain.Entities.Admin;
 using Recipes.Api.Domain.Entities.BaseEntities;
 using Recipes.Api.Domain.Entities.Recipes;
 using Recipes.Api.Domain.Entities.Users;
@@ -9,6 +10,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Recipe> Recipes { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<Step> Steps { get; set; }
+    public DbSet<Unit> Units { get; set; }
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

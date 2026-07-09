@@ -10,4 +10,5 @@ public interface IRecipeRepository
     Task<Recipe?> GetById(int id);
     Task<Recipe?> Create(Recipe recipe);
     Task<Recipe?> Update(Recipe recipe);
+    Task<bool> CanAccessRecipe(int recipeId, int userId);
 }
