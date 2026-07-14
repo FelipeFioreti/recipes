@@ -6,6 +6,7 @@
       "entities": "Entidades",
       "recipes": "Receitas",
       "categories": "Categorias",
+      "units": "Unidades",
       "account": "Conta",
       "login": "Entrar",
       "register": "Registrar",
@@ -15,6 +16,7 @@
       "id": "ID",
       "uuid": "UUID",
       "name": "Nome",
+      "abbreviation": "Abreviacao",
       "type": "Tipo",
       "email": "E-mail",
       "password": "Senha",
@@ -94,6 +96,17 @@
       "editLabel": "Editar categoria"
     },
     "notFound": "Nenhuma categoria encontrada"
+  },
+  "unit": {
+    "detail": {
+      "title": "Detalhes da unidade"
+    },
+    "home": {
+      "title": "Unidades",
+      "createLabel": "Criar unidade",
+      "editLabel": "Editar unidade"
+    },
+    "notFound": "Nenhuma unidade encontrada"
   },
   "login": {
     "title": "Entre na cozinha digital",

@@ -43,6 +43,12 @@ export class SidebarComponent implements OnInit {
                 route: '/app/categories',
                 badge: 'CT',
                 icon: 'tags'
+            }, {
+                label: 'Unidades',
+                description: 'Unidades',
+                route: '/app/units',
+                badge: 'UN',
+                icon: 'balance-scale'
             });
         }
 

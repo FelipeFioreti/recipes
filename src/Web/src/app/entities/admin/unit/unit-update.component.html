@@ -1,0 +1,80 @@
+@if (unit(); as currentUnit) {
+    <div class="entity-page">
+        <app-page-header
+                [eyebrow]="'global.menu.units' | translate"
+                [title]="(currentUnit.id ? 'unit.home.editLabel' : 'unit.home.createLabel') | translate">
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
+                    (click)="cancel()">
+                <fa-icon icon="ban"></fa-icon>
+                <span>{{ 'entity.action.cancel' | translate }}</span>
+            </button>
+
+            <button
+                    type="submit"
+                    form="unit-form"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
+                    [disabled]="editForm.invalid || isSaving()">
+                <fa-icon icon="save"></fa-icon>
+                <span>{{ 'entity.action.save' | translate }}</span>
+            </button>
+        </app-page-header>
+
+        <section class="entity-card">
+            <form
+                    id="unit-form"
+                    name="editForm"
+                    role="form"
+                    class="entity-form"
+                    novalidate
+                    (ngSubmit)="save()"
+                    [formGroup]="editForm">
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <label class="form-label required">{{ 'global.field.name' | translate }}</label>
+                        <input type="text" class="form-control" name="Name" maxlength="50" required
+                               formControlName="Name"
+                               [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
+
+                        @if (isInvalidAndTouched('Name')) {
+                            <div class="invalid-feedback d-block">
+                                @if (editForm.get('Name')?.errors?.['required']) {
+                                    <small>{{ 'entity.validation.required' | translate }}</small>
+                                }
+                                @if (editForm.get('Name')?.errors?.['minlength']) {
+                                    <small>{{ 'entity.validation.minlength' | translate: {min: 1} }}</small>
+                                }
+                                @if (editForm.get('Name')?.errors?.['maxlength']) {
+                                    <small>{{ 'entity.validation.maxlength' | translate: {max: 50} }}</small>
+                                }
+                            </div>
+                        }
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label class="form-label">{{ 'global.field.abbreviation' | translate }}</label>
+                        <input type="text" class="form-control" name="Abbreviation" maxlength="10"
+                               formControlName="Abbreviation"
+                               [ngClass]="{'is-invalid': isInvalidAndTouched('Abbreviation')}">
+
+                        @if (isInvalidAndTouched('Abbreviation')) {
+                            <div class="invalid-feedback d-block">
+                                @if (editForm.get('Abbreviation')?.errors?.['maxlength']) {
+                                    <small>{{ 'entity.validation.maxlength' | translate: {max: 10} }}</small>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        @if (currentUnit.id) {
+            <app-entity-audit-accordion [entity]="currentUnit"></app-entity-audit-accordion>
+        }
+    </div>
+}

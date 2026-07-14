@@ -1,0 +1,44 @@
+@if (unit(); as unitRef) {
+    <div class="entity-page">
+        <app-page-header
+                [eyebrow]="'global.menu.units' | translate"
+                [title]="'unit.detail.title' | translate">
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
+                    [routerLink]="['/app/units', unitRef.id, 'edit']">
+                <fa-icon icon="pencil-alt"></fa-icon>
+                <span>{{ 'entity.action.edit' | translate }}</span>
+            </button>
+
+            <button
+                    type="button"
+                    ngProjectAs="[page-actions]"
+                    class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
+                    (click)="previousState()">
+                <fa-icon icon="arrow-left"></fa-icon>
+                <span>{{ 'entity.action.back' | translate }}</span>
+            </button>
+        </app-page-header>
+
+        <section class="entity-card entity-card-hero">
+            <div class="d-grid gap-4">
+
+                <div class="entity-detail-grid">
+                    <article class="entity-detail-item">
+                        <span class="entity-detail-item-label">{{ 'global.field.name' | translate }}</span>
+                        <strong class="entity-detail-item-value">{{ unitRef.name }}</strong>
+                    </article>
+
+                    <article class="entity-detail-item">
+                        <span class="entity-detail-item-label">{{ 'global.field.abbreviation' | translate }}</span>
+                        <strong class="entity-detail-item-value">{{ unitRef.abbreviation || '-' }}</strong>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <app-entity-audit-accordion [entity]="unitRef" [collapsed]="false"></app-entity-audit-accordion>
+    </div>
+}

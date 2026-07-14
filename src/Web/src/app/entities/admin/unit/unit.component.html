@@ -1,0 +1,138 @@
+<div class="entity-page entity-page--sticky-pagination">
+    <app-page-header
+            [eyebrow]="'Unidades'"
+            [title]="'Unidades'"
+            [description]="'Cadastre as unidades usadas no preparo e na montagem das receitas.'">
+        <button
+                type="button"
+                ngProjectAs="[page-actions]"
+                class="btn btn-primary"
+                (click)="unitActionsService.goToNew()">
+            <span>{{ 'unit.home.createLabel' | translate }}</span>
+        </button>
+    </app-page-header>
+
+    @if (units().length > 0) {
+        <section class="entity-card entity-list-card entity-list-card--fill">
+            <div class="row justify-content-center flex-grow-1">
+                <div class="table-responsive">
+                    <table class="table table-hover entity-list-table align-middle mb-0">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">
+                                <span translate="global.field.name"></span>
+                            </th>
+                            <th scope="col">
+                                <span translate="global.field.abbreviation"></span>
+                            </th>
+                            <th scope="col" class="text-center">
+                                @if (!isMobile()) {
+                                    <span>Acoes</span>
+                                }
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                            @for (unit of units(); track unit.id) {
+
+                                <tr [class.notActive]="!unit.deletedAt">
+
+                                    <td [attr.data-label]="'global.field.name' | translate">
+                                        <span class="entity-list-table-title">{{ unit.name }}</span>
+                                    </td>
+
+                                    <td [attr.data-label]="'global.field.abbreviation' | translate">
+                                        <span>{{ unit.abbreviation || '-' }}</span>
+                                    </td>
+
+                                    <td class="text-center entity-list-table-actions-cell" [attr.data-label]="isMobile() ? null : 'Acoes'">
+                                        <div class="list-actions">
+
+                                            <button type="button"
+                                                    title="{{ 'entity.action.view' | translate }}"
+                                                    aria-label="{{ 'entity.action.view' | translate }}"
+                                                    (click)="goToView(unit)"
+                                                    class="btn list-action list-action-view">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="list" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.view' | translate }}</span>
+                                                }
+                                            </button>
+
+                                            <button type="button"
+                                                    title="{{ 'entity.action.edit' | translate }}"
+                                                    aria-label="{{ 'entity.action.edit' | translate }}"
+                                                    (click)="goToEdit(unit)"
+                                                    class="btn list-action list-action-edit">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="edit" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.edit' | translate }}</span>
+                                                }
+                                            </button>
+
+                                            <button type="button"
+                                                    title="{{ 'entity.action.delete' | translate }}"
+                                                    aria-label="{{ 'entity.action.delete' | translate }}"
+                                                    (click)="delete(unit)"
+                                                    class="btn list-action list-action-delete">
+                                                <span class="list-action-icon">
+                                                    <fa-icon icon="times" [fixedWidth]="true"></fa-icon>
+                                                </span>
+                                                @if (!isMobile()) {
+                                                    <span class="list-action-label">{{ 'entity.action.delete' | translate }}</span>
+                                                }
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            } @empty {
+
+                                <tr>
+                                    <td colspan="3" class="text-center">
+                                        {{ 'unit.notFound' | translate }}
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <div class="entity-pagination-bar d-flex justify-content-between align-items-center px-3">
+            <span class="entity-pagination-summary text-body-secondary small">
+                @if (isMobile()) {
+                    {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+                } @else {
+                    Mostrando {{ itemRangeStart() }}-{{ itemRangeEnd() }} de {{ totalItems() }}
+                }
+            </span>
+
+            <ngb-pagination
+                    class="entity-pagination"
+                    [collectionSize]="totalItems()"
+                    [page]="page()"
+                    [pageSize]="itemsPerPage"
+                    [maxSize]="paginationMaxSize()"
+                    [ellipses]="!isMobile()"
+                    [boundaryLinks]="!isMobile()"
+                    [size]="isMobile() ? 'sm' : 'md'"
+                    (pageChange)="navigateToPage($event)">
+            </ngb-pagination>
+        </div>
+    } @else {
+        <section class="entity-card entity-list-card">
+            <div class="text-center text-body-secondary py-5">
+                {{ 'unit.notFound' | translate }}
+            </div>
+        </section>
+    }
+</div>

@@ -22,7 +22,7 @@ public class StepConfiguration : IEntityTypeConfiguration<Step>
             .IsRequired();
 
         builder.HasOne(e => e.Recipe)
-            .WithMany()
+            .WithMany(recipe => recipe.Steps)
             .HasForeignKey(e => e.RecipeId);
 
         builder.HasIndex(e => new { e.RecipeId, e.Position });
