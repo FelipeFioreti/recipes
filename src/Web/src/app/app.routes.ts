@@ -4,6 +4,7 @@ import {SidebarComponent} from './layout/sidebar/sidebar-component';
 import {AUTH_ROUTES} from "./entities/auth/auth.route";
 import {HOME_ROUTES} from "./entities/home/home.route";
 import {RECIPES_ROUTES} from "./entities/recipes/recipe.route";
+import {ADMIN_ROUTES} from "./entities/admin/admin.route";
 
 export const routes: Routes = [
     {
@@ -21,7 +22,8 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         children: [
             ...HOME_ROUTES,
-            ...RECIPES_ROUTES
+            ...RECIPES_ROUTES,
+            ...ADMIN_ROUTES
         ]
     },
     {
