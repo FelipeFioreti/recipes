@@ -8,20 +8,34 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Npgsql.EntityFrameworkCore.PostgreSQL" Version="13.1.2"/>
-        <PackageReference Include="BCrypt.Net-Next" Version="4.1.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.3"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3"/>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.3">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        <PackageReference Include="BCrypt.Net-Next" Version="4.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.OpenApi" Version="2.4.1"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7"/>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3"/>
     </ItemGroup>
 
     <ItemGroup>
         <Folder Include="src\Web\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\appsettings.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\package-lock.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\Recipes.deps.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\Recipes.runtimeconfig.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\Recipes.staticwebassets.endpoints.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\angular.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\package-lock.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\package.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\proxy.conf.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\src\assets\i18n\pt.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\tsconfig.app.json" />
+      <_ContentIncludedByDefault Remove="tmp-build\verify-mobile-drag\src\Web\tsconfig.json" />
     </ItemGroup>
 
 </Project>
