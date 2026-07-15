@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Recipes.Api.Application.Services.Auth;
 using Recipes.Api.Application.Services.Recipes;
 using Recipes.Api.Application.Services.Users;
@@ -92,26 +91,13 @@ builder.Services.AddScoped<IStepRepository, StepRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "Recipes API",
-        Version = "v1"
-    });
-});
 
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options => { options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"); });
-    app.UseCors(developmentCorsPolicy);
-}
+if (app.Environment.IsDevelopment()) app.UseCors(developmentCorsPolicy);
 
 app.UseGlobalExceptionHandling();
 app.UseHttpsRedirection();
