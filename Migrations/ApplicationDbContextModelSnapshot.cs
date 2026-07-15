@@ -17,10 +17,44 @@ namespace Recipes.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.3")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Admin.Unit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Abbreviation")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Units", (string)null);
+                });
 
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Category", b =>
                 {
@@ -49,6 +83,49 @@ namespace Recipes.Migrations
                     b.HasIndex("Name");
 
                     b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Ingredient", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("RecipeId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("Ingredients", (string)null);
                 });
 
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Recipe", b =>
@@ -95,6 +172,41 @@ namespace Recipes.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Recipes", (string)null);
+                });
+
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Step", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RecipeId", "Position");
+
+                    b.ToTable("Steps", (string)null);
                 });
 
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Users.User", b =>
@@ -146,6 +258,25 @@ namespace Recipes.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Ingredient", b =>
+                {
+                    b.HasOne("Recipes.Api.Domain.Entities.Recipes.Recipe", "Recipe")
+                        .WithMany("Ingredients")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Recipes.Api.Domain.Entities.Admin.Unit", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+
+                    b.Navigation("Unit");
+                });
+
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Recipe", b =>
                 {
                     b.HasOne("Recipes.Api.Domain.Entities.Recipes.Category", "Category")
@@ -165,9 +296,27 @@ namespace Recipes.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Step", b =>
+                {
+                    b.HasOne("Recipes.Api.Domain.Entities.Recipes.Recipe", "Recipe")
+                        .WithMany("Steps")
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Recipe");
+                });
+
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Category", b =>
                 {
                     b.Navigation("Recipes");
+                });
+
+            modelBuilder.Entity("Recipes.Api.Domain.Entities.Recipes.Recipe", b =>
+                {
+                    b.Navigation("Ingredients");
+
+                    b.Navigation("Steps");
                 });
 
             modelBuilder.Entity("Recipes.Api.Domain.Entities.Users.User", b =>
