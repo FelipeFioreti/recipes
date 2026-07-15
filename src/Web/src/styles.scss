@@ -19,6 +19,8 @@
 
 :root {
   color-scheme: light;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Manrope', 'Segoe UI', sans-serif;
   --bg: #{theme.$body-bg};
   --bg-strong: #{theme.$body-bg-strong};
   --surface: #{theme.$tertiary};
@@ -68,7 +70,7 @@
   --radius-md: 18px;
   --radius-sm: 12px;
   --transition: 180ms ease;
-  --bs-body-font-family: 'Manrope', sans-serif;
+  --bs-body-font-family: var(--font-body);
   --bs-body-color: var(--text);
   --bs-body-bg: var(--bg);
   --bs-primary: var(--accent);
@@ -418,8 +420,13 @@ h1,
 h2,
 h3 {
   margin: 0;
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   line-height: 1.05;
+  font-variation-settings: 'opsz' 72;
+}
+
+.entity-card h2 {
+  letter-spacing: -0.025em;
 }
 
 .stagger-in {

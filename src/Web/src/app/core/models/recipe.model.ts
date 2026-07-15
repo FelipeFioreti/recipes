@@ -1,6 +1,8 @@
 import {BaseEntity, IBaseEntity} from "./base-entity.model";
 import {ICategory} from "./category.model";
 import {IUser} from "./user.model";
+import {IIngredient} from './ingredient.model';
+import {IStep} from './step.model';
 
 export interface IRecipe extends IBaseEntity {
     name?: string;
@@ -8,6 +10,8 @@ export interface IRecipe extends IBaseEntity {
     categoryId?: number;
     category?: ICategory;
     user?: IUser;
+    ingredients?: IIngredient[];
+    steps?: IStep[];
 }
 
 export class Recipe extends BaseEntity implements IRecipe {
@@ -22,6 +26,8 @@ export class Recipe extends BaseEntity implements IRecipe {
         public categoryId?: number,
         public category?: ICategory,
         public user?: IUser,
+        public ingredients?: IIngredient[],
+        public steps?: IStep[],
     ) {
         super(id, uuid, createdAt, updatedAt, deletedAt);
     }

@@ -42,6 +42,28 @@
                             {{ recipeRef.description || 'Essa receita ainda nao possui descricao cadastrada.' }}
                         </div>
                     </article>
+
+                    <article class="entity-detail-item entity-detail-item-full">
+                        <span class="entity-detail-item-label">{{ 'recipe.ingredients' | translate }}</span>
+                        <ul class="mb-0">
+                            @for (ingredient of recipeRef.ingredients || []; track ingredient.id) {
+                                <li>{{ ingredient.quantity }} {{ ingredient.unit?.abbreviation || ingredient.unit?.name }} {{ ingredient.name }}</li>
+                            } @empty {
+                                <li>{{ 'recipe.noIngredients' | translate }}</li>
+                            }
+                        </ul>
+                    </article>
+
+                    <article class="entity-detail-item entity-detail-item-full">
+                        <span class="entity-detail-item-label">{{ 'recipe.steps' | translate }}</span>
+                        <ol class="mb-0">
+                            @for (step of recipeRef.steps || []; track step.id) {
+                                <li>{{ step.description }}</li>
+                            } @empty {
+                                <li>{{ 'recipe.noSteps' | translate }}</li>
+                            }
+                        </ol>
+                    </article>
                 </div>
             </div>
         </section>

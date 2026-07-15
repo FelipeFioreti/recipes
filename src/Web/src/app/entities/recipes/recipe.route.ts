@@ -11,9 +11,4 @@ export const RECIPES_ROUTES: Routes = [
         loadChildren: () =>
             import('./category/category.route').then((m) => m.categoryRoute)
     },
-    {
-        path: 'units',
-        loadChildren: () =>
-            import('./unit/unit.route').then((m) => m.unitRoute)
-    }
 ];

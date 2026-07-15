@@ -37,7 +37,7 @@
   font-size: 22px;
   color: var(--text-inverse);
   font-weight: 600;
-  font-family: 'Fraunces', serif;
+  font-family: var(--font-display);
   transition: 0.3s ease;
   transition-delay: 0.1s;
 }

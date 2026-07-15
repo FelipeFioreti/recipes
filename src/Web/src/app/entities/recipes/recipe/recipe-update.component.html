@@ -3,19 +3,14 @@
         <app-page-header
                 [eyebrow]="'global.menu.recipes' | translate"
                 [title]="(currentRecipe.id ? 'recipe.home.editLabel' : 'recipe.home.createLabel') | translate">
-            <button
-                    type="button"
-                    ngProjectAs="[page-actions]"
+            <button type="button" ngProjectAs="[page-actions]"
                     class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
                     (click)="cancel()">
                 <fa-icon icon="ban"></fa-icon>
                 <span>{{ 'entity.action.cancel' | translate }}</span>
             </button>
 
-            <button
-                    type="submit"
-                    form="recipe-form"
-                    ngProjectAs="[page-actions]"
+            <button type="submit" form="recipe-form" ngProjectAs="[page-actions]"
                     class="btn btn-primary d-inline-flex align-items-center gap-2 px-3"
                     [disabled]="editForm.invalid || isSaving()">
                 <fa-icon icon="save"></fa-icon>
@@ -23,23 +18,19 @@
             </button>
         </app-page-header>
 
-        <section class="entity-card entity-card-hero">
-            <form
-                    id="recipe-form"
-                    name="editForm"
-                    role="form"
-                    class="entity-form"
-                    novalidate
-                    (ngSubmit)="save()"
-                    [formGroup]="editForm">
+        <form id="recipe-form" name="editForm" role="form" class="entity-form" novalidate
+              (ngSubmit)="save()" [formGroup]="editForm">
+            <section class="entity-card entity-card-hero">
+                <div class="d-flex flex-column gap-1 mb-4">
+                    <h2 class="h4 mb-0">{{ 'recipe.basicInfo' | translate }}</h2>
+                    <span class="text-muted">{{ 'recipe.basicInfoHint' | translate }}</span>
+                </div>
 
                 <div class="row g-4">
                     <div class="col-lg-7">
                         <label class="form-label required">{{ 'global.field.name' | translate }}</label>
                         <input type="text" class="form-control" name="Name" maxlength="255" required
-                               formControlName="Name"
-                               [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
-
+                               formControlName="Name" [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
                         @if (isInvalidAndTouched('Name')) {
                             <div class="invalid-feedback d-block">
                                 @if (editForm.get('Name')?.errors?.['required']) {
@@ -57,18 +48,13 @@
 
                     <div class="col-lg-5">
                         <label class="form-label required">{{ 'recipe.category' | translate }}</label>
-                        <ng-select [items]="categories()"
-                                   formControlName="Category"
-                                   bindLabel="name"
+                        <ng-select [items]="categories()" formControlName="Category" bindLabel="name"
                                    [placeholder]="'recipe.categoryPlaceholder' | translate"
                                    [class.is-invalid]="isInvalidAndTouched('Category')">
                         </ng-select>
-
                         @if (isInvalidAndTouched('Category')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('Category')?.errors?.['required']) {
-                                    <small>{{ 'entity.validation.required' | translate }}</small>
-                                }
+                                <small>{{ 'entity.validation.required' | translate }}</small>
                             </div>
                         }
                     </div>
@@ -77,18 +63,122 @@
                         <label class="form-label">{{ 'recipe.description' | translate }}</label>
                         <textarea class="form-control" name="Description" formControlName="Description"
                                   [ngClass]="{'is-invalid': isInvalidAndTouched('Description')}"></textarea>
-
                         @if (isInvalidAndTouched('Description')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('Description')?.errors?.['maxlength']) {
-                                    <small>{{ 'entity.validation.maxlength' | translate: {max: 2000} }}</small>
-                                }
+                                <small>{{ 'entity.validation.maxlength' | translate: {max: 2000} }}</small>
                             </div>
                         }
                     </div>
                 </div>
-            </form>
-        </section>
+            </section>
+
+            <section class="entity-card mt-4">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+                    <div>
+                        <h2 class="h4 mb-1">{{ 'recipe.ingredients' | translate }}</h2>
+                        <span class="text-muted">{{ 'recipe.ingredientsHint' | translate }}</span>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary align-self-start align-self-sm-center"
+                            (click)="addIngredient()">
+                        <fa-icon icon="plus"></fa-icon>
+                        {{ 'recipe.addIngredient' | translate }}
+                    </button>
+                </div>
+
+                @if (ingredients.length) {
+                    <div class="table-responsive">
+                        <table class="table entity-list-table align-middle mb-0" style="min-width: 720px;">
+                            <thead>
+                            <tr>
+                                <th scope="col">{{ 'recipe.ingredientName' | translate }}</th>
+                                <th scope="col" style="width: 200px;">{{ 'recipe.quantity' | translate }}</th>
+                                <th scope="col" style="width: 260px;">{{ 'recipe.unit' | translate }}</th>
+                                <th scope="col" class="text-end"
+                                    style="width: 88px;">{{ 'recipe.actions' | translate }}
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody formArrayName="Ingredients">
+                                @for (ingredient of ingredients.controls; track ingredient; let i = $index) {
+                                    <tr [formGroupName]="i">
+                                        <td [attr.data-label]="'recipe.ingredientName' | translate">
+                                            <input class="form-control" formControlName="Name"
+                                                   [placeholder]="'recipe.ingredientNamePlaceholder' | translate">
+                                        </td>
+                                        <td [attr.data-label]="'recipe.quantity' | translate">
+                                            <input class="form-control" type="number" min="0.01" step="0.01"
+                                                   formControlName="Quantity"
+                                                   [placeholder]="'recipe.quantityPlaceholder' | translate">
+                                        </td>
+                                        <td [attr.data-label]="'recipe.unit' | translate">
+                                            <ng-select [items]="units()" formControlName="Unit" bindLabel="name"
+                                                       [clearable]="false"
+                                                       [placeholder]="'recipe.unitPlaceholder' | translate">
+                                                <ng-template ng-label-tmp let-item="item">{{ item.name }}
+                                                    ({{ item.abbreviation }})
+                                                </ng-template>
+                                                <ng-template ng-option-tmp let-item="item">{{ item.name }}
+                                                    ({{ item.abbreviation }})
+                                                </ng-template>
+                                            </ng-select>
+                                        </td>
+                                        <td class="text-end entity-list-table-actions-cell"
+                                            [attr.data-label]="'recipe.actions' | translate">
+                                            <button type="button" class="btn btn-outline-danger"
+                                                    (click)="removeIngredient(i)"
+                                                    [attr.aria-label]="'recipe.removeIngredient' | translate">
+                                                <fa-icon icon="trash"></fa-icon>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                } @else {
+                    <p class="text-muted mb-0">{{ 'recipe.noIngredients' | translate }}</p>
+                }
+            </section>
+
+            <section class="entity-card mt-4">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3 mb-4">
+                    <div>
+                        <h2 class="h4 mb-1">{{ 'recipe.steps' | translate }}</h2>
+                        <span class="text-muted">{{ 'recipe.stepsHint' | translate }}</span>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary align-self-start align-self-sm-center"
+                            (click)="addStep()">
+                        <fa-icon icon="plus"></fa-icon>
+                        {{ 'recipe.addStep' | translate }}
+                    </button>
+                </div>
+
+                <div formArrayName="Steps" class="d-grid gap-3">
+                    @for (step of steps.controls; track step; let i = $index) {
+                        <div class="input-group" [formGroupName]="i" [attr.data-step-index]="i"
+                             [class.opacity-50]="draggedStepIndex() === i">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    (pointerdown)="startStepDrag(i, $event)"
+                                    (pointermove)="moveStepDrag($event)"
+                                    (pointerup)="endStepDrag($event)" (pointercancel)="endStepDrag($event)"
+                                    [attr.aria-label]="'recipe.dragStep' | translate"
+                                    [title]="'recipe.dragStep' | translate" style="touch-action: none; cursor: grab;">
+                                <fa-icon icon="grip-vertical"></fa-icon>
+                            </button>
+                            <span class="input-group-text">{{ i + 1 }}</span>
+                            <textarea class="form-control" formControlName="Description"
+                                      [placeholder]="'recipe.stepPlaceholder' | translate"></textarea>
+                            <button type="button" class="btn btn-outline-danger" (click)="removeStep(i)"
+                                    [attr.aria-label]="'recipe.removeStep' | translate">
+                                <fa-icon icon="trash"></fa-icon>
+                            </button>
+                        </div>
+                    } @empty {
+                        <p class="text-muted mb-0">{{ 'recipe.noSteps' | translate }}</p>
+                    }
+                </div>
+            </section>
+        </form>
 
         @if (currentRecipe.id) {
             <app-entity-audit-accordion [entity]="currentRecipe"></app-entity-audit-accordion>
