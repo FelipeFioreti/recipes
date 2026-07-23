@@ -36,10 +36,12 @@ public class RecipeService(
     {
         logger.LogDebug("Create()");
 
-        var recipe = await recipeRepository.Create(
-            new Recipe(request.Name, request.Description, request.CategoryId, userContext.GetUserId()));
+        var recipe = new Recipe(request.Name, request.Description, request.CategoryId, userContext.GetUserId());
+        recipe.AddChildren(request);
 
-        return recipe == null ? null : ToResponse(recipe);
+        var createdRecipe = await recipeRepository.Create(recipe);
+
+        return createdRecipe == null ? null : ToResponse(createdRecipe);
     }
 
     public async Task<RecipeResponse?> Update(int id, UpdateRecipeRequest request)

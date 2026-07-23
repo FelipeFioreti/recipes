@@ -607,6 +607,14 @@ h3 {
   vertical-align: middle;
 }
 
+.recipe-ingredients-table,
+.recipe-ingredients-table .entity-list-table,
+.recipe-ingredients-table .form-control,
+.recipe-ingredients-table ng-select {
+  min-width: 0;
+  max-width: 100%;
+}
+
 .entity-list-table-title {
   display: inline-flex;
   align-items: center;
@@ -885,6 +893,19 @@ h3 {
 
   .entity-list-card {
     padding: 0.9rem;
+  }
+
+  .recipe-ingredients-table {
+    overflow-x: visible;
+  }
+
+  .recipe-ingredients-table .entity-list-table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .recipe-ingredients-table .entity-list-table-actions-cell .btn {
+    width: 100%;
   }
 
   .entity-list-table,

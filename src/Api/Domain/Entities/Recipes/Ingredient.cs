@@ -21,6 +21,13 @@ public class Ingredient : BaseEntity
         UnitId = unitId;
     }
 
+    public Ingredient(int? id, string name, decimal quantity, int recipeId, int unitId)
+        : this(name, quantity, recipeId, unitId)
+    {
+        if (id.HasValue)
+            Id = id.Value;
+    }
+
     public int RecipeId { get; set; }
     public Recipe Recipe { get; set; } = null!;
 

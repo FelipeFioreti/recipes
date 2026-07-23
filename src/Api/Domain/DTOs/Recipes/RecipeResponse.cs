@@ -16,6 +16,14 @@ public record RecipeResponse
             ? null
             : new CategoryResponse(recipe.Category);
 
+        Ingredients = recipe.Ingredients
+            .Select(ingredient => new IngredientResponse(ingredient))
+            .ToList();
+        Steps = recipe.Steps
+            .OrderBy(step => step.Position)
+            .Select(step => new StepResponse(step))
+            .ToList();
+
         CreatedAt = recipe.CreatedAt;
         UpdatedAt = recipe.UpdatedAt;
         DeletedAt = recipe.DeletedAt;
@@ -28,6 +36,8 @@ public record RecipeResponse
     public int UserId { get; init; }
 
     public CategoryResponse? Category { get; init; }
+    public IReadOnlyCollection<IngredientResponse> Ingredients { get; init; } = [];
+    public IReadOnlyCollection<StepResponse> Steps { get; init; } = [];
 
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }

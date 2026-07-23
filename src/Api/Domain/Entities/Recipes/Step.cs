@@ -22,6 +22,14 @@ public class Step : BaseEntity
         Description = description;
     }
 
+    [SetsRequiredMembers]
+    public Step(int? id, int recipeId, int position, string description)
+        : this(recipeId, position, description)
+    {
+        if (id.HasValue)
+            Id = id.Value;
+    }
+
     public int RecipeId { get; set; }
     public Recipe Recipe { get; set; } = null!;
 

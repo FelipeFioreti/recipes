@@ -13,4 +13,7 @@ public record CreateRecipeRequest
 
     [Required]
     public int CategoryId { get; init; }
+
+    public IReadOnlyCollection<RecipeIngredientRequest> Ingredients { get; init; } = [];
+    public IReadOnlyCollection<RecipeStepRequest> Steps { get; init; } = [];
 }

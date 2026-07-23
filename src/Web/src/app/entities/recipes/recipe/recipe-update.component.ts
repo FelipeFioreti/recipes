@@ -141,14 +141,14 @@ export class RecipeUpdateComponent implements OnInit {
         recipe.categoryId = recipe.category?.id;
         recipe.ingredients = this.ingredients.getRawValue().map((row: any) => ({
             id: row.Id || undefined,
-            name: row.Name,
-            quantity: row.Quantity,
-            unitId: row.Unit?.id
+            name: row.Name?.trim(),
+            quantity: Number(row.Quantity),
+            unitId: Number(row.Unit?.id)
         }));
         recipe.steps = this.steps.getRawValue().map((row: any, index: number) => ({
             id: row.Id || undefined,
-            position: row.Position || index + 1,
-            description: row.Description
+            position: Number(row.Position || index + 1),
+            description: row.Description?.trim()
         }));
     }
 
