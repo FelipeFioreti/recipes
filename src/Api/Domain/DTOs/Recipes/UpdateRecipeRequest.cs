@@ -12,6 +12,6 @@ public record UpdateRecipeRequest
 
     [Required] public int CategoryId { get; init; }
 
-    public IReadOnlyCollection<UpdateIngredientRequest> Ingredients { get; init; } = [];
-    public IReadOnlyCollection<UpdateStepRequest> Steps { get; init; } = [];
+    public IReadOnlyCollection<RecipeIngredientRequest> Ingredients { get; init; } = [];
+    public IReadOnlyCollection<RecipeStepRequest> Steps { get; init; } = [];
 }

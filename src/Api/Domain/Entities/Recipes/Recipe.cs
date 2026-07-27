@@ -55,8 +55,8 @@ public class Recipe : BaseEntity
             Ingredients,
             request.Ingredients,
             ingredient => ingredient.Id,
-            recipeIngredientRequest => recipeIngredientRequest.Id,
-            recipeIngredientRequest => recipeIngredientRequest.Id == 0,
+            recipeIngredientRequest => recipeIngredientRequest.Id.GetValueOrDefault(),
+            recipeIngredientRequest => !recipeIngredientRequest.Id.HasValue || recipeIngredientRequest.Id.Value == 0,
             recipeIngredientRequest => new Ingredient
             {
                 Name = recipeIngredientRequest.Name,
@@ -69,8 +69,8 @@ public class Recipe : BaseEntity
             Steps,
             request.Steps,
             step => step.Id,
-            stepRequest => stepRequest.Id,
-            stepRequest => stepRequest.Id == 0,
+            stepRequest => stepRequest.Id.GetValueOrDefault(),
+            stepRequest => !stepRequest.Id.HasValue || stepRequest.Id.Value == 0,
             stepRequest => new Step
             {
                 Description = stepRequest.Description,

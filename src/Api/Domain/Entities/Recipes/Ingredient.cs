@@ -44,4 +44,11 @@ public class Ingredient : BaseEntity
         Quantity = request.Quantity;
         UnitId = request.UnitId;
     }
+
+    public void Update(RecipeIngredientRequest request)
+    {
+        Name = request.Name;
+        Quantity = request.Quantity;
+        UnitId = request.UnitId;
+    }
 }

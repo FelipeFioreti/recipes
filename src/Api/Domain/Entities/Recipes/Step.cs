@@ -43,4 +43,10 @@ public class Step : BaseEntity
         Description = request.Description;
         Position = request.Position;
     }
+
+    public void Update(RecipeStepRequest request)
+    {
+        Description = request.Description;
+        Position = request.Position;
+    }
 }
