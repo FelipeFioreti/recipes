@@ -156,7 +156,7 @@ export class RecipeUpdateComponent implements OnInit {
         this.ingredients.push(this.fb.group({
             Id: [ingredient.id],
             Name: [ingredient.name || '', [Validators.required, Validators.maxLength(255)]],
-            Quantity: [ingredient.quantity ?? null, [Validators.required, Validators.min(0.01)]],
+            Quantity: [ingredient.quantity ?? null, [Validators.required, Validators.min(1)]],
             Unit: [ingredient.unit || null, Validators.required]
         }));
     }

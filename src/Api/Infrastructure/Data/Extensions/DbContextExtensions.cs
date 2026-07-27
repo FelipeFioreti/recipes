@@ -6,13 +6,13 @@ namespace Recipes.Api.Infrastructure.Data.Extensions;
 public static class DbContextExtensions
 {
     /// <summary>
-    /// Tracks inserts, updates and deletes by comparing a detached child collection
+    /// Tracks inserts and updates by comparing a detached child collection
     /// with the latest collection loaded and tracked from the database.
     /// </summary>
     public static void TrackChildChanges<T>(
         this DbContext context,
-        IList<T> children,
-        IList<T> existingChildren,
+        ICollection<T> children,
+        ICollection<T> existingChildren,
         Func<T, T, bool> match)
         where T : class
     {
@@ -20,12 +20,6 @@ public static class DbContextExtensions
         ArgumentNullException.ThrowIfNull(children);
         ArgumentNullException.ThrowIfNull(existingChildren);
         ArgumentNullException.ThrowIfNull(match);
-
-        foreach (var existing in existingChildren.ToList())
-        {
-            if (!children.Any(child => match(child, existing)))
-                existingChildren.Remove(existing);
-        }
 
         var existingChildrenCopy = existingChildren.ToList();
         foreach (var child in children.ToList())

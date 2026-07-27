@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using Recipes.Api.Domain.DTOs.Recipes;
 using Recipes.Api.Domain.Entities.BaseEntities;
 
 namespace Recipes.Api.Domain.Entities.Recipes;
@@ -36,4 +37,10 @@ public class Step : BaseEntity
     public int Position { get; set; }
 
     [MaxLength(2000)] [Required] public required string Description { get; set; }
+
+    public void Update(UpdateStepRequest request)
+    {
+        Description = request.Description;
+        Position = request.Position;
+    }
 }

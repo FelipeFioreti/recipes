@@ -52,11 +52,6 @@ public class IngredientService(
     {
         logger.LogDebug("Update()");
 
-        var hasAccessToRecipe = await recipeRepository.CanAccessRecipe(request.RecipeId, userContext.GetUserId());
-
-        if (!hasAccessToRecipe)
-            return null;
-
         var existingIngredient = userContext.IsAdmin()
             ? await ingredientRepository.GetById(id)
             : await ingredientRepository.GetByIdForUser(id, userContext.GetUserId());
@@ -89,7 +84,7 @@ public class IngredientService(
 
         return true;
     }
-    
+
     private static IngredientResponse ToResponse(Ingredient ingredient)
     {
         return new IngredientResponse(ingredient);

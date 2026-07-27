@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Recipes.Api.Domain.Entities.Recipes;
 
 namespace Recipes.Api.Domain.DTOs.Recipes;
 
@@ -14,6 +15,6 @@ public record CreateRecipeRequest
     [Required]
     public int CategoryId { get; init; }
 
-    public IReadOnlyCollection<RecipeIngredientRequest> Ingredients { get; init; } = [];
-    public IReadOnlyCollection<RecipeStepRequest> Steps { get; init; } = [];
+    public ICollection<RecipeIngredientRequest> Ingredients { get; init; } = [];
+    public ICollection<RecipeStepRequest> Steps { get; init; } = [];
 }

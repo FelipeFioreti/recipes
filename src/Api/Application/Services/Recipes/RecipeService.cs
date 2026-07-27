@@ -18,7 +18,7 @@ public class RecipeService(
             ? await recipeRepository.GetAll(page, size)
             : await recipeRepository.GetAllForUser(userContext.GetUserId(), page, size);
 
-        return recipes.Select(ToResponse);
+        return recipes.Select(recipe => recipe.ToResponse());
     }
 
     public async Task<RecipeResponse?> GetById(int id)
@@ -29,19 +29,18 @@ public class RecipeService(
             ? await recipeRepository.GetById(id)
             : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
 
-        return recipe == null ? null : ToResponse(recipe);
+        return recipe?.ToResponse();
     }
 
     public async Task<RecipeResponse?> Create(CreateRecipeRequest request)
     {
         logger.LogDebug("Create()");
 
-        var recipe = new Recipe(request.Name, request.Description, request.CategoryId, userContext.GetUserId());
-        recipe.AddChildren(request);
+        var recipe = new Recipe(request, userContext.GetUserId());
 
         var createdRecipe = await recipeRepository.Create(recipe);
 
-        return createdRecipe == null ? null : ToResponse(createdRecipe);
+        return createdRecipe?.ToResponse();
     }
 
     public async Task<RecipeResponse?> Update(int id, UpdateRecipeRequest request)
@@ -59,7 +58,7 @@ public class RecipeService(
 
         var updatedRecipe = await recipeRepository.Update(existingRecipe);
 
-        return updatedRecipe == null ? null : ToResponse(updatedRecipe);
+        return updatedRecipe?.ToResponse();
     }
 
     public async Task<bool> Disable(int id)
@@ -77,10 +76,5 @@ public class RecipeService(
         await recipeRepository.Update(recipe);
 
         return true;
-    }
-
-    private static RecipeResponse ToResponse(Recipe recipe)
-    {
-        return new RecipeResponse(recipe);
     }
 }

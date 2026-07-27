@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Recipes.Api.Domain.DTOs.Recipes;
 using Recipes.Api.Domain.Entities.BaseEntities;
 using Recipes.Api.Domain.Entities.Users;
+using Recipes.Api.Domain.Utils;
 
 namespace Recipes.Api.Domain.Entities.Recipes;
 
@@ -13,12 +14,25 @@ public class Recipe : BaseEntity
     {
     }
 
-    public Recipe(string name, string description, int categoryId, int userId)
+    public Recipe(CreateRecipeRequest request, int userId)
     {
-        Name = name;
-        Description = description;
-        CategoryId = categoryId;
+        Name = request.Name;
+        Description = request.Description;
+        CategoryId = request.CategoryId;
         UserId = userId;
+        Ingredients = request.Ingredients.Select(ingredient => new Ingredient
+        {
+            Name = ingredient.Name,
+            Quantity = ingredient.Quantity,
+            UnitId = ingredient.UnitId,
+            Recipe = this
+        }).ToList();
+        Steps = request.Steps.Select(step => new Step
+        {
+            Description = step.Description,
+            Position = step.Position,
+            Recipe = this
+        }).ToList();
     }
 
     [MaxLength(255)] [Required] public string Name { get; private set; } = string.Empty;
@@ -28,79 +42,45 @@ public class Recipe : BaseEntity
     public User User { get; set; } = null!;
     public Category? Category { get; set; } = null!;
 
-    public IList<Ingredient> Ingredients { get; set; } = [];
-    public IList<Step> Steps { get; set; } = [];
+    public ICollection<Ingredient> Ingredients { get; set; } = [];
+    public ICollection<Step> Steps { get; set; } = [];
 
     public void Update(UpdateRecipeRequest request)
     {
         Name = request.Name;
         Description = request.Description;
         CategoryId = request.CategoryId;
-        Ingredients = MapIngredients(request.Ingredients);
-        Steps = MapSteps(request.Steps);
+
+        CollectionSync.Sync(
+            Ingredients,
+            request.Ingredients,
+            ingredient => ingredient.Id,
+            recipeIngredientRequest => recipeIngredientRequest.Id,
+            recipeIngredientRequest => recipeIngredientRequest.Id == 0,
+            recipeIngredientRequest => new Ingredient
+            {
+                Name = recipeIngredientRequest.Name,
+                Quantity = recipeIngredientRequest.Quantity,
+                UnitId = recipeIngredientRequest.UnitId
+            },
+            (ingredient, recipeIngredientRequest) => { ingredient.Update(recipeIngredientRequest); });
+
+        CollectionSync.Sync(
+            Steps,
+            request.Steps,
+            step => step.Id,
+            stepRequest => stepRequest.Id,
+            stepRequest => stepRequest.Id == 0,
+            stepRequest => new Step
+            {
+                Description = stepRequest.Description,
+                Position = stepRequest.Position
+            },
+            (step, updateStepRequest) => { step.Update(updateStepRequest); });
     }
 
-    public void AddChildren(CreateRecipeRequest request)
+    public RecipeResponse ToResponse()
     {
-        foreach (var ingredient in request.Ingredients)
-        {
-            Ingredients.Add(new Ingredient(ingredient.Name, ingredient.Quantity, 0, ingredient.UnitId)
-            {
-                Recipe = this
-            });
-        }
-
-        foreach (var step in request.Steps)
-        {
-            Steps.Add(new Step(0, step.Position, step.Description)
-            {
-                Recipe = this
-            });
-        }
-    }
-
-    private List<Ingredient> MapIngredients(IEnumerable<RecipeIngredientRequest> requests)
-    {
-        var existingIngredients = Ingredients.ToDictionary(ingredient => ingredient.Id);
-        var mappedIngredients = new List<Ingredient>();
-
-        foreach (var request in requests)
-        {
-            if (request.Id.HasValue && existingIngredients.TryGetValue(request.Id.Value, out var ingredient))
-            {
-                ingredient.Name = request.Name;
-                ingredient.Quantity = request.Quantity;
-                ingredient.UnitId = request.UnitId;
-                mappedIngredients.Add(ingredient);
-            }
-            else
-            {
-                mappedIngredients.Add(new Ingredient(request.Id, request.Name, request.Quantity, Id, request.UnitId));
-            }
-        }
-
-        return mappedIngredients;
-    }
-
-    private List<Step> MapSteps(IEnumerable<RecipeStepRequest> requests)
-    {
-        var existingSteps = Steps.ToDictionary(step => step.Id);
-        var mappedSteps = new List<Step>();
-
-        foreach (var request in requests)
-        {
-            if (request.Id.HasValue && existingSteps.TryGetValue(request.Id.Value, out var step))
-            {
-                step.Description = request.Description;
-                step.Position = request.Position;
-                mappedSteps.Add(step);
-            }
-            else
-            {
-                mappedSteps.Add(new Step(request.Id, Id, request.Position, request.Description));
-            }
-        }
-
-        return mappedSteps;
+        return new RecipeResponse(this);
     }
 }

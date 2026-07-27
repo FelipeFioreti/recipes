@@ -4,13 +4,9 @@ namespace Recipes.Api.Domain.DTOs.Recipes;
 
 public record UpdateStepRequest
 {
-    [Required]
-    public int RecipeId { get; init; }
+    public int Id { get; init; }
 
-    [Required]
-    public int Position { get; init; }
+    [Required] public int Position { get; init; }
 
-    [Required]
-    [MaxLength(2000)]
-    public string Description { get; init; } = string.Empty;
+    [Required] [MaxLength(2000)] public string Description { get; init; } = string.Empty;
 }

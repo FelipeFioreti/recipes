@@ -42,7 +42,6 @@ public class Ingredient : BaseEntity
     {
         Name = request.Name;
         Quantity = request.Quantity;
-        RecipeId = request.RecipeId;
         UnitId = request.UnitId;
     }
 }

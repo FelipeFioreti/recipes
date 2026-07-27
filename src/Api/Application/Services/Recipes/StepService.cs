@@ -58,12 +58,6 @@ public class StepService(
         if (existingStep == null)
             return null;
 
-        var hasAccessToRecipe = await CanAccessRecipe(request.RecipeId);
-
-        if (!hasAccessToRecipe)
-            return null;
-
-        existingStep.RecipeId = request.RecipeId;
         existingStep.Position = request.Position;
         existingStep.Description = request.Description;
 
