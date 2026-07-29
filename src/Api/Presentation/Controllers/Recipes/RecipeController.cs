@@ -41,13 +41,13 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
             : Ok(createdRecipe);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<RecipeResponse>> Update(int id, [FromBody] UpdateRecipeRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<RecipeResponse>> Update([FromBody] UpdateRecipeRequest request)
     {
-        var updatedRecipe = await recipeService.Update(id, request);
+        var updatedRecipe = await recipeService.Update(request);
 
         return updatedRecipe == null
-            ? throw new NotFoundException($"Recipe with id '{id}' was not found.")
+            ? throw new NotFoundException($"Recipe with id '{request.Id}' was not found.")
             : Ok(updatedRecipe);
     }
 

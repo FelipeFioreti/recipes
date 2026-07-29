@@ -7,6 +7,6 @@ public interface IRecipeService
     Task<IEnumerable<RecipeResponse>> GetAll(int page, int size);
     Task<RecipeResponse?> GetById(int id);
     Task<RecipeResponse?> Create(CreateRecipeRequest request);
-    Task<RecipeResponse?> Update(int id, UpdateRecipeRequest request);
+    Task<RecipeResponse?> Update(UpdateRecipeRequest request);
     Task<bool> Disable(int id);
 }

@@ -43,13 +43,13 @@ public class RecipeService(
         return createdRecipe?.ToResponse();
     }
 
-    public async Task<RecipeResponse?> Update(int id, UpdateRecipeRequest request)
+    public async Task<RecipeResponse?> Update(UpdateRecipeRequest request)
     {
         logger.LogDebug("Update()");
 
         var existingRecipe = userContext.IsAdmin()
-            ? await recipeRepository.GetById(id)
-            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
+            ? await recipeRepository.GetById(request.Id, true)
+            : await recipeRepository.GetByIdForUser(request.Id, userContext.GetUserId(), true);
 
         if (existingRecipe == null)
             return null;
@@ -66,8 +66,8 @@ public class RecipeService(
         logger.LogDebug("Disable()");
 
         var recipe = userContext.IsAdmin()
-            ? await recipeRepository.GetById(id)
-            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId());
+            ? await recipeRepository.GetById(id, true)
+            : await recipeRepository.GetByIdForUser(id, userContext.GetUserId(), true);
 
         if (recipe == null)
             return false;

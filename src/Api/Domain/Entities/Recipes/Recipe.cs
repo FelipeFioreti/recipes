@@ -39,11 +39,11 @@ public class Recipe : BaseEntity
     [MaxLength(2000)] public string Description { get; private set; } = string.Empty;
     [ForeignKey("Category")] [Required] public int CategoryId { get; private set; }
     [ForeignKey("User")] [Required] public int UserId { get; private set; }
-    public User User { get; set; } = null!;
-    public Category? Category { get; set; } = null!;
+    public User User { get; init; } = null!;
+    public Category? Category { get; init; } = null!;
 
-    public ICollection<Ingredient> Ingredients { get; set; } = [];
-    public ICollection<Step> Steps { get; set; } = [];
+    public ICollection<Ingredient> Ingredients { get; init; } = [];
+    public ICollection<Step> Steps { get; init; } = [];
 
     public void Update(UpdateRecipeRequest request)
     {
@@ -56,7 +56,7 @@ public class Recipe : BaseEntity
             request.Ingredients,
             ingredient => ingredient.Id,
             recipeIngredientRequest => recipeIngredientRequest.Id.GetValueOrDefault(),
-            recipeIngredientRequest => !recipeIngredientRequest.Id.HasValue || recipeIngredientRequest.Id.Value == 0,
+            recipeIngredientRequest => recipeIngredientRequest.Id is null or 0,
             recipeIngredientRequest => new Ingredient
             {
                 Name = recipeIngredientRequest.Name,
@@ -70,7 +70,7 @@ public class Recipe : BaseEntity
             request.Steps,
             step => step.Id,
             stepRequest => stepRequest.Id.GetValueOrDefault(),
-            stepRequest => !stepRequest.Id.HasValue || stepRequest.Id.Value == 0,
+            stepRequest => stepRequest.Id is null or 0,
             stepRequest => new Step
             {
                 Description = stepRequest.Description,

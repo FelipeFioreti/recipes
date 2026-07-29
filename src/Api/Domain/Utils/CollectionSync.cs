@@ -1,6 +1,6 @@
 ﻿namespace Recipes.Api.Domain.Utils;
 
-public class CollectionSync
+public static class CollectionSync
 {
     public static void Sync<TEntity, TRequest, TKey>(
         ICollection<TEntity> entities,
