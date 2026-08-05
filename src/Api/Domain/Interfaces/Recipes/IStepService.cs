@@ -7,6 +7,6 @@ public interface IStepService
     Task<IEnumerable<StepResponse>> GetAll(int page, int size);
     Task<StepResponse?> GetById(int id);
     Task<StepResponse?> Create(CreateStepRequest request);
-    Task<StepResponse?> Update(int id, UpdateStepRequest request);
+    Task<StepResponse?> Update(UpdateStepRequest request);
     Task<bool> Disable(int id);
 }

@@ -15,11 +15,11 @@ public class User : BaseEntity
     {
     }
 
-    public User(string name, string email, string password)
+    public User(string name, string email, string passwordHash)
     {
         Name = name;
         Email = email;
-        Password = password;
+        PasswordHash = passwordHash;
         Role = Roles.USER;
     }
 
@@ -29,7 +29,7 @@ public class User : BaseEntity
     [MaxLength(255)]
     [Required]
     [JsonIgnore]
-    public string Password { get; private set; } = string.Empty;
+    public string PasswordHash { get; private set; } = string.Empty;
 
     [MaxLength(50)] [Required] public Roles Role { get; private set; }
 
@@ -40,8 +40,8 @@ public class User : BaseEntity
         Name = request.Name;
     }
 
-    public void ChangePassword(string passwordHash)
+    public void ChangePasswordHash(string passwordHash)
     {
-        Password = passwordHash;
+        PasswordHash = passwordHash;
     }
 }

@@ -39,13 +39,13 @@ public class StepController(IStepService stepService) : ControllerBase
             : Ok(step);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<StepResponse>> Update(int id, [FromBody] UpdateStepRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<StepResponse>> Update([FromBody] UpdateStepRequest request)
     {
-        var step = await stepService.Update(id, request);
+        var step = await stepService.Update(request);
 
         return step == null
-            ? throw new NotFoundException($"Step with id '{id}' was not found.")
+            ? throw new NotFoundException($"Step with id '{request.Id}' was not found.")
             : Ok(step);
     }
 

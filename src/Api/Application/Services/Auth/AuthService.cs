@@ -16,7 +16,7 @@ namespace Recipes.Api.Application.Services.Auth;
 
 public class AuthService(
     IUserRepository userRepository,
-    IUserService service,
+    IUserService userService,
     IPasswordService passwordService,
     IOptions<AppSettings> appSettings,
     ILogger<AuthService> logger) : IAuthService
@@ -36,7 +36,7 @@ public class AuthService(
     {
         logger.LogDebug("RegisterUser()");
 
-        return await service.Create(new CreateUserRequest(
+        return await userService.Create(new CreateUserRequest(
             registerUserRequest.Name,
             registerUserRequest.Email,
             registerUserRequest.Password));
@@ -51,7 +51,7 @@ public class AuthService(
         if (user == null)
             return null;
 
-        return passwordService.VerifyPassword(model.Password, user.Password)
+        return passwordService.VerifyPassword(model.Password, user.PasswordHash)
             ? user
             : null;
     }

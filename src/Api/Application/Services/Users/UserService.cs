@@ -36,19 +36,14 @@ public class UserService(
         return user == null ? null : ToResponse(user);
     }
 
-    public async Task<UserResponse?> Update(int id, UpdateUserRequest request)
+    public async Task<UserResponse?> Update(UpdateUserRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingUser = await userRepository.GetById(id);
-
-        if (existingUser == null)
+        if (await userRepository.GetById(request.Id) is not { } existingUser)
             return null;
 
         existingUser.Update(request);
-
-        if (!string.IsNullOrWhiteSpace(request.Password))
-            existingUser.ChangePassword(passwordService.HashPassword(request.Password));
 
         var updatedUser = await userRepository.Update(existingUser);
 

@@ -12,7 +12,7 @@ public class UnitService(IUnitRepository unitRepository, ILogger<UnitService> lo
 
         var units = await unitRepository.GetAll(page, size);
 
-        return units.Select(ToResponse);
+        return units.Select(unit => unit.ToResponse());
     }
 
     public async Task<UnitResponse?> GetById(int id)
@@ -21,33 +21,30 @@ public class UnitService(IUnitRepository unitRepository, ILogger<UnitService> lo
 
         var unit = await unitRepository.GetById(id);
 
-        return unit == null ? null : ToResponse(unit);
+        return unit?.ToResponse();
     }
 
     public async Task<UnitResponse?> Create(CreateUnitRequest request)
     {
         logger.LogDebug("Create()");
 
-        var unit = await unitRepository.Create(new Unit(request.Name, request.Abbreviation));
+        var unit = await unitRepository.Create(new Unit(request.Name, request.ShowAbbreviation, request.Abbreviation));
 
-        return unit == null ? null : ToResponse(unit);
+        return unit?.ToResponse();
     }
 
-    public async Task<UnitResponse?> Update(int id, UpdateUnitRequest request)
+    public async Task<UnitResponse?> Update(UpdateUnitRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingUnit = await unitRepository.GetById(id);
-
-        if (existingUnit == null)
+        if(await unitRepository.GetById(request.Id) is not {} existingUnit)
             return null;
 
-        existingUnit.Name = request.Name;
-        existingUnit.Abbreviation = request.Abbreviation;
+        existingUnit.Update(request);
 
         var updatedUnit = await unitRepository.Update(existingUnit);
 
-        return updatedUnit == null ? null : ToResponse(updatedUnit);
+        return updatedUnit?.ToResponse();
     }
 
     public async Task<bool> Disable(int id)
@@ -63,10 +60,5 @@ public class UnitService(IUnitRepository unitRepository, ILogger<UnitService> lo
         await unitRepository.Update(unit);
 
         return true;
-    }
-
-    private static UnitResponse ToResponse(Unit unit)
-    {
-        return new UnitResponse(unit);
     }
 }

@@ -51,4 +51,9 @@ public class Ingredient : BaseEntity
         Quantity = request.Quantity;
         UnitId = request.UnitId;
     }
+
+    public IngredientResponse ToResponse()
+    {
+        return new IngredientResponse(this);
+    }
 }

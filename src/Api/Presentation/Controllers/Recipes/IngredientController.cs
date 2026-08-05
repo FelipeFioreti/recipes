@@ -39,13 +39,13 @@ public class IngredientController(IIngredientService ingredientService) : Contro
             : Ok(ingredient);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<IngredientResponse>> Update(int id, [FromBody] UpdateIngredientRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<IngredientResponse>> Update([FromBody] UpdateIngredientRequest request)
     {
-        var ingredient = await ingredientService.Update(id, request);
+        var ingredient = await ingredientService.Update(request);
 
         return ingredient == null
-            ? throw new NotFoundException($"Ingredient with id '{id}' was not found.")
+            ? throw new NotFoundException($"Ingredient with id '{request.Id}' was not found.")
             : Ok(ingredient);
     }
 

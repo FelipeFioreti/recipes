@@ -8,6 +8,7 @@ public record UnitResponse
     {
         Id = unit.Id;
         Name = unit.Name;
+        ShowAbbreviation = unit.ShowAbbreviation;
         Abbreviation = unit.Abbreviation;
         CreatedAt = unit.CreatedAt;
         UpdatedAt = unit.UpdatedAt;
@@ -16,6 +17,7 @@ public record UnitResponse
 
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
+    public bool ShowAbbreviation { get; init; }
     public string Abbreviation { get; init; } = string.Empty;
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }

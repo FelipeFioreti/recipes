@@ -2,6 +2,7 @@ import {BaseEntity, IBaseEntity} from './base-entity.model';
 
 export interface IUnit extends IBaseEntity {
     name?: string;
+    showAbbreviation?: boolean;
     abbreviation?: string;
 }
 
@@ -13,6 +14,7 @@ export class Unit extends BaseEntity implements IUnit {
         updatedAt?: Date,
         deletedAt?: Date | null,
         public name?: string,
+        public showAbbreviation?: boolean,
         public abbreviation?: string,
     ) {
         super(id, uuid, createdAt, updatedAt, deletedAt);

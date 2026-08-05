@@ -19,7 +19,7 @@ public class IngredientService(
             ? await ingredientRepository.GetAll(page, size)
             : await ingredientRepository.GetAllForUser(userContext.GetUserId(), page, size);
 
-        return ingredients.Select(ToResponse);
+        return ingredients.Select( ingredient => ingredient.ToResponse() );
     }
 
     public async Task<IngredientResponse?> GetById(int id)
@@ -30,31 +30,29 @@ public class IngredientService(
             ? await ingredientRepository.GetById(id)
             : await ingredientRepository.GetByIdForUser(id, userContext.GetUserId());
 
-        return ingredient == null ? null : ToResponse(ingredient);
+        return ingredient?.ToResponse();
     }
 
     public async Task<IngredientResponse?> Create(CreateIngredientRequest request)
     {
         logger.LogDebug("Create()");
 
-        var hasAccessToRecipe = await recipeRepository.CanAccessRecipe(request.RecipeId, userContext.GetUserId());
-
-        if (!hasAccessToRecipe)
+        if (!await recipeRepository.CanAccessRecipe(request.RecipeId, userContext.GetUserId()))
             return null;
 
         var ingredient = await ingredientRepository.Create(
             new Ingredient(request.Name, request.Quantity, request.RecipeId, request.UnitId));
 
-        return ingredient == null ? null : ToResponse(ingredient);
+        return ingredient?.ToResponse();
     }
 
-    public async Task<IngredientResponse?> Update(int id, UpdateIngredientRequest request)
+    public async Task<IngredientResponse?> Update(UpdateIngredientRequest request)
     {
         logger.LogDebug("Update()");
 
         var existingIngredient = userContext.IsAdmin()
-            ? await ingredientRepository.GetById(id)
-            : await ingredientRepository.GetByIdForUser(id, userContext.GetUserId());
+            ? await ingredientRepository.GetById(request.Id)
+            : await ingredientRepository.GetByIdForUser(request.Id, userContext.GetUserId());
 
         if (existingIngredient == null)
             return null;
@@ -63,9 +61,7 @@ public class IngredientService(
 
         var updatedIngredient = await ingredientRepository.Update(existingIngredient);
 
-        return updatedIngredient == null
-            ? null
-            : ToResponse(updatedIngredient);
+        return updatedIngredient?.ToResponse();
     }
 
     public async Task<bool> Disable(int id)
@@ -83,10 +79,5 @@ public class IngredientService(
         await ingredientRepository.Update(ingredient);
 
         return true;
-    }
-
-    private static IngredientResponse ToResponse(Ingredient ingredient)
-    {
-        return new IngredientResponse(ingredient);
     }
 }

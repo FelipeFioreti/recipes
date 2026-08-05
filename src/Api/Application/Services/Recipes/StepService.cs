@@ -19,7 +19,7 @@ public class StepService(
             ? await stepRepository.GetAll(page, size)
             : await stepRepository.GetAllForUser(userContext.GetUserId(), page, size);
 
-        return steps.Select(ToResponse);
+        return steps.Select(step => step.ToResponse());
     }
 
     public async Task<StepResponse?> GetById(int id)
@@ -30,7 +30,7 @@ public class StepService(
             ? await stepRepository.GetById(id)
             : await stepRepository.GetByIdForUser(id, userContext.GetUserId());
 
-        return step == null ? null : ToResponse(step);
+        return step?.ToResponse();
     }
 
     public async Task<StepResponse?> Create(CreateStepRequest request)
@@ -44,16 +44,16 @@ public class StepService(
 
         var step = await stepRepository.Create(new Step(request.RecipeId, request.Position, request.Description));
 
-        return step == null ? null : ToResponse(step);
+        return step?.ToResponse();
     }
 
-    public async Task<StepResponse?> Update(int id, UpdateStepRequest request)
+    public async Task<StepResponse?> Update(UpdateStepRequest request)
     {
         logger.LogDebug("Update()");
 
         var existingStep = userContext.IsAdmin()
-            ? await stepRepository.GetById(id)
-            : await stepRepository.GetByIdForUser(id, userContext.GetUserId());
+            ? await stepRepository.GetById(request.Id)
+            : await stepRepository.GetByIdForUser(request.Id, userContext.GetUserId());
 
         if (existingStep == null)
             return null;
@@ -63,7 +63,7 @@ public class StepService(
 
         var updatedStep = await stepRepository.Update(existingStep);
 
-        return updatedStep == null ? null : ToResponse(updatedStep);
+        return updatedStep?.ToResponse();
     }
 
     public async Task<bool> Disable(int id)
@@ -89,10 +89,5 @@ public class StepService(
             return await recipeRepository.GetById(recipeId) != null;
 
         return await recipeRepository.GetByIdForUser(recipeId, userContext.GetUserId()) != null;
-    }
-
-    private static StepResponse ToResponse(Step step)
-    {
-        return new StepResponse(step);
     }
 }

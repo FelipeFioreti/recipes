@@ -8,6 +8,6 @@ public interface IUserService
     Task<UserResponse?> GetCurrent();
     Task<UserResponse?> GetById(int id);
     Task<UserResponse?> Create(CreateUserRequest request);
-    Task<UserResponse?> Update(int id, UpdateUserRequest request);
+    Task<UserResponse?> Update(UpdateUserRequest request);
     Task<bool> Disable(int id);
 }

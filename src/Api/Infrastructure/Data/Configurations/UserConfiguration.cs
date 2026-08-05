@@ -20,7 +20,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(e => e.Email)
             .IsRequired()
             .HasMaxLength(255);
-        builder.Property(e => e.Password)
+        builder.Property(e => e.PasswordHash)
             .IsRequired()
             .HasMaxLength(255);
         builder.Property(e => e.Role)

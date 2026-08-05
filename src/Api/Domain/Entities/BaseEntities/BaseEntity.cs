@@ -12,12 +12,6 @@ public abstract class BaseEntity
     public void Disable()
     {
         DeletedAt = DateTime.UtcNow;
-        Update();
-    }
-
-    private void Update()
-    {
-        UpdatedAt = DateTime.UtcNow;
     }
 
     public void SetCreatedAt()
@@ -27,6 +21,6 @@ public abstract class BaseEntity
 
     public void SetUpdatedAt()
     {
-        Update();
+        UpdatedAt = DateTime.UtcNow;
     }
 }

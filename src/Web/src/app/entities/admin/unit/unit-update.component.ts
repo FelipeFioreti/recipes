@@ -9,7 +9,9 @@ import {TranslateModule} from '@ngx-translate/core';
 import {IUnit, Unit} from '../../../core/models/unit.model';
 import {UnitsService} from '../../../core/services/units.service';
 import {PageHeaderComponent} from '../../../shared/components/page-header/page-header.component';
-import {EntityAuditAccordionComponent} from '../../../shared/components/entity-audit-accordion/entity-audit-accordion.component';
+import {
+    EntityAuditAccordionComponent
+} from '../../../shared/components/entity-audit-accordion/entity-audit-accordion.component';
 import {UnitActionsService} from './unit-actions.service';
 
 @Component({
@@ -36,9 +38,10 @@ export class UnitUpdateComponent implements OnInit {
     isSaving = signal(false);
 
     editForm = this.fb.group({
-        Id: [{value: 0, disabled: true}],
-        Name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
-        Abbreviation: ['', [Validators.maxLength(10)]],
+        id: [{value: 0, disabled: true}],
+        name: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+        showAbbreviation: [false],
+        abbreviation: ['', [Validators.maxLength(10)]],
     });
 
     ngOnInit(): void {
@@ -67,7 +70,7 @@ export class UnitUpdateComponent implements OnInit {
         this.updateUnit(unit);
 
         const request = unit.id && unit.id > 0
-            ? this.unitsService.update(unit.id, unit)
+            ? this.unitsService.update(unit)
             : this.unitsService.create(unit);
 
         request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
@@ -78,15 +81,16 @@ export class UnitUpdateComponent implements OnInit {
 
     private updateForm(unit: IUnit): void {
         this.editForm.patchValue({
-            Id: unit.id,
-            Name: unit.name,
-            Abbreviation: unit.abbreviation,
+            id: unit.id,
+            name: unit.name,
+            showAbbreviation: unit.showAbbreviation,
+            abbreviation: unit.abbreviation,
         });
     }
 
     private updateUnit(unit: IUnit): void {
-        unit.name = this.editForm.get(['Name'])!.value ?? '';
-        unit.abbreviation = this.editForm.get(['Abbreviation'])!.value ?? '';
+        unit.name = this.editForm.get(['name'])!.value ?? '';
+        unit.abbreviation = this.editForm.get(['abbreviation'])!.value ?? '';
     }
 
     private onSaveSuccess(unit: IUnit): void {

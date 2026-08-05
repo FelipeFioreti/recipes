@@ -36,19 +36,19 @@
                 <div class="row g-4">
                     <div class="col-lg-8">
                         <label class="form-label required">{{ 'global.field.name' | translate }}</label>
-                        <input type="text" class="form-control" name="Name" maxlength="50" required
-                               formControlName="Name"
-                               [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
+                        <input type="text" class="form-control" name="name" maxlength="50" required
+                               formControlName="name"
+                               [ngClass]="{'is-invalid': isInvalidAndTouched('name')}">
 
-                        @if (isInvalidAndTouched('Name')) {
+                        @if (isInvalidAndTouched('name')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('Name')?.errors?.['required']) {
+                                @if (editForm.get('name')?.errors?.['required']) {
                                     <small>{{ 'entity.validation.required' | translate }}</small>
                                 }
-                                @if (editForm.get('Name')?.errors?.['minlength']) {
+                                @if (editForm.get('name')?.errors?.['minlength']) {
                                     <small>{{ 'entity.validation.minlength' | translate: {min: 1} }}</small>
                                 }
-                                @if (editForm.get('Name')?.errors?.['maxlength']) {
+                                @if (editForm.get('name')?.errors?.['maxlength']) {
                                     <small>{{ 'entity.validation.maxlength' | translate: {max: 50} }}</small>
                                 }
                             </div>
@@ -57,13 +57,13 @@
 
                     <div class="col-lg-4">
                         <label class="form-label">{{ 'global.field.abbreviation' | translate }}</label>
-                        <input type="text" class="form-control" name="Abbreviation" maxlength="10"
-                               formControlName="Abbreviation"
-                               [ngClass]="{'is-invalid': isInvalidAndTouched('Abbreviation')}">
+                        <input type="text" class="form-control" name="abbreviation" maxlength="10"
+                               formControlName="abbreviation"
+                               [ngClass]="{'is-invalid': isInvalidAndTouched('abbreviation')}">
 
-                        @if (isInvalidAndTouched('Abbreviation')) {
+                        @if (isInvalidAndTouched('abbreviation')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('Abbreviation')?.errors?.['maxlength']) {
+                                @if (editForm.get('abbreviation')?.errors?.['maxlength']) {
                                     <small>{{ 'entity.validation.maxlength' | translate: {max: 10} }}</small>
                                 }
                             </div>

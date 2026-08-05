@@ -34,8 +34,8 @@ export class UnitsService {
         return this.http.post<Unit>(this.baseUrl, payload);
     }
 
-    update(id: number, payload: IUnit): Observable<Unit> {
-        return this.http.put<Unit>(`${this.baseUrl}/${id}`, payload);
+    update(unit: IUnit): Observable<Unit> {
+        return this.http.put<Unit>(`${this.baseUrl}`, unit);
     }
 
     delete(id: number): Observable<void> {

@@ -49,4 +49,9 @@ public class Step : BaseEntity
         Description = request.Description;
         Position = request.Position;
     }
+
+    public StepResponse ToResponse()
+    {
+        return new StepResponse(this);
+    }
 }

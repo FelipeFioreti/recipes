@@ -42,13 +42,13 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [Authorize(Roles = nameof(Roles.ADMIN))]
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<CategoryResponse>> Update(int id, [FromBody] UpdateCategoryRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<CategoryResponse>> Update([FromBody] UpdateCategoryRequest request)
     {
-        var category = await categoryService.Update(id, request);
+        var category = await categoryService.Update(request);
 
         return category == null
-            ? throw new NotFoundException($"Category with id '{id}' was not found.")
+            ? throw new NotFoundException($"Category with id '{request.Id}' was not found.")
             : Ok(category);
     }
 

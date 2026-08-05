@@ -42,13 +42,13 @@ public class UnitController(IUnitService unitService) : ControllerBase
     }
 
     [Authorize(Roles = nameof(Roles.ADMIN))]
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<UnitResponse>> Update(int id, [FromBody] UpdateUnitRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<UnitResponse>> Update([FromBody] UpdateUnitRequest request)
     {
-        var unit = await unitService.Update(id, request);
+        var unit = await unitService.Update(request);
 
         return unit == null
-            ? throw new NotFoundException($"Unit with id '{id}' was not found.")
+            ? throw new NotFoundException($"Unit with id '{request.Id}' was not found.")
             : Ok(unit);
     }
 

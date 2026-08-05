@@ -34,13 +34,11 @@ public class CategoryService(ICategoryRepository categoryRepository, ILogger<Cat
         return category == null ? null : ToResponse(category);
     }
 
-    public async Task<CategoryResponse?> Update(int id, UpdateCategoryRequest request)
+    public async Task<CategoryResponse?> Update(UpdateCategoryRequest request)
     {
         logger.LogDebug("Update()");
 
-        var existingCategory = await categoryRepository.GetById(id);
-
-        if (existingCategory == null)
+        if (await categoryRepository.GetById(request.Id) is not { } existingCategory)
             return null;
 
         existingCategory.Update(request);
@@ -54,9 +52,7 @@ public class CategoryService(ICategoryRepository categoryRepository, ILogger<Cat
     {
         logger.LogDebug("Disable()");
 
-        var category = await categoryRepository.GetById(id);
-
-        if (category == null)
+        if (await categoryRepository.GetById(id) is not { } category)
             return false;
 
         category.Disable();

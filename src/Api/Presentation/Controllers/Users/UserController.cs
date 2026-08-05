@@ -42,24 +42,19 @@ public class UserController(IUserService userService) : ControllerBase
             : Ok(createdUser);
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<ActionResult<UserResponse>> Update(int id, [FromBody] UpdateUserRequest request)
+    [HttpPut("")]
+    public async Task<ActionResult<UserResponse>> Update([FromBody] UpdateUserRequest request)
     {
-        var updatedUser = await userService.Update(id, request);
+        var updatedUser = await userService.Update(request);
 
         return updatedUser == null
-            ? throw new NotFoundException($"User with id '{id}' was not found.")
+            ? throw new NotFoundException($"User with id '{request.Id}' was not found.")
             : Ok(updatedUser);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var disabled = await userService.Disable(id);
-
-        if (!disabled)
-            throw new NotFoundException($"User with id '{id}' was not found.");
-
-        return NoContent();
+        return !await userService.Disable(id) ? throw new NotFoundException($"User with id '{id}' was not found.") : NoContent();
     }
 }
