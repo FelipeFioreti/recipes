@@ -21,3 +21,7 @@ appsettings.Development.json
 TestResults/
 
 .env
+
+# Local TLS certificates
+certs/*
+!certs/.gitkeep
