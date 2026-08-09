@@ -9,6 +9,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
     selector: 'app-recipe-detail',
@@ -24,10 +25,13 @@ import {
     ]
 })
 export class RecipeDetailComponent implements OnInit {
-    recipe = signal<IRecipe | null>(null);
 
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly authService = inject(AuthService);
+
+    recipe = signal<IRecipe | null>(null);
+    isAdmin = signal<boolean>(this.authService.isAdmin());
 
     ngOnInit(): void {
         this.route.data.pipe(

@@ -35,7 +35,7 @@ export class RecipeService {
     }
 
     update(recipe: IRecipe): Observable<EntityResponseType> {
-        return this.http.put<IRecipe>(`${this.baseUrl}/${recipe.id}`, recipe, {
+        return this.http.put<IRecipe>(`${this.baseUrl}`, recipe, {
             observe: 'response'
         });
     }

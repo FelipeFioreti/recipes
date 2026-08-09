@@ -22,6 +22,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
     selector: 'app-rec-recipe-update',
@@ -45,10 +46,12 @@ export class RecipeUpdateComponent implements OnInit {
     private readonly unitsService = inject(UnitsService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly authService = inject(AuthService);
 
     recipe = signal<IRecipe | null>(null);
     categories = signal<ICategory[]>([]);
     units = signal<IUnit[]>([]);
+    isAdmin = signal<boolean>(this.authService.isAdmin());
     isSaving = signal(false);
     draggedStepIndex = signal<number | null>(null);
     private activeStepPointerId: number | null = null;

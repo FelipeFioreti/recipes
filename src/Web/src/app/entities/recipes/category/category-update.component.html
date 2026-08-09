@@ -58,7 +58,7 @@
             </form>
         </section>
 
-        @if (currentCategory.id) {
+        @if (currentCategory.id && isAdmin()) {
             <app-entity-audit-accordion [entity]="currentCategory"></app-entity-audit-accordion>
         }
     </div>

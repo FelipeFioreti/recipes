@@ -13,6 +13,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
     selector: 'app-rec-category-update',
@@ -33,7 +34,9 @@ export class CategoryUpdateComponent implements OnInit {
     private readonly categoriesService = inject(CategoriesService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly authService = inject(AuthService);
 
+    isAdmin = signal<boolean>(this.authService.isAdmin());
     category = signal<ICategory | null>(null);
     isSaving = signal(false);
 
@@ -68,7 +71,7 @@ export class CategoryUpdateComponent implements OnInit {
         this.updateCategory(category);
 
         const request = category.id && category.id > 0
-            ? this.categoriesService.update(category.id, category)
+            ? this.categoriesService.update(category)
             : this.categoriesService.create(category);
 
         request.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({

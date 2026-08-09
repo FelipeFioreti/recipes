@@ -33,8 +33,8 @@ export class CategoriesService {
         return this.http.post<Category>(this.baseUrl, payload);
     }
 
-    update(id: number, payload: ICategory): Observable<Category> {
-        return this.http.put<Category>(`${this.baseUrl}/${id}`, payload);
+    update(category: ICategory): Observable<Category> {
+        return this.http.put<Category>(`${this.baseUrl}/`, category);
     }
 
     delete(id: number): Observable<void> {

@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="entity-pill">
-                        {{ recipeRef.category?.name || 'Categoria nao informada' }}
+                        {{ recipeRef.category?.name }}
                     </div>
                 </div>
 
@@ -39,7 +39,7 @@
                     <article class="entity-detail-item entity-detail-item-full">
                         <span class="entity-detail-item-label">{{ 'recipe.description' | translate }}</span>
                         <div class="entity-detail-item-value entity-detail-item-value-body">
-                            {{ recipeRef.description || 'Essa receita ainda nao possui descricao cadastrada.' }}
+                            {{ recipeRef.description }}
                         </div>
                     </article>
 
@@ -47,7 +47,7 @@
                         <span class="entity-detail-item-label">{{ 'recipe.ingredients' | translate }}</span>
                         <ul class="mb-0">
                             @for (ingredient of recipeRef.ingredients || []; track ingredient.id) {
-                                <li>{{ ingredient.quantity }} {{ ingredient.unit?.abbreviation || ingredient.unit?.name }} {{ ingredient.name }}</li>
+                                <li>{{ ingredient.quantity }} {{ ingredient.unit?.showAbbreviation ? ingredient.unit?.abbreviation : '' }} {{ ingredient.name }}</li>
                             } @empty {
                                 <li>{{ 'recipe.noIngredients' | translate }}</li>
                             }
@@ -68,6 +68,9 @@
             </div>
         </section>
 
-        <app-entity-audit-accordion [entity]="recipeRef" [collapsed]="false"></app-entity-audit-accordion>
+        @if (isAdmin()) {
+            <app-entity-audit-accordion [entity]="recipeRef" [collapsed]="false"></app-entity-audit-accordion>
+        }
+
     </div>
 }

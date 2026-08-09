@@ -9,6 +9,7 @@ import {PageHeaderComponent} from "../../../shared/components/page-header/page-h
 import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
     selector: 'app-category-detail',
@@ -24,10 +25,14 @@ import {
     ]
 })
 export class CategoryDetailComponent implements OnInit {
-    category = signal<ICategory | null>(null);
 
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
+    private authService = inject(AuthService);
+
+    category = signal<ICategory | null>(null);
+    isAdmin = signal<boolean>(this.authService.isAdmin());
+
 
     ngOnInit(): void {
         this.route.data.pipe(

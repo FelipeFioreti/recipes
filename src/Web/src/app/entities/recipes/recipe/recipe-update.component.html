@@ -180,7 +180,7 @@
             </section>
         </form>
 
-        @if (currentRecipe.id) {
+        @if (currentRecipe.id && isAdmin()) {
             <app-entity-audit-accordion [entity]="currentRecipe"></app-entity-audit-accordion>
         }
     </div>
