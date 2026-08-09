@@ -19,3 +19,5 @@ appsettings.Development.json
 
 # Package/cache artifacts
 TestResults/
+
+.env
