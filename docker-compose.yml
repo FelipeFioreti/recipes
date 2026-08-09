@@ -1,0 +1,39 @@
+services:
+  api:
+    networks:
+      - backend
+      - egress
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile
+    container_name: recipes-api
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
+      AppSettings__Secret: ${JWT_SECRET}
+      AppSettings__Issuer: Recipes.Api
+      AppSettings__Audience: Recipes.Client
+      AppSettings__TokenExpirationDays: 7
+    expose:
+      - "8080"
+
+  web:
+    networks:
+      - frontend
+      - backend
+    build:
+      context: src/Web
+      dockerfile: Dockerfile
+    container_name: recipes-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "9000:80"
+
+networks:
+  frontend:
+  backend:
+    internal: true
+  egress:
