@@ -26,7 +26,7 @@ export class RecipeActionsService {
         });
 
         modalRef.componentInstance.title = this.translateService.instant('entity.delete.title');
-        modalRef.componentInstance.message = 
+        modalRef.componentInstance.message =
             this.translateService.instant('entity.delete.questionWithName', {
                 name: recipe.name || this.translateService.instant('recipe.detail.title')
             });
@@ -48,7 +48,7 @@ export class RecipeActionsService {
         this.router.navigate(['/app/recipes', recipe.id!, 'view']);
     }
 
-    goToViewOrList(recipe?: IRecipe): void {
+    goToViewOrList(recipe?: IRecipe | null): void {
         recipe && recipe.id ? this.goToView(recipe) : this.goToList();
     }
 

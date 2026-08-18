@@ -29,17 +29,17 @@
                 <div class="row g-4">
                     <div class="col-lg-7">
                         <label class="form-label required">{{ 'global.field.name' | translate }}</label>
-                        <input type="text" class="form-control" name="Name" maxlength="255" required
-                               formControlName="Name" [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
-                        @if (isInvalidAndTouched('Name')) {
+                        <input type="text" class="form-control" name="name" maxlength="255" required
+                               formControlName="name" [ngClass]="{'is-invalid': isInvalidAndTouched('name')}">
+                        @if (isInvalidAndTouched('name')) {
                             <div class="invalid-feedback d-block">
-                                @if (editForm.get('Name')?.errors?.['required']) {
+                                @if (editForm.get('name')?.errors?.['required']) {
                                     <small>{{ 'entity.validation.required' | translate }}</small>
                                 }
-                                @if (editForm.get('Name')?.errors?.['minlength']) {
+                                @if (editForm.get('name')?.errors?.['minlength']) {
                                     <small>{{ 'entity.validation.minlength' | translate: {min: 1} }}</small>
                                 }
-                                @if (editForm.get('Name')?.errors?.['maxlength']) {
+                                @if (editForm.get('name')?.errors?.['maxlength']) {
                                     <small>{{ 'entity.validation.maxlength' | translate: {max: 255} }}</small>
                                 }
                             </div>
@@ -48,11 +48,12 @@
 
                     <div class="col-lg-5">
                         <label class="form-label required">{{ 'recipe.category' | translate }}</label>
-                        <ng-select [items]="categories()" formControlName="Category" bindLabel="name"
+                        <ng-select [items]="categories()" formControlName="category" bindLabel="name"
+                                   [searchable]="false"
                                    [placeholder]="'recipe.categoryPlaceholder' | translate"
-                                   [class.is-invalid]="isInvalidAndTouched('Category')">
+                                   [class.is-invalid]="isInvalidAndTouched('category')">
                         </ng-select>
-                        @if (isInvalidAndTouched('Category')) {
+                        @if (isInvalidAndTouched('category')) {
                             <div class="invalid-feedback d-block">
                                 <small>{{ 'entity.validation.required' | translate }}</small>
                             </div>
@@ -61,9 +62,9 @@
 
                     <div class="col-12">
                         <label class="form-label">{{ 'recipe.description' | translate }}</label>
-                        <textarea class="form-control" name="Description" formControlName="Description"
-                                  [ngClass]="{'is-invalid': isInvalidAndTouched('Description')}"></textarea>
-                        @if (isInvalidAndTouched('Description')) {
+                        <textarea class="form-control" name="description" formControlName="description"
+                                  [ngClass]="{'is-invalid': isInvalidAndTouched('description')}"></textarea>
+                        @if (isInvalidAndTouched('description')) {
                             <div class="invalid-feedback d-block">
                                 <small>{{ 'entity.validation.maxlength' | translate: {max: 2000} }}</small>
                             </div>
@@ -98,20 +99,22 @@
                                 </th>
                             </tr>
                             </thead>
-                            <tbody formArrayName="Ingredients">
+                            <tbody formArrayName="ingredients">
                                 @for (ingredient of ingredients.controls; track ingredient; let i = $index) {
                                     <tr [formGroupName]="i">
                                         <td [attr.data-label]="'recipe.ingredientName' | translate">
-                                            <input class="form-control" formControlName="Name"
+                                            <input class="form-control" formControlName="name"
                                                    [placeholder]="'recipe.ingredientNamePlaceholder' | translate">
                                         </td>
                                         <td [attr.data-label]="'recipe.quantity' | translate">
                                             <input class="form-control" type="number" min="1" step="1"
-                                                   formControlName="Quantity"
+                                                   formControlName="quantity"
                                                    [placeholder]="'recipe.quantityPlaceholder' | translate">
                                         </td>
                                         <td [attr.data-label]="'recipe.unit' | translate">
-                                            <ng-select [items]="units()" formControlName="Unit" bindLabel="name"
+                                            <ng-select [items]="units()" formControlName="unit" bindLabel="name"
+                                                       appendTo="body"
+                                                       [searchable]="false"
                                                        [clearable]="false"
                                                        [placeholder]="'recipe.unitPlaceholder' | translate">
                                                 <ng-template ng-label-tmp let-item="item">{{ item.name }}
@@ -153,7 +156,7 @@
                     </button>
                 </div>
 
-                <div formArrayName="Steps" class="d-grid gap-3">
+                <div formArrayName="steps" class="d-grid gap-3">
                     @for (step of steps.controls; track step; let i = $index) {
                         <div class="input-group" [formGroupName]="i" [attr.data-step-index]="i"
                              [class.opacity-50]="draggedStepIndex() === i">
@@ -166,7 +169,7 @@
                                 <fa-icon icon="grip-vertical"></fa-icon>
                             </button>
                             <span class="input-group-text">{{ i + 1 }}</span>
-                            <textarea class="form-control" formControlName="Description"
+                            <textarea class="form-control" formControlName="description"
                                       [placeholder]="'recipe.stepPlaceholder' | translate"></textarea>
                             <button type="button" class="btn btn-outline-danger" (click)="removeStep(i)"
                                     [attr.aria-label]="'recipe.removeStep' | translate">

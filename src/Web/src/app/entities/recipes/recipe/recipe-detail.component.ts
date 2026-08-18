@@ -10,6 +10,7 @@ import {
     EntityAuditAccordionComponent
 } from "../../../shared/components/entity-audit-accordion/entity-audit-accordion.component";
 import {AuthService} from "../../../core/services/auth.service";
+import {RecipeActionsService} from "./recipe-actions.service";
 
 @Component({
     selector: 'app-recipe-detail',
@@ -29,6 +30,7 @@ export class RecipeDetailComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
     private readonly authService = inject(AuthService);
+    readonly recipeActionsService = inject(RecipeActionsService);
 
     recipe = signal<IRecipe | null>(null);
     isAdmin = signal<boolean>(this.authService.isAdmin());
@@ -37,9 +39,5 @@ export class RecipeDetailComponent implements OnInit {
         this.route.data.pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(({recipe}) => this.recipe.set(recipe));
-    }
-
-    previousState(): void {
-        window.history.back();
     }
 }

@@ -16,7 +16,7 @@
                     type="button"
                     ngProjectAs="[page-actions]"
                     class="btn btn-outline-secondary d-inline-flex align-items-center gap-2 px-3"
-                    (click)="previousState()">
+                    (click)="goToView()">
                 <fa-icon icon="arrow-left"></fa-icon>
                 <span>{{ 'entity.action.back' | translate }}</span>
             </button>
@@ -33,8 +33,8 @@
                 </div>
             </div>
         </section>
-        
-        @if (isAdmin()) {
+
+        @if (authService.isAdmin()) {
             <app-entity-audit-accordion [entity]="categoryRef" [collapsed]="false"></app-entity-audit-accordion>
         }
     </div>

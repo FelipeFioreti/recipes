@@ -57,36 +57,29 @@ export class RecipeUpdateComponent implements OnInit {
     private activeStepPointerId: number | null = null;
 
     editForm = this.fb.group({
-        Id: [{value: 0, disabled: true}],
-        Name: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
-        Description: ["", [Validators.maxLength(2000)]],
-        Category: this.fb.control<ICategory | null>(
+        id: [{value: 0, disabled: true}],
+        name: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
+        description: ["", [Validators.maxLength(2000)]],
+        category: this.fb.control<ICategory | null>(
             null,
             [Validators.required]
         ),
-        Ingredients: this.fb.array([]),
-        Steps: this.fb.array([]),
+        ingredients: this.fb.array([]),
+        steps: this.fb.array([]),
     });
 
     get ingredients(): FormArray {
-        return this.editForm.get('Ingredients') as FormArray;
+        return this.editForm.get('ingredients') as FormArray;
     }
 
     get steps(): FormArray {
-        return this.editForm.get('Steps') as FormArray;
+        return this.editForm.get('steps') as FormArray;
     }
 
     ngOnInit(): void {
-        this.categoriesService.getAll()
-            .pipe(
-                takeUntilDestroyed(this.destroyRef),
-                catchError(() => of([]))
-            )
-            .subscribe(res => this.categories.set(res || []));
 
-        this.unitsService.getAll()
-            .pipe(takeUntilDestroyed(this.destroyRef), catchError(() => of([])))
-            .subscribe(res => this.units.set(res || []));
+        this.loadCategories();
+        this.loadUnits();
 
         this.route.data
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -96,13 +89,30 @@ export class RecipeUpdateComponent implements OnInit {
             });
     }
 
+    private loadCategories(): void {
+        this.categoriesService.getAll()
+            .pipe(
+                catchError(() => of([])),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe(categories => {
+                this.categories.set(categories);
+            });
+    }
+
+    private loadUnits(): void {
+        this.unitsService.getAll()
+            .pipe(catchError(() => of([])), takeUntilDestroyed(this.destroyRef))
+            .subscribe(res => this.units.set(res || []));
+    }
+
     private bindRecipe(recipe: IRecipe): void {
         this.recipe.set(recipe);
         this.updateForm(recipe);
     }
 
     cancel(): void {
-        this.recipeActionsService.goToViewOrList(this.recipe()!);
+        this.recipeActionsService.goToViewOrList(this.recipe());
     }
 
     save(): void {
@@ -124,10 +134,10 @@ export class RecipeUpdateComponent implements OnInit {
 
     private updateForm(recipe: IRecipe): void {
         this.editForm.patchValue({
-            Id: recipe.id,
-            Name: recipe.name,
-            Description: recipe.description,
-            Category: recipe.category
+            id: recipe.id,
+            name: recipe.name,
+            description: recipe.description,
+            category: recipe.category
         });
 
         this.ingredients.clear();
@@ -138,29 +148,29 @@ export class RecipeUpdateComponent implements OnInit {
     }
 
     private updateRecipe(recipe: IRecipe): void {
-        recipe.name = this.editForm.get(['Name'])!.value;
-        recipe.description = this.editForm.get(['Description'])!.value;
-        recipe.category = this.editForm.get(['Category'])!.value ?? undefined;
+        recipe.name = this.editForm.get(['name'])!.value;
+        recipe.description = this.editForm.get(['description'])!.value;
+        recipe.category = this.editForm.get(['category'])!.value ?? undefined;
         recipe.categoryId = recipe.category?.id;
-        recipe.ingredients = this.ingredients.getRawValue().map((row: any) => ({
-            id: row.Id || undefined,
-            name: row.Name?.trim(),
-            quantity: Number(row.Quantity),
-            unitId: Number(row.Unit?.id)
+        recipe.ingredients = this.ingredients.getRawValue().map((ingredient: any) => ({
+            id: ingredient.id || undefined,
+            name: ingredient.Name?.trim(),
+            quantity: Number(ingredient.quantity),
+            unitId: Number(ingredient.unit?.id)
         }));
-        recipe.steps = this.steps.getRawValue().map((row: any, index: number) => ({
-            id: row.Id || undefined,
-            position: Number(row.Position || index + 1),
-            description: row.Description?.trim()
+        recipe.steps = this.steps.getRawValue().map((step: any, index: number) => ({
+            id: step.Id || undefined,
+            position: Number(step.Position || index + 1),
+            description: step.Description?.trim()
         }));
     }
 
     addIngredient(ingredient: IIngredient = {}): void {
         this.ingredients.push(this.fb.group({
-            Id: [ingredient.id],
-            Name: [ingredient.name || '', [Validators.required, Validators.maxLength(255)]],
-            Quantity: [ingredient.quantity ?? null, [Validators.required, Validators.min(1)]],
-            Unit: [ingredient.unit || null, Validators.required]
+            id: [ingredient.id],
+            name: [ingredient.name || '', [Validators.required, Validators.maxLength(255)]],
+            quantity: [ingredient.quantity ?? null, [Validators.required, Validators.min(1)]],
+            unit: [ingredient.unit || null, Validators.required]
         }));
     }
 
@@ -170,9 +180,9 @@ export class RecipeUpdateComponent implements OnInit {
 
     addStep(step: IStep = {}): void {
         this.steps.push(this.fb.group({
-            Id: [step.id],
-            Position: [step.position || this.steps.length + 1],
-            Description: [step.description || '', [Validators.required, Validators.maxLength(2000)]]
+            id: [step.id],
+            position: [step.position || this.steps.length + 1],
+            description: [step.description || '', [Validators.required, Validators.maxLength(2000)]]
         }));
     }
 
@@ -221,7 +231,7 @@ export class RecipeUpdateComponent implements OnInit {
     }
 
     private normalizeStepPositions(): void {
-        this.steps.controls.forEach((step, index) => step.get('Position')?.setValue(index + 1));
+        this.steps.controls.forEach((step, index) => step.get('position')?.setValue(index + 1));
     }
 
     private moveStep(sourceIndex: number, targetIndex: number): void {

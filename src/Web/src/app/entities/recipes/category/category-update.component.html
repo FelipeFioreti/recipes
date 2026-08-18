@@ -37,7 +37,7 @@
                     <div class="col-lg-12">
                         <label class="form-label required">{{ 'global.field.name' | translate }}</label>
                         <input type="text" class="form-control" name="Name" maxlength="255" required
-                               formControlName="Name"
+                               formControlName="name"
                                [ngClass]="{'is-invalid': isInvalidAndTouched('Name')}">
 
                         @if (isInvalidAndTouched('Name')) {
@@ -58,7 +58,7 @@
             </form>
         </section>
 
-        @if (currentCategory.id && isAdmin()) {
+        @if (currentCategory.id && authService.isAdmin()) {
             <app-entity-audit-accordion [entity]="currentCategory"></app-entity-audit-accordion>
         }
     </div>

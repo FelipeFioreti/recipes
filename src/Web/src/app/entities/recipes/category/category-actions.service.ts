@@ -46,7 +46,7 @@ export class CategoryActionsService {
         this.router.navigate(['/app/categories', category.id!, 'view']);
     }
 
-    goToViewOrList(category?: ICategory): void {
+    goToViewOrList(category?: ICategory | null): void {
         category && category.id ? this.goToView(category) : this.goToList();
     }
 

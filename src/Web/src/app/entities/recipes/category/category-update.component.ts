@@ -1,7 +1,7 @@
 import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
 import {FormBuilder, ReactiveFormsModule, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
-import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {CommonModule} from "@angular/common";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {TranslateModule} from "@ngx-translate/core";
@@ -34,15 +34,14 @@ export class CategoryUpdateComponent implements OnInit {
     private readonly categoriesService = inject(CategoriesService);
     private readonly route = inject(ActivatedRoute);
     private readonly destroyRef = inject(DestroyRef);
-    private readonly authService = inject(AuthService);
+    readonly authService = inject(AuthService);
 
-    isAdmin = signal<boolean>(this.authService.isAdmin());
     category = signal<ICategory | null>(null);
     isSaving = signal(false);
 
     editForm = this.fb.group({
-        Id: [{value: 0, disabled: true}],
-        Name: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
+        id: [{value: 0, disabled: true}],
+        name: ["", [Validators.required, Validators.minLength(1), Validators.maxLength(255)]],
     });
 
     ngOnInit(): void {
@@ -60,7 +59,7 @@ export class CategoryUpdateComponent implements OnInit {
     }
 
     cancel(): void {
-        this.categoryActionsService.goToViewOrList(this.category()!);
+        this.categoryActionsService.goToViewOrList(this.category());
     }
 
     save(): void {
@@ -82,13 +81,13 @@ export class CategoryUpdateComponent implements OnInit {
 
     private updateForm(category: ICategory): void {
         this.editForm.patchValue({
-            Id: category.id,
-            Name: category.name,
+            id: category.id,
+            name: category.name,
         });
     }
 
     private updateCategory(category: ICategory): void {
-        category.name = this.editForm.get(['Name'])!.value;
+        category.name = this.editForm.get(['name'])!.value;
     }
 
     private onSaveSuccess(category: ICategory): void {

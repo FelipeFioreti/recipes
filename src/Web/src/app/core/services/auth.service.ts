@@ -52,7 +52,7 @@ export class AuthService {
         void this.router.navigateByUrl('/auth/login');
     }
 
-    getToken(): string | null {
+    private getToken(): string | null {
         return this.storageService.getStorageItem(TOKEN_KEY);
     }
 
@@ -67,7 +67,7 @@ export class AuthService {
         return jwtPayload.exp * 1000 > Date.now();
     }
 
-    getJwtPayload(): AppJwtPayload | null {
+    private getJwtPayload(): AppJwtPayload | null {
 
         const token = this.getToken();
 
