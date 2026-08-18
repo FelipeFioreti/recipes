@@ -80,7 +80,7 @@ public class AuthService(
             Subject = new ClaimsIdentity(claims),
             Issuer = _appSettings.Issuer,
             Audience = _appSettings.Audience,
-            Expires = now.AddDays(_appSettings.TokenExpirationDays),
+            Expires = now.AddMinutes(_appSettings.TokenExpirationMinutes),
             NotBefore = now,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
