@@ -1,13 +1,7 @@
 namespace Recipes.Api.Domain.DTOs.Auth;
 
-public record AuthenticateRequest
+public record AuthenticateRequest(string Email, string Password)
 {
-    public AuthenticateRequest(string email, string password)
-    {
-        Email = email;
-        Password = password;
-    }
-
-    public required string Email { get; set; }
-    public required string Password { get; set; }
+    public required string Email { get; set; } = Email;
+    public required string Password { get; set; } = Password;
 }

@@ -11,6 +11,7 @@ using Recipes.Api.Application.Services.Users;
 using Recipes.Api.Domain.Entities.Settings;
 using Recipes.Api.Domain.Interfaces.Auth;
 using Recipes.Api.Domain.Interfaces.Recipes;
+using Recipes.Api.Domain.Interfaces.Token;
 using Recipes.Api.Domain.Interfaces.Users;
 using Recipes.Api.Infrastructure.Data.Context;
 using Recipes.Api.Infrastructure.Repositories;
@@ -88,10 +89,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 builder.Services.AddScoped<IStepRepository, StepRepository>();
 builder.Services.AddScoped<IUnitRepository, UnitRepository>();
-
-builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {

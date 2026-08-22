@@ -8,8 +8,10 @@ using Recipes.Api.Domain.DTOs.Auth;
 using Recipes.Api.Domain.DTOs.Users;
 using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Settings;
+using Recipes.Api.Domain.Entities.Token;
 using Recipes.Api.Domain.Entities.Users;
 using Recipes.Api.Domain.Interfaces.Auth;
+using Recipes.Api.Domain.Interfaces.Token;
 using Recipes.Api.Domain.Interfaces.Users;
 
 namespace Recipes.Api.Application.Services.Auth;
@@ -18,6 +20,7 @@ public class AuthService(
     IUserRepository userRepository,
     IUserService userService,
     IPasswordService passwordService,
+    IRefreshTokenRepository refreshTokenRepository,
     IOptions<AppSettings> appSettings,
     ILogger<AuthService> logger) : IAuthService
 {
@@ -29,7 +32,11 @@ public class AuthService(
 
         var user = await VerifyUser(model);
 
-        return user == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
+        if (user == null) return null;
+
+        var token = await refreshTokenRepository.Create(new RefreshToken("", new DateTime().AddDays(30), user));
+
+        return token == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
     }
 
     public async Task<UserResponse?> Register(RegisterUserRequest registerUserRequest)
@@ -40,6 +47,36 @@ public class AuthService(
             registerUserRequest.Name,
             registerUserRequest.Email,
             registerUserRequest.Password));
+    }
+
+    public async Task<bool> Logout(LogoutRequest registerUserRequest)
+    {
+        logger.LogDebug("Logout()");
+
+        var user = await userService.GetById(registerUserRequest.UserId);
+
+        if (user == null) return false;
+
+        var token = await refreshTokenRepository.GetTokenByUserId(user.Id);
+
+        if (token == null) return false;
+
+        await refreshTokenRepository.Delete(token);
+
+        return true;
+    }
+
+    public async Task<AuthenticateResponse?> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+    {
+        logger.LogDebug("RefreshToken()");
+
+        var token = await refreshTokenRepository.GetTokenByUserId(refreshTokenRequest.UserId);
+
+        if (token != null && token.IsExpired()) return null;
+
+        var user = await userRepository.GetById(refreshTokenRequest.UserId);
+
+        return user == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
     }
 
     private async Task<User?> VerifyUser(AuthenticateRequest model)

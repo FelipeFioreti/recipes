@@ -5,6 +5,7 @@ using Recipes.Api.Domain.DTOs.Users;
 using Recipes.Api.Domain.Entities.BaseEntities;
 using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Recipes;
+using Recipes.Api.Domain.Entities.Token;
 
 namespace Recipes.Api.Domain.Entities.Users;
 
@@ -33,7 +34,8 @@ public class User : BaseEntity
 
     [MaxLength(50)] [Required] public Roles Role { get; private set; }
 
-    public ICollection<Recipe>? Recipes { get; set; } = new List<Recipe>();
+    public ICollection<Recipe>? Recipes { get; init; } = new List<Recipe>();
+    public ICollection<RefreshToken>? RefreshTokens { get; init; } = new List<RefreshToken>();
 
     public void Update(UpdateUserRequest request)
     {

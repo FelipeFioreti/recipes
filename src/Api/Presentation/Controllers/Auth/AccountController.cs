@@ -22,6 +22,14 @@ public class AccountController(IAuthService authService) : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] LogoutRequest logoutRequest)
+    {
+        var response = await authService.Logout(logoutRequest);
+
+        return Ok(response);
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterUserRequest registerUserRequest)
     {
@@ -29,6 +37,14 @@ public class AccountController(IAuthService authService) : ControllerBase
 
         if (response == null)
             throw new BadRequestException("Failed to register user.");
+
+        return Ok(response);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest refreshTokenRequest)
+    {
+        var response = await authService.RefreshToken(refreshTokenRequest);
 
         return Ok(response);
     }
