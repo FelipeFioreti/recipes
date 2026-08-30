@@ -1,4 +1,14 @@
 services:
+  migration:
+    networks:
+      - egress
+    build:
+      context: .
+      dockerfile: src/Api/Dockerfile.migrations
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
+  
   api:
     networks:
       - backend

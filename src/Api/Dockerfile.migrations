@@ -1,0 +1,14 @@
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0
+
+WORKDIR /src
+
+COPY Recipes.csproj .
+RUN dotnet restore Recipes.csproj
+
+COPY . .
+
+RUN dotnet tool install --global dotnet-ef --version 10.*
+
+ENV PATH="/root/.dotnet/tools:${PATH}"
+
+ENTRYPOINT ["dotnet", "ef", "database", "update"]
