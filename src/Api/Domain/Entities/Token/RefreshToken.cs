@@ -7,20 +7,25 @@ namespace Recipes.Api.Domain.Entities.Token;
 
 public class RefreshToken : BaseEntity
 {
-    public RefreshToken(string token, DateTime expiresAt, User user)
+    private RefreshToken()
     {
-        Token = token;
+    }
+
+    public RefreshToken(string tokenHash, DateTime expiresAt, User user)
+    {
+        TokenHash = tokenHash;
+        RevokedAt = null;
         ExpiresAt = expiresAt;
         UserId = user.Id;
     }
 
-    [Required] [MaxLength(255)] public string Token { get; init; } = null!;
-    public DateTime ExpiresAt { get; init; }
-    [ForeignKey("User")] [Required] public int UserId { get; init; }
-    public virtual User? User { get; init; }
+    [Required] [MaxLength(255)] public string TokenHash { get; private set; } = null!;
+    public DateTime ExpiresAt { get; private set; }
+    public DateTime? RevokedAt { get; private set; }
+    [ForeignKey("User")] [Required] public int UserId { get; private set; }
+    public virtual User? User { get; private set; }
 
-    public bool IsExpired()
-    {
-        return DateTime.UtcNow > ExpiresAt;
-    }
+    public bool IsExpired() => DateTime.UtcNow > ExpiresAt;
+    public void Revoke() => RevokedAt = DateTime.UtcNow;
+    public bool IsRevoked() => RevokedAt.HasValue;
 }

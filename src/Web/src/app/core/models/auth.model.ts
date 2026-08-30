@@ -6,5 +6,6 @@ export interface LoginPayload {
 export interface AuthResponse {
     id: number;
     name: string;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
 }

@@ -5,7 +5,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
+using Recipes.Api.Application.Interfaces.Auth;
+using Recipes.Api.Application.Interfaces.Engine;
 using Recipes.Api.Application.Services.Auth;
+using Recipes.Api.Application.Services.Engine;
 using Recipes.Api.Application.Services.Recipes;
 using Recipes.Api.Application.Services.Users;
 using Recipes.Api.Domain.Entities.Settings;
@@ -15,6 +19,7 @@ using Recipes.Api.Domain.Interfaces.Token;
 using Recipes.Api.Domain.Interfaces.Users;
 using Recipes.Api.Infrastructure.Data.Context;
 using Recipes.Api.Infrastructure.Repositories;
+using Recipes.Api.Infrastructure.Jobs;
 using Recipes.Api.Infrastructure.Security;
 using Recipes.Api.Presentation.Extensions;
 using Recipes.Api.Presentation.Middlewares;
@@ -72,9 +77,28 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddQuartz(options =>
+{
+    var refreshTokenCleanupJobKey = new JobKey(nameof(RefreshTokenCleanupJob));
+
+    options.AddJob<RefreshTokenCleanupJob>(job => job.WithIdentity(refreshTokenCleanupJobKey));
+    options.AddTrigger(trigger => trigger
+        .ForJob(refreshTokenCleanupJobKey)
+        .WithIdentity("RefreshTokenCleanupTrigger")
+        .StartNow()
+        .WithCronSchedule("0 0 3 ? * *", schedule => schedule.InTimeZone(TimeZoneInfo.Local)));
+});
+builder.Services.AddQuartzHostedService(options =>
+{
+    options.WaitForJobsToComplete = true;
+});
+
 // Add Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddScoped<IEngineService, EngineService>();
+builder.Services.AddScoped<IRefreshTokenCleanupRoutine, RefreshTokenCleanupRoutine>();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();

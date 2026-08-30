@@ -48,7 +48,6 @@ export const recipeRoute: Routes = [
         data: {
             pageTitle: 'recipe.home.title',
         },
-        canActivate: [AuthGuard]
     },
     {
         path: ':id/view',
@@ -58,8 +57,7 @@ export const recipeRoute: Routes = [
         },
         data: {
             pageTitle: 'recipe.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: 'new',
@@ -69,8 +67,7 @@ export const recipeRoute: Routes = [
         },
         data: {
             pageTitle: 'recipe.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: ':id/edit',
@@ -80,7 +77,6 @@ export const recipeRoute: Routes = [
         },
         data: {
             pageTitle: 'recipe.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     }
 ];

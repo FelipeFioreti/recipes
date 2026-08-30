@@ -1,4 +1,4 @@
-﻿using Recipes.Api.Domain.Entities.Recipes;
+using Recipes.Api.Domain.Entities.Recipes;
 
 namespace Recipes.Api.Domain.Interfaces.Recipes;
 

@@ -14,7 +14,8 @@ services:
       AppSettings__Secret: ${JWT_SECRET}
       AppSettings__Issuer: Recipes.Api
       AppSettings__Audience: Recipes.Client
-      AppSettings__TokenExpirationDays: 7
+      AppSettings__RefreshTokenExpirationDays: 7
+      AppSettings__AccessTokenExpirationMinutes: 15
     expose:
       - "8080"
 

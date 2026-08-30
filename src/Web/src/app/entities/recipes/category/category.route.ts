@@ -42,8 +42,7 @@ export const categoryRoute: Routes = [
         },
         data: {
             pageTitle: 'category.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: ':id/view',
@@ -53,8 +52,7 @@ export const categoryRoute: Routes = [
         },
         data: {
             pageTitle: 'category.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: 'new',
@@ -64,8 +62,7 @@ export const categoryRoute: Routes = [
         },
         data: {
             pageTitle: 'category.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: ':id/edit',
@@ -75,7 +72,6 @@ export const categoryRoute: Routes = [
         },
         data: {
             pageTitle: 'category.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     }
 ];

@@ -4,14 +4,13 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Recipes.Api.Application.Interfaces.Auth;
 using Recipes.Api.Domain.DTOs.Auth;
 using Recipes.Api.Domain.DTOs.Users;
 using Recipes.Api.Domain.Entities.Enums;
 using Recipes.Api.Domain.Entities.Settings;
-using Recipes.Api.Domain.Entities.Token;
 using Recipes.Api.Domain.Entities.Users;
 using Recipes.Api.Domain.Interfaces.Auth;
-using Recipes.Api.Domain.Interfaces.Token;
 using Recipes.Api.Domain.Interfaces.Users;
 
 namespace Recipes.Api.Application.Services.Auth;
@@ -20,23 +19,23 @@ public class AuthService(
     IUserRepository userRepository,
     IUserService userService,
     IPasswordService passwordService,
-    IRefreshTokenRepository refreshTokenRepository,
+    IRefreshTokenService refreshTokenService,
     IOptions<AppSettings> appSettings,
     ILogger<AuthService> logger) : IAuthService
 {
     private readonly AppSettings _appSettings = appSettings.Value;
 
-    public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
+    public async Task<AuthenticateResponse?> Login(AuthenticateRequest request)
     {
-        logger.LogDebug("Authenticate()");
+        logger.LogDebug("Login()");
 
-        var user = await VerifyUser(model);
+        var user = await VerifyUser(request);
 
         if (user == null) return null;
 
-        var token = await refreshTokenRepository.Create(new RefreshToken("", new DateTime().AddDays(30), user));
+        var refreshToken = await refreshTokenService.Create(user);
 
-        return token == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
+        return refreshToken == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user), refreshToken);
     }
 
     public async Task<UserResponse?> Register(RegisterUserRequest registerUserRequest)
@@ -49,46 +48,44 @@ public class AuthService(
             registerUserRequest.Password));
     }
 
-    public async Task<bool> Logout(LogoutRequest registerUserRequest)
+    public async Task<bool> Logout(LogoutRequest request)
     {
         logger.LogDebug("Logout()");
 
-        var user = await userService.GetById(registerUserRequest.UserId);
+        var refreshToken = await refreshTokenService.GetByHash(request.RefreshToken);
 
-        if (user == null) return false;
-
-        var token = await refreshTokenRepository.GetTokenByUserId(user.Id);
-
-        if (token == null) return false;
-
-        await refreshTokenRepository.Delete(token);
+        if (refreshToken == null) return false;
+        
+        refreshToken.Revoke();
+        await refreshTokenService.Update(refreshToken);
 
         return true;
     }
 
-    public async Task<AuthenticateResponse?> RefreshToken(RefreshTokenRequest refreshTokenRequest)
+    public async Task<AuthenticateResponse?> RefreshToken(RefreshTokenRequest request)
     {
         logger.LogDebug("RefreshToken()");
 
-        var token = await refreshTokenRepository.GetTokenByUserId(refreshTokenRequest.UserId);
+        var refreshToken = await refreshTokenService.Rotate(request.RefreshToken);
 
-        if (token != null && token.IsExpired()) return null;
-
-        var user = await userRepository.GetById(refreshTokenRequest.UserId);
-
-        return user == null ? null : new AuthenticateResponse(user, GenerateJwtToken(user));
+        return refreshToken == null
+            ? null
+            : new AuthenticateResponse(
+                refreshToken.User,
+                GenerateJwtToken(refreshToken.User),
+                refreshToken.Token);
     }
 
-    private async Task<User?> VerifyUser(AuthenticateRequest model)
+    private async Task<User?> VerifyUser(AuthenticateRequest request)
     {
         logger.LogDebug("VerifyUser()");
 
-        var user = await userRepository.GetByEmail(model.Email);
+        var user = await userRepository.GetByEmail(request.Email);
 
         if (user == null)
             return null;
 
-        return passwordService.VerifyPassword(model.Password, user.PasswordHash)
+        return passwordService.VerifyPassword(request.Password, user.PasswordHash)
             ? user
             : null;
     }
@@ -117,7 +114,7 @@ public class AuthService(
             Subject = new ClaimsIdentity(claims),
             Issuer = _appSettings.Issuer,
             Audience = _appSettings.Audience,
-            Expires = now.AddMinutes(_appSettings.TokenExpirationMinutes),
+            Expires = now.AddMinutes(_appSettings.AccessTokenExpirationMinutes),
             NotBefore = now,
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),

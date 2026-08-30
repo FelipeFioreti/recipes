@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Recipes.Api.Domain.Entities.Recipes;
 using Recipes.Api.Domain.Interfaces.Recipes;
 using Recipes.Api.Infrastructure.Data.Context;

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Recipes.Api.Domain.Entities.Token;
 
@@ -10,8 +10,10 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
     {
         builder.ToTable("RefreshTokens");
 
+        builder.HasQueryFilter(e => e.User != null && e.User.DeletedAt == null);
+
         builder.HasKey(e => e.Id);
-        builder.Property(e => e.Token)
+        builder.Property(e => e.TokenHash)
             .IsRequired();
 
         builder.Property(e => e.ExpiresAt)
@@ -19,6 +21,9 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
 
         builder.Property(e => e.UserId)
             .IsRequired();
+
+        builder.HasIndex(e => e.TokenHash)
+            .IsUnique();
 
         builder.HasOne(r => r.User)
             .WithMany(u => u.RefreshTokens)

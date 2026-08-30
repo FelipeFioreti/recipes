@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Recipes.Api.Application.Interfaces.Auth;
 using Recipes.Api.Domain.DTOs.Auth;
 using Recipes.Api.Domain.Exceptions;
 using Recipes.Api.Domain.Interfaces.Auth;
@@ -11,15 +12,12 @@ namespace Recipes.Api.Presentation.Controllers.Auth;
 [AllowAnonymous]
 public class AccountController(IAuthService authService) : ControllerBase
 {
-    [HttpPost("authenticate")]
-    public async Task<IActionResult> Authenticate([FromBody] AuthenticateRequest authenticateRequest)
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] AuthenticateRequest authenticateRequest)
     {
-        var response = await authService.Authenticate(authenticateRequest);
+        var response = await authService.Login(authenticateRequest);
 
-        if (response == null)
-            throw new UnauthorizedException("Username or password is incorrect.");
-
-        return Ok(response);
+        return response == null ? throw new UnauthorizedException("Username or password is incorrect.") : Ok(response);
     }
 
     [HttpPost("logout")]
@@ -27,7 +25,7 @@ public class AccountController(IAuthService authService) : ControllerBase
     {
         var response = await authService.Logout(logoutRequest);
 
-        return Ok(response);
+        return !response ? throw new UnauthorizedException("Refresh token is invalid.") : NoContent();
     }
 
     [HttpPost("register")]
@@ -35,10 +33,7 @@ public class AccountController(IAuthService authService) : ControllerBase
     {
         var response = await authService.Register(registerUserRequest);
 
-        if (response == null)
-            throw new BadRequestException("Failed to register user.");
-
-        return Ok(response);
+        return response == null ? throw new BadRequestException("Failed to register user.") : Ok(response);
     }
 
     [HttpPost("refresh")]
@@ -46,6 +41,7 @@ public class AccountController(IAuthService authService) : ControllerBase
     {
         var response = await authService.RefreshToken(refreshTokenRequest);
 
-        return Ok(response);
+        return response == null ? throw new UnauthorizedException("Refresh token is invalid or expired.") : Ok(response);
     }
 }
+

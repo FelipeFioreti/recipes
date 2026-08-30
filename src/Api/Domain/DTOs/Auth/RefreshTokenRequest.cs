@@ -1,6 +1,6 @@
 namespace Recipes.Api.Domain.DTOs.Auth;
 
-public record RefreshTokenRequest(int UserId)
+public record RefreshTokenRequest(string RefreshToken)
 {
-    public int UserId { get; set; } = UserId;
+    public required string RefreshToken { get; init; } = RefreshToken;
 }

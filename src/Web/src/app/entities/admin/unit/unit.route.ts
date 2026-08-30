@@ -43,8 +43,7 @@ export const unitRoute: Routes = [
         },
         data: {
             pageTitle: 'unit.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: ':id/view',
@@ -54,8 +53,7 @@ export const unitRoute: Routes = [
         },
         data: {
             pageTitle: 'unit.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: 'new',
@@ -65,8 +63,7 @@ export const unitRoute: Routes = [
         },
         data: {
             pageTitle: 'unit.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     },
     {
         path: ':id/edit',
@@ -76,7 +73,6 @@ export const unitRoute: Routes = [
         },
         data: {
             pageTitle: 'unit.home.title',
-        },
-        canActivate: [AuthGuard]
+        }
     }
 ];

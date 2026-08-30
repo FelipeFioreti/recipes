@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Recipes.Api.Domain.Entities.Admin;
 using Recipes.Api.Domain.Entities.BaseEntities;
 using Recipes.Api.Domain.Entities.Recipes;
+using Recipes.Api.Domain.Entities.Token;
 using Recipes.Api.Domain.Entities.Users;
 
 namespace Recipes.Api.Infrastructure.Data.Context;
@@ -14,6 +15,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Step> Steps { get; set; }
     public DbSet<Unit> Units { get; set; }
     public DbSet<User> Users { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

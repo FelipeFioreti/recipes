@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Recipes.Api.Domain.DTOs.Auth;
 
 public record LogoutRequest
 {
-    [Required] public required int UserId { get; set; }
+    [Required] public required string RefreshToken { get; set; }
 }
