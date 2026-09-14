@@ -56,6 +56,25 @@ public class RecipeMappingsTests
     }
 
     [Fact]
+    public void ApplyTo_QuandoIngredientesOmitidosNaoDesativaNenhum()
+    {
+        var recipe = new Recipe();
+        recipe.Ingredients.Add(new Ingredient(1, "Farinha", 200m, 99, 1));
+        recipe.Ingredients.Add(new Ingredient(2, "Acucar", 100m, 99, 1));
+
+        new UpdateRecipeRequest
+        {
+            Id = 99,
+            Name = "Bolo renomeado",
+            Description = "d",
+            CategoryId = 5
+        }.ApplyTo(recipe);
+
+        Assert.Equal("Bolo renomeado", recipe.Name);
+        Assert.All(recipe.Ingredients, ingredient => Assert.Null(ingredient.DeletedAt));
+    }
+
+    [Fact]
     public void ToResponse_MapeiaCamposEOrdenaPassosPorPosicao()
     {
         var recipe = new Recipe("Bolo", "Descricao", 5, 7, [], []);

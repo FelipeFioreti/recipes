@@ -149,6 +149,19 @@ public class RecipeTests
         Assert.All(recipe.Steps, step => Assert.NotNull(step.DeletedAt));
     }
 
+    [Fact]
+    public void Update_ComIngredientesENullosNaoTocaNosFilhosExistentes()
+    {
+        var recipe = RecipeComFilhos();
+
+        recipe.Update("Bolo novo", "d", 1, null, null);
+
+        Assert.All(recipe.Ingredients, ingredient => Assert.Null(ingredient.DeletedAt));
+        Assert.All(recipe.Steps, step => Assert.Null(step.DeletedAt));
+        Assert.Equal(2, recipe.Ingredients.Count);
+        Assert.Equal(2, recipe.Steps.Count);
+    }
+
     /// Estado equivalente ao que o repositorio devolve: so filhos vivos, com ids ja persistidos.
     private static Recipe RecipeComFilhos()
     {
