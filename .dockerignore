@@ -8,8 +8,6 @@ obj
 **/obj
 **/node_modules
 **/dist
-src/Web
-src/Web/.angular
 *.user
 *.log
 .env

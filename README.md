@@ -12,7 +12,6 @@ src/
   Recipes.Application/     casos de uso, DTOs e mapeamentos   -> Domain
   Recipes.Infrastructure/  EF Core, repositorios, jobs        -> Application, Domain
   Recipes.Api/             controllers, middlewares, host     -> Infrastructure, Application, Domain
-  Web/                     frontend Angular (ver src/Web/README.md)
 ```
 
 A seta aponta sempre para dentro. O `Recipes.Domain` nao referencia nenhum projeto e nao tem nenhum
@@ -45,14 +44,9 @@ dotnet user-secrets set "AppSettings:Secret" "<segredo com pelo menos 32 caracte
 dotnet run --project src/Recipes.Api --launch-profile http
 ```
 
-O perfil `http` sobe em `http://localhost:5184`, que e o alvo do `proxy.conf.json` do frontend e do
-`environment.development.ts`. O redirecionamento para HTTPS fica desligado em Development.
-
-Frontend:
-
-```bash
-cd src/Web && npm install && npm start
-```
+O perfil `http` sobe em `http://localhost:5184`, que e o alvo do `proxy.conf.json` do frontend
+([`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web)) e do `environment.development.ts`.
+O redirecionamento para HTTPS fica desligado em Development.
 
 ## Migrations
 
@@ -69,13 +63,18 @@ dotnet ef database update --project src/Recipes.Infrastructure --startup-project
 
 ## Docker
 
-`docker-compose.yml` sobe tres servicos: `migration` (aplica as migrations e encerra), `api` e `web`
-(nginx servindo o Angular e terminando o TLS). Copie `.env.example` para `.env` e preencha antes:
+Este repositorio so publica as imagens `chefarchive-api` e `chefarchive-api-migrations` no GHCR via CI
+(`.github/workflows/publish-images.yml`, contexto `.`, dockerfiles `src/Recipes.Api/Dockerfile` e
+`src/Recipes.Api/Dockerfile.migrations`). O compose de producao (3 servicos, proxy de borda com TLS,
+runbook) vive em [`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) (privado).
+
+Para buildar a imagem da API isoladamente:
 
 ```bash
-docker compose build
+docker build -f src/Recipes.Api/Dockerfile .
 ```
 
-```bash
-docker compose up -d
-```
+## Repositorios relacionados
+
+- [`FelipeFioreti/chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web) — frontend Angular
+- [`FelipeFioreti/chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) — compose de producao, nginx de borda e runbook (privado)
