@@ -1,0 +1,64 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Recipes.Application.DTOs.Recipes;
+using Recipes.Application.Interfaces.Recipes;
+using Recipes.Domain.Entities.Enums;
+using Recipes.Domain.Exceptions;
+
+namespace Recipes.Api.Controllers.Recipes;
+
+[ApiController]
+[Authorize(Roles = nameof(Roles.USER))]
+[Route("api/[controller]")]
+public class RecipeController(IRecipeService recipeService) : ControllerBase
+{
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<RecipeResponse>> GetById(int id)
+    {
+        var recipe = await recipeService.GetById(id);
+
+        return recipe == null
+            ? throw new NotFoundException($"Recipe with id '{id}' was not found.")
+            : Ok(recipe);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<RecipeResponse>>> GetAll([FromQuery] int page = 0,
+        [FromQuery] int size = 10)
+    {
+        var recipes = await recipeService.GetAll(0, 10);
+
+        return Ok(recipes);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<RecipeResponse>> Create([FromBody] CreateRecipeRequest request)
+    {
+        var createdRecipe = await recipeService.Create(request);
+
+        return createdRecipe == null
+            ? throw new BadRequestException("Failed to create recipe.")
+            : Ok(createdRecipe);
+    }
+
+    [HttpPut("")]
+    public async Task<ActionResult<RecipeResponse>> Update([FromBody] UpdateRecipeRequest request)
+    {
+        var updatedRecipe = await recipeService.Update(request);
+
+        return updatedRecipe == null
+            ? throw new NotFoundException($"Recipe with id '{request.Id}' was not found.")
+            : Ok(updatedRecipe);
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Disable(int id)
+    {
+        var disabled = await recipeService.Disable(id);
+
+        if (!disabled)
+            throw new NotFoundException($"Recipe with id '{id}' was not found.");
+
+        return NoContent();
+    }
+}

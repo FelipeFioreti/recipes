@@ -1,0 +1,23 @@
+@Recipes_HostAddress = http://localhost:5184
+
+### Login (devolve accessToken e refreshToken)
+# @name login
+POST {{Recipes_HostAddress}}/api/Account/login
+Content-Type: application/json
+
+{
+  "email": "seu-email@exemplo.com",
+  "password": "sua-senha"
+}
+
+@accessToken = {{login.response.body.$.accessToken}}
+
+### Listar receitas
+GET {{Recipes_HostAddress}}/api/Recipe
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+### Buscar receita por id
+GET {{Recipes_HostAddress}}/api/Recipe/1
+Accept: application/json
+Authorization: Bearer {{accessToken}}

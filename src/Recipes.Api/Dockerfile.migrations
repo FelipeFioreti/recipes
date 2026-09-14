@@ -1,0 +1,19 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+
+WORKDIR /src
+
+COPY src/Recipes.Domain/Recipes.Domain.csproj src/Recipes.Domain/
+COPY src/Recipes.Application/Recipes.Application.csproj src/Recipes.Application/
+COPY src/Recipes.Infrastructure/Recipes.Infrastructure.csproj src/Recipes.Infrastructure/
+COPY src/Recipes.Api/Recipes.Api.csproj src/Recipes.Api/
+RUN dotnet restore src/Recipes.Api/Recipes.Api.csproj
+
+COPY . .
+
+RUN dotnet tool install --global dotnet-ef --version 10.*
+
+ENV PATH="/root/.dotnet/tools:${PATH}"
+
+ENTRYPOINT ["dotnet", "ef", "database", "update", \
+            "--project", "src/Recipes.Infrastructure/Recipes.Infrastructure.csproj", \
+            "--startup-project", "src/Recipes.Api/Recipes.Api.csproj"]

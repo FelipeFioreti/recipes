@@ -4,7 +4,7 @@ services:
       - egress
     build:
       context: .
-      dockerfile: src/Api/Dockerfile.migrations
+      dockerfile: src/Recipes.Api/Dockerfile.migrations
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
@@ -15,7 +15,7 @@ services:
       - egress
     build:
       context: .
-      dockerfile: src/Api/Dockerfile
+      dockerfile: src/Recipes.Api/Dockerfile
     container_name: recipes-api
     restart: unless-stopped
     environment:

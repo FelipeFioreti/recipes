@@ -1,6 +1,7 @@
 .git
 .vs
 .idea
+.claude
 bin
 obj
 **/bin
@@ -9,7 +10,7 @@ obj
 **/dist
 src/Web
 src/Web/.angular
-tmp-build
 *.user
 *.log
 .env
+**/appsettings.Development.json
