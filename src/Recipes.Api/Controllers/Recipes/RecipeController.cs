@@ -26,7 +26,7 @@ public class RecipeController(IRecipeService recipeService) : ControllerBase
     public async Task<ActionResult<IEnumerable<RecipeResponse>>> GetAll([FromQuery] int page = 0,
         [FromQuery] int size = 10)
     {
-        var recipes = await recipeService.GetAll(0, 10);
+        var recipes = await recipeService.GetAll(page, size);
 
         return Ok(recipes);
     }

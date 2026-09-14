@@ -12,6 +12,11 @@ public record UpdateRecipeRequest
 
     [Required] public int CategoryId { get; init; }
 
-    public ICollection<RecipeIngredientRequest> Ingredients { get; init; } = [];
-    public ICollection<RecipeStepRequest> Steps { get; init; } = [];
+    /// Null = nao mexer nos ingredientes existentes. Lista (mesmo vazia) = substituir por completo,
+    /// desativando quem nao aparecer.
+    public ICollection<RecipeIngredientRequest>? Ingredients { get; init; }
+
+    /// Null = nao mexer nos passos existentes. Lista (mesmo vazia) = substituir por completo,
+    /// desativando quem nao aparecer.
+    public ICollection<RecipeStepRequest>? Steps { get; init; }
 }

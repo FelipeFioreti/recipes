@@ -50,19 +50,24 @@ public class Recipe : BaseEntity
     public ICollection<Ingredient> Ingredients { get; init; } = [];
     public ICollection<Step> Steps { get; init; } = [];
 
+    /// <paramref name="ingredients"/> e <paramref name="steps"/> nulos deixam a colecao correspondente
+    /// intocada; uma lista (mesmo vazia) substitui por completo, desativando quem nao aparecer nela.
     public void Update(
         string name,
         string description,
         int categoryId,
-        IEnumerable<IRecipeIngredientData> ingredients,
-        IEnumerable<IRecipeStepData> steps)
+        IEnumerable<IRecipeIngredientData>? ingredients,
+        IEnumerable<IRecipeStepData>? steps)
     {
         Name = name;
         Description = description;
         CategoryId = categoryId;
 
-        SyncIngredients(ingredients);
-        SyncSteps(steps);
+        if (ingredients is not null)
+            SyncIngredients(ingredients);
+
+        if (steps is not null)
+            SyncSteps(steps);
     }
 
     private void SyncIngredients(IEnumerable<IRecipeIngredientData> ingredientsData)
