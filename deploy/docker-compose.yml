@@ -1,0 +1,32 @@
+name: chefarchive-api
+
+services:
+  migration:
+    image: ghcr.io/felipefioreti/chefarchive-api-migrations:${API_TAG:-latest}
+    networks: [egress]
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
+
+  api:
+    image: ghcr.io/felipefioreti/chefarchive-api:${API_TAG:-latest}
+    container_name: recipes-api
+    restart: unless-stopped
+    networks: [backend, egress]
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
+      AppSettings__Secret: ${JWT_SECRET}
+      AppSettings__Issuer: Recipes.Api
+      AppSettings__Audience: Recipes.Client
+      AppSettings__RefreshTokenExpirationDays: 7
+      AppSettings__AccessTokenExpirationMinutes: 15
+    expose:
+      - "8080"
+
+networks:
+  backend:
+    external: true
+    name: chefarchive_backend
+  egress:
+    name: chefarchive_egress

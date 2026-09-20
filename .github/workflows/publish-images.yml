@@ -18,6 +18,8 @@ jobs:
             dockerfile: src/Recipes.Api/Dockerfile
           - image: chefarchive-api-migrations
             dockerfile: src/Recipes.Api/Dockerfile.migrations
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -34,7 +36,7 @@ jobs:
         with:
           images: ghcr.io/felipefioreti/${{ matrix.image }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/v') }}
             type=sha,prefix=sha-,format=short
             type=semver,pattern={{version}}
 
@@ -46,3 +48,23 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-and-push
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Hostinger
+        uses: hostinger/deploy-on-vps@v2
+        with:
+          api-key: ${{ secrets.HOSTINGER_API_KEY }}
+          virtual-machine: "1891871"
+          project-name: chefarchive-api
+          docker-compose-path: deploy/docker-compose.yml
+          environment-variables: |
+            ASPNETCORE_ENVIRONMENT=${{ secrets.ASPNETCORE_ENVIRONMENT }}
+            DATABASE_CONNECTION_STRING=${{ secrets.DATABASE_CONNECTION_STRING }}
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            API_TAG=${{ needs.build-and-push.outputs.version }}
