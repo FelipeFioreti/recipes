@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>Recipes.Api</RootNamespace>
         <UserSecretsId>96de45ec-199e-455a-98ca-2efdb66add17</UserSecretsId>
-        <Version>1.0.1</Version>
+        <Version>1.0.2</Version>
     </PropertyGroup>
 
     <ItemGroup>
