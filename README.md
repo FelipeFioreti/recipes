@@ -63,16 +63,26 @@ dotnet ef database update --project src/Recipes.Infrastructure --startup-project
 
 ## Docker
 
-Este repositorio so publica as imagens `chefarchive-api` e `chefarchive-api-migrations` no GHCR via CI
+Este repositorio publica as imagens `chefarchive-api` e `chefarchive-api-migrations` no GHCR via CI
 (`.github/workflows/publish-images.yml`, contexto `.`, dockerfiles `src/Recipes.Api/Dockerfile` e
-`src/Recipes.Api/Dockerfile.migrations`). O compose de producao (3 servicos, proxy de borda com TLS,
-runbook) vive em [`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) (privado).
+`src/Recipes.Api/Dockerfile.migrations`).
 
 Para buildar a imagem da API isoladamente:
 
 ```bash
 docker build -f src/Recipes.Api/Dockerfile .
 ```
+
+## Deploy
+
+Toda tag `vX.Y.Z` empurrada nesse repositorio builda e publica as imagens, depois chama a
+[Action da Hostinger](https://github.com/hostinger/deploy-on-vps) para atualizar so o projeto
+`chefarchive-api` na VPS (`deploy/docker-compose.yml`), sem tocar em `web`/`proxy`. O restante da
+producao (proxy de borda com TLS, runbook, redes compartilhadas) vive em
+[`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) (privado).
+
+Requer os secrets `HOSTINGER_API_KEY`, `DATABASE_CONNECTION_STRING`, `JWT_SECRET` e
+`ASPNETCORE_ENVIRONMENT` configurados no repositorio.
 
 ## Repositorios relacionados
 
