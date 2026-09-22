@@ -4,6 +4,9 @@ API de receitas em .NET 10. Segue Clean Architecture, com cada camada em um proj
 regras de dependencia verificadas pelo compilador. O frontend Angular vive em repositorio proprio,
 [`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web).
 
+Para entender como o ChefArchive inteiro funciona (os 3 repositorios, infra na VPS, deploy, redes),
+veja [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
 ## Estrutura
 
 ```
