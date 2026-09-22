@@ -1,7 +1,8 @@
 # Recipes
 
-API de receitas em .NET 10 com frontend Angular. O backend segue Clean Architecture, com cada camada
-em um projeto separado e as regras de dependencia verificadas pelo compilador.
+API de receitas em .NET 10. Segue Clean Architecture, com cada camada em um projeto separado e as
+regras de dependencia verificadas pelo compilador. O frontend Angular vive em repositorio proprio,
+[`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web).
 
 ## Estrutura
 
