@@ -52,6 +52,22 @@ O perfil `http` sobe em `http://localhost:5184`, que e o alvo do `proxy.conf.jso
 ([`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web)) e do `environment.development.ts`.
 O redirecionamento para HTTPS fica desligado em Development.
 
+### Email (recuperacao de senha)
+
+A API envia email por SMTP (MailKit), configurado na secao `Smtp`. Para desenvolvimento, o
+[Mailpit](https://mailpit.axllent.org/) captura os emails sem enviar nada de verdade:
+
+```bash
+docker run -d -p 1025:1025 -p 8025:8025 axllent/mailpit
+dotnet user-secrets set "Smtp:Host" "localhost" --project src/Recipes.Api
+dotnet user-secrets set "Smtp:Port" "1025" --project src/Recipes.Api
+dotnet user-secrets set "Smtp:FromAddress" "no-reply@chefarchive.local" --project src/Recipes.Api
+```
+
+Os emails aparecem em `http://localhost:8025`. Com um provedor real, configure tambem `Smtp:Username` e
+`Smtp:Password` (`Smtp:Security` aceita `Auto`, `StartTls`, `SslOnConnect` ou `None`; o padrao `Auto` escolhe
+pela porta). O link do email usa `AppSettings:PasswordResetUrl`.
+
 ## Migrations
 
 As migrations vivem no `Recipes.Infrastructure`, junto do `ApplicationDbContext`, mas o host continua
@@ -85,8 +101,9 @@ Toda tag `vX.Y.Z` empurrada nesse repositorio builda e publica as imagens, depoi
 producao (proxy de borda com TLS, runbook, redes compartilhadas) vive em
 [`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) (privado).
 
-Requer os secrets `HOSTINGER_API_KEY`, `DATABASE_CONNECTION_STRING`, `JWT_SECRET` e
-`ASPNETCORE_ENVIRONMENT` configurados no repositorio.
+Requer os secrets `HOSTINGER_API_KEY`, `DATABASE_CONNECTION_STRING`, `JWT_SECRET`,
+`ASPNETCORE_ENVIRONMENT`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` e `SMTP_FROM_ADDRESS`
+configurados no repositorio.
 
 ## Repositorios relacionados
 

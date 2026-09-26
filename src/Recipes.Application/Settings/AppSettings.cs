@@ -7,4 +7,6 @@ public class AppSettings
     public string Audience { get; init; } = string.Empty;
     public int AccessTokenExpirationMinutes { get; init; } = 15;
     public int RefreshTokenExpirationDays { get; init; } = 30;
+    public int PasswordResetTokenExpirationMinutes { get; init; } = 30;
+    public string PasswordResetUrl { get; init; } = string.Empty;
 }

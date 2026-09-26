@@ -30,12 +30,18 @@ Internet
     │  web           │      │  api           │  projeto "chefarchive-api"
     │  (Angular)     │      │  (ASP.NET      │  (repo recipes, este)
     │  projeto       │      │   Core)        │
-    │ "chefarchive-  │      └───────┬────────┘
-    │  web"          │              │
-    └───────────────┘              ▼
-                             Neon Postgres
-                             (gerenciado, externo à VPS)
+    │ "chefarchive-  │      └───┬───────┬────┘
+    │  web"          │          │       │
+    └───────────────┘          ▼       ▼
+                        Neon Postgres  Servidor SMTP
+                        (gerenciado,   (provedor de email,
+                         externo)       externo à VPS)
 ```
+
+A API envia email (hoje: recuperação de senha) por **SMTP genérico** (MailKit). O provedor é só
+configuração (`Smtp__*`); trocar de provedor não exige mudança de código. O link de redefinição enviado
+no email aponta para a rota `/reset-password?token=...` do `chefarchive-web`
+(`AppSettings__PasswordResetUrl`), que chama `POST /api/Account/reset-password`.
 
 ## Os 3 projetos Docker Compose na VPS
 
@@ -57,7 +63,7 @@ Mesmo sendo projetos separados, os containers se enxergam pelo nome porque compa
 |---|---|---|---|---|
 | `chefarchive_frontend` | `chefarchive-infra` | `nginx-proxy`, `acme-companion` | Não | Precisa de saída pra internet — publicar portas no host e falar com a Let's Encrypt |
 | `chefarchive_backend` | `chefarchive-infra` | `nginx-proxy`, `api`, `web` | **Sim** | Isolamento deliberado: `api` e `web` não têm rota direta pra internet, só o proxy os alcança |
-| `chefarchive_egress` | `recipes` (projeto `chefarchive-api`) | `api`, `migration` | Não | `api`/`migration` precisam de saída pra internet pra alcançar o banco (Neon Postgres, externo à VPS) — `backend` sozinha não bastaria, já que é `internal: true` |
+| `chefarchive_egress` | `recipes` (projeto `chefarchive-api`) | `api`, `migration` | Não | `api`/`migration` precisam de saída pra internet pra alcançar o banco (Neon Postgres, externo à VPS) e, no caso da `api`, o servidor SMTP — `backend` sozinha não bastaria, já que é `internal: true` |
 
 ## Roteamento e TLS
 
@@ -97,6 +103,7 @@ Compare o hash retornado com o commit que a tag `v1.2.3` aponta no GitHub. Se ba
 | Segredo | Fica em (GitHub Secrets) | Usado por |
 |---|---|---|
 | `DATABASE_CONNECTION_STRING`, `JWT_SECRET`, `ASPNETCORE_ENVIRONMENT` | `recipes` | Deploy da API |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` | `recipes` | Deploy da API — envio de email (recuperação de senha) |
 | `LETSENCRYPT_EMAIL` | `chefarchive-infra` | Deploy do proxy |
 | `HOSTINGER_API_KEY` | Nos 3 repositórios | Todo deploy — autentica na API da Hostinger |
 

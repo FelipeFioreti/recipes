@@ -212,6 +212,47 @@ namespace Recipes.Infrastructure.Migrations
                     b.ToTable("Steps", (string)null);
                 });
 
+            modelBuilder.Entity("Recipes.Domain.Entities.Token.PasswordResetToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("UsedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PasswordResetTokens", (string)null);
+                });
+
             modelBuilder.Entity("Recipes.Domain.Entities.Token.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
@@ -351,6 +392,17 @@ namespace Recipes.Infrastructure.Migrations
                     b.Navigation("Recipe");
                 });
 
+            modelBuilder.Entity("Recipes.Domain.Entities.Token.PasswordResetToken", b =>
+                {
+                    b.HasOne("Recipes.Domain.Entities.Users.User", "User")
+                        .WithMany("PasswordResetTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Recipes.Domain.Entities.Token.RefreshToken", b =>
                 {
                     b.HasOne("Recipes.Domain.Entities.Users.User", "User")
@@ -376,6 +428,8 @@ namespace Recipes.Infrastructure.Migrations
 
             modelBuilder.Entity("Recipes.Domain.Entities.Users.User", b =>
                 {
+                    b.Navigation("PasswordResetTokens");
+
                     b.Navigation("Recipes");
 
                     b.Navigation("RefreshTokens");

@@ -3,10 +3,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Recipes.Application.Interfaces.Auth;
+using Recipes.Application.Interfaces.Email;
 using Recipes.Domain.Interfaces.Recipes;
 using Recipes.Domain.Interfaces.Token;
 using Recipes.Domain.Interfaces.Users;
 using Recipes.Infrastructure.Data.Context;
+using Recipes.Infrastructure.Email;
 using Recipes.Infrastructure.Jobs;
 using Recipes.Infrastructure.Repositories;
 using Recipes.Infrastructure.Security;
@@ -25,11 +27,15 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
         services.AddScoped<IPasswordService, PasswordService>();
 
+        services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
+        services.AddScoped<IEmailService, SmtpEmailService>();
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();
         services.AddScoped<ICategoryRepository, CategoryRepository>();
         services.AddScoped<IIngredientRepository, IngredientRepository>();
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IPasswordResetTokenRepository, PasswordResetTokenRepository>();
         services.AddScoped<IStepRepository, StepRepository>();
         services.AddScoped<IUnitRepository, UnitRepository>();
 
@@ -41,6 +47,15 @@ public static class DependencyInjection
             options.AddTrigger(trigger => trigger
                 .ForJob(refreshTokenCleanupJobKey)
                 .WithIdentity("RefreshTokenCleanupTrigger")
+                .StartNow()
+                .WithCronSchedule("0 0 3 ? * *", schedule => schedule.InTimeZone(TimeZoneInfo.Local)));
+
+            var passwordResetTokenCleanupJobKey = new JobKey(nameof(PasswordResetTokenCleanupJob));
+
+            options.AddJob<PasswordResetTokenCleanupJob>(job => job.WithIdentity(passwordResetTokenCleanupJobKey));
+            options.AddTrigger(trigger => trigger
+                .ForJob(passwordResetTokenCleanupJobKey)
+                .WithIdentity("PasswordResetTokenCleanupTrigger")
                 .StartNow()
                 .WithCronSchedule("0 0 3 ? * *", schedule => schedule.InTimeZone(TimeZoneInfo.Local)));
         });

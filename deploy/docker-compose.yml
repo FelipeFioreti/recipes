@@ -21,6 +21,13 @@ services:
       AppSettings__Audience: Recipes.Client
       AppSettings__RefreshTokenExpirationDays: 7
       AppSettings__AccessTokenExpirationMinutes: 15
+      AppSettings__PasswordResetTokenExpirationMinutes: 30
+      AppSettings__PasswordResetUrl: https://chefarchive.felipe-fioreti.tech/reset-password
+      Smtp__Host: ${SMTP_HOST}
+      Smtp__Port: ${SMTP_PORT}
+      Smtp__Username: ${SMTP_USERNAME}
+      Smtp__Password: ${SMTP_PASSWORD}
+      Smtp__FromAddress: ${SMTP_FROM_ADDRESS}
       VIRTUAL_HOST: chefarchive.felipe-fioreti.tech
       VIRTUAL_PORT: 8080
       VIRTUAL_PATH: /api/

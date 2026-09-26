@@ -1,5 +1,4 @@
 using System.Security.Cryptography;
-using System.Text;
 using Microsoft.Extensions.Options;
 using Recipes.Application.Interfaces.Auth;
 using Recipes.Application.Settings;
@@ -24,7 +23,7 @@ public class RefreshTokenService(
 
         var refreshToken = GenerateRefreshToken();
         var token = await refreshTokenRepository.Create(new RefreshToken(
-            HashToken(refreshToken),
+            TokenHasher.Hash(refreshToken),
             DateTime.UtcNow.AddDays(_appSettings.RefreshTokenExpirationDays),
             user));
 
@@ -42,14 +41,14 @@ public class RefreshTokenService(
     {
         logger.LogDebug("GetByHash()");
 
-        return await refreshTokenRepository.GetByHash(HashToken(token));
+        return await refreshTokenRepository.GetByHash(TokenHasher.Hash(token));
     }
     
     public async Task<bool> Delete(string token)
     {
         logger.LogDebug("Delete()");
 
-        var refreshToken = await refreshTokenRepository.GetByHash(HashToken(token));
+        var refreshToken = await refreshTokenRepository.GetByHash(TokenHasher.Hash(token));
 
         if (refreshToken == null)
             return false;
@@ -70,7 +69,7 @@ public class RefreshTokenService(
     {
         logger.LogDebug("Rotate()");
 
-        var refreshToken = await refreshTokenRepository.GetByHash(HashToken(token));
+        var refreshToken = await refreshTokenRepository.GetByHash(TokenHasher.Hash(token));
         
         if (refreshToken == null)
             return null;
@@ -102,12 +101,5 @@ public class RefreshTokenService(
     private static string GenerateRefreshToken()
     {
         return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-    }
-
-    private static string HashToken(string token)
-    {
-        var tokenBytes = Encoding.UTF8.GetBytes(token);
-        var hashBytes = SHA256.HashData(tokenBytes);
-        return Convert.ToBase64String(hashBytes);
     }
 }
