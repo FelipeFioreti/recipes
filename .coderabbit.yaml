@@ -15,8 +15,10 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+    # PRs de trabalho vão para release/X.Y.Z; a main só recebe a release após o deploy.
     base_branches:
       - main
+      - "release/.*"
 
   path_filters:
     - "!**/Migrations/*.Designer.cs"
