@@ -59,7 +59,7 @@ vivem em `src/Recipes.Messaging`, compartilhado pelos dois lados.
 - O provedor SMTP é só configuração (`Smtp__*`, apenas no worker); trocar de provedor não exige mudança de código.
 - A API não depende do `rabbitmq` para subir: se o broker estiver fora, só o envio falha (e é logado).
 - Entrega at-least-once: em caso raro de redelivery o destinatário recebe o mesmo email duas vezes.
-- Uso atual: recuperação de senha. O link do email aponta para `/reset-password?token=...` do
+- Uso atual: recuperação de senha. O link do email aponta para `/auth/reset-password?token=...` do
   `chefarchive-web` (`AppSettings__PasswordResetUrl`), que chama `POST /api/Account/reset-password`.
 
 ## Os 3 projetos Docker Compose na VPS
