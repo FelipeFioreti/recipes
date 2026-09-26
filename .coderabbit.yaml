@@ -1,0 +1,94 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# Configuracao do CodeRabbit (https://docs.coderabbit.ai/reference/configuration).
+# O app do CodeRabbit precisa estar instalado no repositorio pelo GitHub para este arquivo ter efeito.
+language: pt-BR
+early_access: false
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  sequence_diagrams: true
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+
+  path_filters:
+    - "!**/Migrations/*.Designer.cs"
+    - "!**/Migrations/*ModelSnapshot.cs"
+    - "!**/bin/**"
+    - "!**/obj/**"
+    - "!**/*.DotSettings.user"
+
+  path_instructions:
+    - path: "src/Recipes.Domain/**"
+      instructions: |
+        Camada de dominio: nao pode referenciar nenhum outro projeto nem pacote NuGet
+        (EF Core, ASP.NET, RabbitMQ etc.). Aponte qualquer dependencia de infraestrutura aqui.
+        Regras de negocio e invariantes devem ficar nas entidades, nao em servicos anemicos.
+    - path: "src/Recipes.Application/**"
+      instructions: |
+        Casos de uso, DTOs e mapeamentos. Depende apenas de Recipes.Domain.
+        Nao deve conhecer EF Core, RabbitMQ, SMTP ou HTTP; use as interfaces do dominio.
+        Servicos novos devem ser registrados em AddApplication() (DependencyInjection.cs).
+    - path: "src/Recipes.Infrastructure/**"
+      instructions: |
+        Implementacoes de repositorio, EF Core, jobs e publicacao no RabbitMQ.
+        Verifique consultas N+1, falta de AsNoTracking em leituras, uso correto de async/CancellationToken
+        e que servicos novos sejam registrados em AddInfrastructure().
+    - path: "src/Recipes.Infrastructure/Migrations/**"
+      instructions: |
+        Migrations do EF Core. Aponte perda de dados (drop/rename de coluna ou tabela),
+        colunas NOT NULL sem valor padrao em tabelas existentes e indices faltando em chaves estrangeiras.
+    - path: "src/Recipes.Api/**"
+      instructions: |
+        Controllers devem ser finos e delegar para a camada Application.
+        Verifique autorizacao ([Authorize]/[AllowAnonymous]), validacao de entrada, codigos HTTP
+        e que nenhuma configuracao sensivel (connection string, segredo JWT, senha SMTP) esteja em appsettings.json.
+    - path: "src/Recipes.EmailWorker/**"
+      instructions: |
+        Worker que consome a fila email.send e envia por SMTP. Verifique ack/nack corretos,
+        idempotencia, retry com backoff, dead-letter e que credenciais venham de configuracao segura.
+    - path: "tests/**"
+      instructions: |
+        Testes xUnit. Verifique que os testes cobrem cenarios de erro alem do caminho feliz
+        e que nao dependem de ordem de execucao nem de recursos externos.
+    - path: "**/Dockerfile*"
+      instructions: |
+        Prefira imagens base com versao fixa, multi-stage build e execucao como usuario nao-root.
+    - path: ".github/workflows/**"
+      instructions: |
+        Verifique permissoes minimas (permissions), actions fixadas em versao e que segredos
+        nao sejam expostos em logs.
+    - path: "{deploy/**,.github/workflows/**,**/Dockerfile*}"
+      instructions: |
+        Mudancas de deploy, rede Docker, segredo ou publicacao de imagem exigem atualizar ARCHITECTURE.md
+        no mesmo PR (regra do CLAUDE.md). Aponte se o PR nao tocar ARCHITECTURE.md.
+
+  tools:
+    gitleaks:
+      enabled: true
+    hadolint:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+    markdownlint:
+      enabled: true
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "CLAUDE.md"
+      - "ARCHITECTURE.md"
+      - "README.md"
