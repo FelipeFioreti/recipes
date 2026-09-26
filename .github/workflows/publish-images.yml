@@ -18,6 +18,8 @@ jobs:
             dockerfile: src/Recipes.Api/Dockerfile
           - image: chefarchive-api-migrations
             dockerfile: src/Recipes.Api/Dockerfile.migrations
+          - image: chefarchive-email-worker
+            dockerfile: src/Recipes.EmailWorker/Dockerfile
     outputs:
       version: ${{ steps.meta.outputs.version }}
     steps:
@@ -72,4 +74,6 @@ jobs:
             SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
             SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
             SMTP_FROM_ADDRESS=${{ secrets.SMTP_FROM_ADDRESS }}
+            RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}
+            RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}
             API_TAG=${{ needs.build-and-push.outputs.version }}

@@ -1,6 +1,6 @@
 using MailKit.Security;
 
-namespace Recipes.Infrastructure.Email;
+namespace Recipes.EmailWorker.Smtp;
 
 public class SmtpSettings
 {

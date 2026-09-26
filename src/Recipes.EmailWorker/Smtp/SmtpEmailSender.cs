@@ -1,18 +1,15 @@
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Recipes.Application.Interfaces.Email;
 
-namespace Recipes.Infrastructure.Email;
+namespace Recipes.EmailWorker.Smtp;
 
-public class SmtpEmailService(IOptions<SmtpSettings> smtpSettings, ILogger<SmtpEmailService> logger) : IEmailService
+public class SmtpEmailSender(IOptions<SmtpSettings> smtpSettings) : IEmailSender
 {
     private readonly SmtpSettings _smtpSettings = smtpSettings.Value;
 
     public async Task Send(string to, string subject, string htmlBody, CancellationToken cancellationToken = default)
     {
-        logger.LogDebug("Send()");
-
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress(_smtpSettings.FromName, _smtpSettings.FromAddress));
         message.To.Add(MailboxAddress.Parse(to));

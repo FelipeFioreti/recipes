@@ -16,10 +16,16 @@ src/
   Recipes.Application/     casos de uso, DTOs e mapeamentos   -> Domain
   Recipes.Infrastructure/  EF Core, repositorios, jobs        -> Application, Domain
   Recipes.Api/             controllers, middlewares, host     -> Infrastructure, Application, Domain
+  Recipes.Messaging/       contrato e filas do RabbitMQ       -> sem projetos (so RabbitMQ.Client)
+  Recipes.EmailWorker/     worker que envia os emails (SMTP)  -> Messaging
 ```
 
 A seta aponta sempre para dentro. O `Recipes.Domain` nao referencia nenhum projeto e nao tem nenhum
 pacote NuGet: se algo la dentro precisar de EF Core ou de ASP.NET, esta na camada errada.
+
+`Recipes.EmailWorker` e um processo separado (container proprio): consome a fila `email.send` e envia por
+SMTP. A API so publica na fila (`Recipes.Infrastructure/Email/RabbitMqEmailPublisher.cs`); Domain e
+Application nao conhecem RabbitMQ, so a interface `IEmailService`.
 
 ### O que vai onde
 
@@ -54,19 +60,24 @@ O redirecionamento para HTTPS fica desligado em Development.
 
 ### Email (recuperacao de senha)
 
-A API envia email por SMTP (MailKit), configurado na secao `Smtp`. Para desenvolvimento, o
-[Mailpit](https://mailpit.axllent.org/) captura os emails sem enviar nada de verdade:
+A API publica os emails no RabbitMQ e o `Recipes.EmailWorker` envia por SMTP (MailKit). Para
+desenvolvimento, suba o RabbitMQ e o [Mailpit](https://mailpit.axllent.org/), que captura os emails sem
+enviar nada de verdade:
 
 ```bash
-docker run -d -p 1025:1025 -p 8025:8025 axllent/mailpit
-dotnet user-secrets set "Smtp:Host" "localhost" --project src/Recipes.Api
-dotnet user-secrets set "Smtp:Port" "1025" --project src/Recipes.Api
-dotnet user-secrets set "Smtp:FromAddress" "no-reply@chefarchive.local" --project src/Recipes.Api
+docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+docker run -d --name mailpit -p 1025:1025 -p 8025:8025 axllent/mailpit
+dotnet user-secrets set "Smtp:Host" "localhost" --project src/Recipes.EmailWorker
+dotnet user-secrets set "Smtp:Port" "1025" --project src/Recipes.EmailWorker
+dotnet user-secrets set "Smtp:FromAddress" "no-reply@chefarchive.local" --project src/Recipes.EmailWorker
+dotnet run --project src/Recipes.EmailWorker
 ```
 
-Os emails aparecem em `http://localhost:8025`. Com um provedor real, configure tambem `Smtp:Username` e
-`Smtp:Password` (`Smtp:Security` aceita `Auto`, `StartTls`, `SslOnConnect` ou `None`; o padrao `Auto` escolhe
-pela porta). O link do email usa `AppSettings:PasswordResetUrl`.
+Localmente os dois lados usam o usuario padrao `guest`/`guest` do RabbitMQ (`RabbitMq:*` nos `appsettings.json`).
+As filas aparecem em `http://localhost:15672` e os emails em `http://localhost:8025`. Com um provedor real,
+configure tambem `Smtp:Username` e `Smtp:Password` no worker (`Smtp:Security` aceita `Auto`, `StartTls`,
+`SslOnConnect` ou `None`; o padrao `Auto` escolhe pela porta). O link do email usa `AppSettings:PasswordResetUrl`
+da API.
 
 ## Migrations
 
@@ -83,9 +94,9 @@ dotnet ef database update --project src/Recipes.Infrastructure --startup-project
 
 ## Docker
 
-Este repositorio publica as imagens `chefarchive-api` e `chefarchive-api-migrations` no GHCR via CI
-(`.github/workflows/publish-images.yml`, contexto `.`, dockerfiles `src/Recipes.Api/Dockerfile` e
-`src/Recipes.Api/Dockerfile.migrations`).
+Este repositorio publica as imagens `chefarchive-api`, `chefarchive-api-migrations` e
+`chefarchive-email-worker` no GHCR via CI (`.github/workflows/publish-images.yml`, contexto `.`, dockerfiles
+`src/Recipes.Api/Dockerfile`, `src/Recipes.Api/Dockerfile.migrations` e `src/Recipes.EmailWorker/Dockerfile`).
 
 Para buildar a imagem da API isoladamente:
 
@@ -101,9 +112,11 @@ Toda tag `vX.Y.Z` empurrada nesse repositorio builda e publica as imagens, depoi
 producao (proxy de borda com TLS, runbook, redes compartilhadas) vive em
 [`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) (privado).
 
+O projeto `chefarchive-api` sobe `api`, `migration`, `email-worker` e `rabbitmq`.
+
 Requer os secrets `HOSTINGER_API_KEY`, `DATABASE_CONNECTION_STRING`, `JWT_SECRET`,
-`ASPNETCORE_ENVIRONMENT`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` e `SMTP_FROM_ADDRESS`
-configurados no repositorio.
+`ASPNETCORE_ENVIRONMENT`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS`,
+`RABBITMQ_USERNAME` e `RABBITMQ_PASSWORD` configurados no repositorio.
 
 ## Repositorios relacionados
 

@@ -10,8 +10,10 @@ using Recipes.Domain.Interfaces.Users;
 using Recipes.Infrastructure.Data.Context;
 using Recipes.Infrastructure.Email;
 using Recipes.Infrastructure.Jobs;
+using Recipes.Infrastructure.Messaging;
 using Recipes.Infrastructure.Repositories;
 using Recipes.Infrastructure.Security;
+using Recipes.Messaging;
 
 namespace Recipes.Infrastructure;
 
@@ -27,8 +29,9 @@ public static class DependencyInjection
         services.AddScoped<IUserContext, UserContext>();
         services.AddScoped<IPasswordService, PasswordService>();
 
-        services.Configure<SmtpSettings>(configuration.GetSection("Smtp"));
-        services.AddScoped<IEmailService, SmtpEmailService>();
+        services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMq"));
+        services.AddSingleton<RabbitMqConnectionProvider>();
+        services.AddScoped<IEmailService, RabbitMqEmailPublisher>();
 
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IRecipeRepository, RecipeRepository>();

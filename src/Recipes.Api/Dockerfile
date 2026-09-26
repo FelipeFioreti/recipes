@@ -3,6 +3,7 @@ WORKDIR /src
 
 COPY src/Recipes.Domain/Recipes.Domain.csproj src/Recipes.Domain/
 COPY src/Recipes.Application/Recipes.Application.csproj src/Recipes.Application/
+COPY src/Recipes.Messaging/Recipes.Messaging.csproj src/Recipes.Messaging/
 COPY src/Recipes.Infrastructure/Recipes.Infrastructure.csproj src/Recipes.Infrastructure/
 COPY src/Recipes.Api/Recipes.Api.csproj src/Recipes.Api/
 RUN dotnet restore src/Recipes.Api/Recipes.Api.csproj
