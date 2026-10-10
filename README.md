@@ -37,6 +37,39 @@ O registro no container fica no projeto dono do servico, nao no host: `AddApplic
 
 ## Rodando local
 
+### Com Docker (recomendado)
+
+O `docker-compose.dev.yml` sobe migrations, API e frontend com hot reload. Requer o
+[`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web) clonado ao lado deste repositorio
+(`../chefarchive-web`).
+
+Toda a configuracao de dev da API (connection string, `AppSettings:Secret`) fica em
+`src/Recipes.Api/appsettings.Development.json`, que esta no `.gitignore` e e montado nos containers da API
+e das migrations. Crie o arquivo a partir do exemplo versionado e preencha:
+
+```bash
+cp src/Recipes.Api/appsettings.Development.example.json src/Recipes.Api/appsettings.Development.json
+```
+
+O compose nao sobe banco: use a connection string de um banco de desenvolvimento. As migrations sao
+aplicadas nele a cada subida.
+
+```bash
+docker compose -f docker-compose.dev.yml up --build
+```
+
+| Servico | Endereco |
+|---|---|
+| Frontend (`ng serve`) | http://localhost:4200 |
+| API (`dotnet watch`) | http://localhost:5184 |
+
+Alteracoes em `.cs`/`.ts` recarregam sozinhas. Migrations novas exigem rodar o servico de novo:
+`docker compose -f docker-compose.dev.yml up --build migration`. Mudou o `package-lock.json` do frontend?
+Recrie o volume de dependencias:
+`docker compose -f docker-compose.dev.yml rm -sf web && docker volume rm chefarchive-dev_web-node-modules`.
+
+### Sem Docker
+
 Configuracao sensivel vem de user secrets ou variaveis de ambiente — nao de `appsettings.json`:
 
 ```bash
