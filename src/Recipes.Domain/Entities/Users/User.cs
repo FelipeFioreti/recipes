@@ -35,6 +35,7 @@ public class User : BaseEntity
 
     public ICollection<Recipe>? Recipes { get; init; } = new List<Recipe>();
     public ICollection<RefreshToken>? RefreshTokens { get; init; } = new List<RefreshToken>();
+    public ICollection<PasswordResetToken>? PasswordResetTokens { get; init; } = new List<PasswordResetToken>();
 
     public void Update(string name)
     {

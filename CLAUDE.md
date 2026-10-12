@@ -10,4 +10,4 @@ Este repositório mantém `ARCHITECTURE.md` — a documentação de arquitetura 
 
 Mudanças que só afetam a lógica interna da aplicação (uma regra de negócio, um endpoint novo que não muda a arquitetura) não precisam tocar em `ARCHITECTURE.md`.
 
-Antes de qualquer commit, branch ou PR: siga as convenções descritas no `docs/git-best-practices.md` do `chefarchive-infra` (privado) — commits em inglês, Conventional Commits, sem assinatura de ferramenta.
+Antes de qualquer commit, branch ou PR: siga as convenções descritas no `docs/git-best-practices.md` do `chefarchive-infra` (privado) — commits em português, Conventional Commits, sem assinatura de ferramenta. Branches de trabalho partem da `main` e o PR vai para a `release/X.Y.Z` da versão, nunca direto para a `main`. Criar a tag `vX.Y.Z` dispara o deploy: nunca crie nem envie tags sem pedido explícito.

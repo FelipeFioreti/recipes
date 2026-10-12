@@ -6,7 +6,7 @@ Documentação centralizada de como o **ChefArchive inteiro** funciona — os 3 
 
 | Repositório | Visibilidade | Conteúdo | Publica no GHCR |
 |---|---|---|---|
-| [`recipes`](https://github.com/FelipeFioreti/recipes) (este) | público | Backend ASP.NET Core, Clean Architecture | `chefarchive-api`, `chefarchive-api-migrations` |
+| [`recipes`](https://github.com/FelipeFioreti/recipes) (este) | público | Backend ASP.NET Core, Clean Architecture | `chefarchive-api`, `chefarchive-api-migrations`, `chefarchive-email-worker` |
 | [`chefarchive-web`](https://github.com/FelipeFioreti/chefarchive-web) | público | Frontend Angular | `chefarchive-web` |
 | [`chefarchive-infra`](https://github.com/FelipeFioreti/chefarchive-infra) | **privado** | Proxy de borda (nginx-proxy + acme-companion), redes Docker compartilhadas, runbook operacional | usa imagens de terceiros prontas — não builda nada próprio |
 
@@ -30,12 +30,37 @@ Internet
     │  web           │      │  api           │  projeto "chefarchive-api"
     │  (Angular)     │      │  (ASP.NET      │  (repo recipes, este)
     │  projeto       │      │   Core)        │
-    │ "chefarchive-  │      └───────┬────────┘
-    │  web"          │              │
-    └───────────────┘              ▼
-                             Neon Postgres
-                             (gerenciado, externo à VPS)
+    │ "chefarchive-  │      └──┬──────────┬──┘
+    │  web"          │         │          │ publica email
+    └───────────────┘         │          ▼
+                               │   ┌───────────────┐
+                               │   │  rabbitmq      │  fila email.send
+                               │   └───────┬────────┘  (+ DLQ email.send.dead)
+                               │           │ consome
+                               │           ▼
+                               │   ┌───────────────┐
+                               │   │  email-worker  │
+                               │   └───────┬────────┘
+                               ▼           ▼
+                        Neon Postgres   Servidor SMTP
+                        (gerenciado,    (provedor de email,
+                         externo)        externo à VPS)
 ```
+
+### Envio de email
+
+A API **não fala SMTP**. Ela publica o email já renderizado (`To`, `Subject`, `HtmlBody`) como mensagem
+persistente na fila `email.send` do `rabbitmq`, com publisher confirms. O `email-worker` (projeto
+`src/Recipes.EmailWorker`, imagem `chefarchive-email-worker`) consome com ack manual, envia por **SMTP
+genérico** (MailKit) e tenta de novo após 2s, 10s e 30s. Se todas as tentativas falharem, a mensagem vai para
+a dead-letter `email.send.dead`, onde fica por 7 dias. O contrato da mensagem e a declaração das filas
+vivem em `src/Recipes.Messaging`, compartilhado pelos dois lados.
+
+- O provedor SMTP é só configuração (`Smtp__*`, apenas no worker); trocar de provedor não exige mudança de código.
+- A API não depende do `rabbitmq` para subir: se o broker estiver fora, só o envio falha (e é logado).
+- Entrega at-least-once: em caso raro de redelivery o destinatário recebe o mesmo email duas vezes.
+- Uso atual: recuperação de senha. O link do email aponta para `/auth/reset-password?token=...` do
+  `chefarchive-web` (`AppSettings__PasswordResetUrl`), que chama `POST /api/Account/reset-password`.
 
 ## Os 3 projetos Docker Compose na VPS
 
@@ -44,20 +69,21 @@ Cada serviço roda como um projeto Docker Compose **independente** na VPS:
 | Projeto na VPS | Deployado por | Serviços |
 |---|---|---|
 | `chefarchive-proxy` | `chefarchive-infra` | `nginx-proxy`, `acme-companion` |
-| `chefarchive-api` | `recipes` (este repo) | `api`, `migration` |
+| `chefarchive-api` | `recipes` (este repo) | `api`, `migration`, `email-worker`, `rabbitmq` |
 | `chefarchive-web` | `chefarchive-web` | `web` |
 
 Atualizar um projeto não recria os outros — um deploy da API não derruba o frontend nem o proxy, e vice-versa.
 
 ## Redes Docker compartilhadas
 
-Mesmo sendo projetos separados, os containers se enxergam pelo nome porque compartilham 3 redes Docker, cada uma declarada ("dona") por um dos projetos e referenciada como `external: true` pelos outros:
+Mesmo sendo projetos separados, os containers se enxergam pelo nome porque compartilham redes Docker, cada uma declarada ("dona") por um dos projetos e referenciada como `external: true` pelos outros (a `chefarchive_messaging` é usada só dentro do próprio projeto `chefarchive-api`):
 
 | Rede | Dona | Quem usa | `internal: true`? | Por quê existe |
 |---|---|---|---|---|
 | `chefarchive_frontend` | `chefarchive-infra` | `nginx-proxy`, `acme-companion` | Não | Precisa de saída pra internet — publicar portas no host e falar com a Let's Encrypt |
 | `chefarchive_backend` | `chefarchive-infra` | `nginx-proxy`, `api`, `web` | **Sim** | Isolamento deliberado: `api` e `web` não têm rota direta pra internet, só o proxy os alcança |
-| `chefarchive_egress` | `recipes` (projeto `chefarchive-api`) | `api`, `migration` | Não | `api`/`migration` precisam de saída pra internet pra alcançar o banco (Neon Postgres, externo à VPS) — `backend` sozinha não bastaria, já que é `internal: true` |
+| `chefarchive_egress` | `recipes` (projeto `chefarchive-api`) | `api`, `migration`, `email-worker` | Não | `api`/`migration` precisam de saída pra internet pra alcançar o banco (Neon Postgres, externo à VPS), e o `email-worker` pra alcançar o servidor SMTP — `backend` sozinha não bastaria, já que é `internal: true` |
+| `chefarchive_messaging` | `recipes` (projeto `chefarchive-api`) | `api`, `email-worker`, `rabbitmq` | **Sim** | Tráfego AMQP entre API, broker e worker. O `rabbitmq` fica só nela: sem porta publicada e sem acesso à internet |
 
 ## Roteamento e TLS
 
@@ -73,12 +99,13 @@ Detalhes operacionais completos (como adicionar uma aplicação nova ao proxy, v
 
 Build de imagem e deploy em produção são coisas **separadas**, disparadas em momentos diferentes:
 
-1. **Push em `main`** → GitHub Actions builda a imagem e publica no GHCR só com uma tag `sha-<hash>` (rastreável, mas não é o que roda em produção). **A tag `latest` não se move nesse passo.**
-2. **Você cria e envia uma tag de versão** (`git tag v1.2.3 && git push origin v1.2.3`) → dispara o build de novo, agora publicando também `latest` e `1.2.3` no GHCR.
+1. **As mudanças se juntam numa `release/X.Y.Z`** → cada branch de trabalho abre PR para a `release/*` da versão em que vai sair (nunca direto para a `main`). PRs e merges rodam só CI, nunca deploy.
+2. **Você cria e envia uma tag de versão anotada no último commit da `release/*`** (`git tag -a v1.2.3 -m "Release 1.2.3" && git push origin v1.2.3`) → dispara o build, publicando `latest` e `1.2.3` no GHCR.
 3. Essa mesma tag dispara o job `deploy` do workflow (só roda em tags `v*`), que chama a [Action da Hostinger](https://github.com/hostinger/deploy-on-vps) passando a versão exata recém-publicada.
 4. A API da Hostinger recria **só o projeto correspondente** na VPS (`chefarchive-api`, `chefarchive-web` ou `chefarchive-proxy`, dependendo de qual repositório foi tagueado), puxando a imagem já publicada.
+5. **Deploy com sucesso → PR da `release/*` para a `main`.** A `main` só recebe versões que já estão em produção, então sempre tem o mesmo código que está no ar. Em `recipes` e `chefarchive-web`, esse push na `main` builda de novo e publica uma imagem só com a tag `sha-<hash>`, sem mover `latest` e sem deploy.
 
-Ou seja: **é preciso criar uma tag pra ir pra produção.** Um push simples em `main` builda e publica uma imagem rastreável, mas não deploya nada.
+Ou seja: **só a tag leva uma versão para produção.** Rollback é refazer o deploy da tag anterior; uma correção vira uma nova tag (`v1.2.4`), nunca uma tag movida ou recriada. O fluxo completo (numeração, hotfix, sincronização entre releases) está em `docs/git-best-practices.md`, no `chefarchive-infra` (privado).
 
 ### Como confirmar o que está rodando de verdade
 
@@ -97,6 +124,8 @@ Compare o hash retornado com o commit que a tag `v1.2.3` aponta no GitHub. Se ba
 | Segredo | Fica em (GitHub Secrets) | Usado por |
 |---|---|---|
 | `DATABASE_CONNECTION_STRING`, `JWT_SECRET`, `ASPNETCORE_ENVIRONMENT` | `recipes` | Deploy da API |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_FROM_ADDRESS` | `recipes` | Só o `email-worker` — envio de email |
+| `RABBITMQ_USERNAME`, `RABBITMQ_PASSWORD` | `recipes` | `rabbitmq` (cria o usuário), `api` e `email-worker` (conectam) |
 | `LETSENCRYPT_EMAIL` | `chefarchive-infra` | Deploy do proxy |
 | `HOSTINGER_API_KEY` | Nos 3 repositórios | Todo deploy — autentica na API da Hostinger |
 
@@ -110,6 +139,8 @@ Nenhum segredo entra em imagem Docker, código-fonte ou log — todos são injet
 - **`chefarchive_backend` como `internal: true`**: API e frontend não são alcançáveis diretamente da internet, só através do proxy.
 - **nginx-proxy + acme-companion em vez de nginx manual + certbot**: elimina a classe de bug em que um script de renovação de certificado fica com o nome de container desatualizado — isso já aconteceu de verdade e quase causou uma queda por certificado expirado.
 - **Deploy só em tag, nunca em todo push**: separa "publiquei uma imagem" de "isso está em produção" — dá controle explícito sobre o que vai pro ar e quando.
+- **Email num worker separado, via RabbitMQ**: a requisição não espera o SMTP (o tempo de resposta do `forgot-password` não denuncia se o email existe), retries e dead-letter ficam fora da API, e os segredos SMTP ficam só no worker. Fica no mesmo projeto Compose da API porque é deployado junto com ela e compartilha a mesma tag de versão.
+- **`RabbitMQ.Client` direto, sem MassTransit**: a v9 do MassTransit passou a ter licença comercial, e a necessidade aqui (uma fila, um consumidor) não justifica a abstração.
 
 ## Repositórios relacionados
 
