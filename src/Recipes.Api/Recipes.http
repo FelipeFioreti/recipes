@@ -21,3 +21,20 @@ Authorization: Bearer {{accessToken}}
 GET {{Recipes_HostAddress}}/api/Recipe/1
 Accept: application/json
 Authorization: Bearer {{accessToken}}
+
+### Esqueci minha senha (sempre 204; envia email com link se o usuario existir)
+POST {{Recipes_HostAddress}}/api/Account/forgot-password
+Content-Type: application/json
+
+{
+  "email": "seu-email@exemplo.com"
+}
+
+### Redefinir senha com o token recebido no email
+POST {{Recipes_HostAddress}}/api/Account/reset-password
+Content-Type: application/json
+
+{
+  "token": "token-do-link",
+  "newPassword": "nova-senha"
+}

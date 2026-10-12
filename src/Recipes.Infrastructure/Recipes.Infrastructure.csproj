@@ -27,6 +27,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Recipes.Application\Recipes.Application.csproj" />
         <ProjectReference Include="..\Recipes.Domain\Recipes.Domain.csproj" />
+        <ProjectReference Include="..\Recipes.Messaging\Recipes.Messaging.csproj" />
     </ItemGroup>
 
 </Project>

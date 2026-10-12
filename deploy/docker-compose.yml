@@ -12,7 +12,7 @@ services:
     image: ghcr.io/felipefioreti/chefarchive-api:${API_TAG:-latest}
     container_name: recipes-api
     restart: unless-stopped
-    networks: [backend, egress]
+    networks: [backend, egress, messaging]
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING}
@@ -21,11 +21,53 @@ services:
       AppSettings__Audience: Recipes.Client
       AppSettings__RefreshTokenExpirationDays: 7
       AppSettings__AccessTokenExpirationMinutes: 15
+      AppSettings__PasswordResetTokenExpirationMinutes: 30
+      AppSettings__PasswordResetUrl: https://chefarchive.felipe-fioreti.tech/auth/reset-password
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USERNAME}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
       VIRTUAL_HOST: chefarchive.felipe-fioreti.tech
       VIRTUAL_PORT: 8080
       VIRTUAL_PATH: /api/
     expose:
       - "8080"
+
+  email-worker:
+    image: ghcr.io/felipefioreti/chefarchive-email-worker:${API_TAG:-latest}
+    restart: unless-stopped
+    networks: [messaging, egress]
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      DOTNET_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      RabbitMq__Host: rabbitmq
+      RabbitMq__Username: ${RABBITMQ_USERNAME}
+      RabbitMq__Password: ${RABBITMQ_PASSWORD}
+      Smtp__Host: ${SMTP_HOST}
+      Smtp__Port: ${SMTP_PORT}
+      Smtp__Username: ${SMTP_USERNAME}
+      Smtp__Password: ${SMTP_PASSWORD}
+      Smtp__FromAddress: ${SMTP_FROM_ADDRESS}
+
+  rabbitmq:
+    image: rabbitmq:4-alpine
+    # O diretorio de dados do RabbitMQ depende do nome do no (rabbit@<hostname>): sem hostname fixo,
+    # recriar o container faria as filas persistidas no volume "sumirem".
+    hostname: rabbitmq
+    restart: unless-stopped
+    networks: [messaging]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
 
 networks:
   backend:
@@ -33,3 +75,9 @@ networks:
     name: chefarchive_backend
   egress:
     name: chefarchive_egress
+  messaging:
+    name: chefarchive_messaging
+    internal: true
+
+volumes:
+  rabbitmq-data:

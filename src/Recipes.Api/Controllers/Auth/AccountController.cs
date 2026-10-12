@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Recipes.Application.DTOs.Auth;
 using Recipes.Application.Interfaces.Auth;
 using Recipes.Domain.Exceptions;
@@ -9,8 +10,10 @@ namespace Recipes.Api.Controllers.Auth;
 [ApiController]
 [Route("api/[controller]")]
 [AllowAnonymous]
-public class AccountController(IAuthService authService) : ControllerBase
+public class AccountController(IAuthService authService, IPasswordResetService passwordResetService) : ControllerBase
 {
+    public const string PasswordResetRateLimitPolicy = "password-reset";
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] AuthenticateRequest authenticateRequest)
     {
@@ -41,6 +44,24 @@ public class AccountController(IAuthService authService) : ControllerBase
         var response = await authService.RefreshToken(refreshTokenRequest);
 
         return response == null ? throw new UnauthorizedException("Refresh token is invalid or expired.") : Ok(response);
+    }
+
+    [HttpPost("forgot-password")]
+    [EnableRateLimiting(PasswordResetRateLimitPolicy)]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest)
+    {
+        await passwordResetService.RequestReset(forgotPasswordRequest);
+
+        return NoContent();
+    }
+
+    [HttpPost("reset-password")]
+    [EnableRateLimiting(PasswordResetRateLimitPolicy)]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest)
+    {
+        var response = await passwordResetService.ResetPassword(resetPasswordRequest);
+
+        return !response ? throw new BadRequestException("Reset token is invalid or expired.") : NoContent();
     }
 }
 
