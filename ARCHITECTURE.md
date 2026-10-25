@@ -62,6 +62,48 @@ vivem em `src/Recipes.Messaging`, compartilhado pelos dois lados.
 - Uso atual: recuperação de senha. O link do email aponta para `/auth/reset-password?token=...` do
   `chefarchive-web` (`AppSettings__PasswordResetUrl`), que chama `POST /api/Account/reset-password`.
 
+#### Provedor em produção
+
+O provedor é o [Resend](https://resend.com), via SMTP (região São Paulo). Os valores ficam nos secrets
+`SMTP_*` do `recipes` (ver "Segredos — onde cada um mora"):
+
+| Secret | Valor |
+|---|---|
+| `SMTP_HOST` / `SMTP_PORT` | `smtp.resend.com` / `587` (STARTTLS: o `Smtp:Security` padrão, `Auto`, escolhe pela porta) |
+| `SMTP_USERNAME` | `resend` (literal) |
+| `SMTP_PASSWORD` | API key do Resend com permissão só de envio, restrita ao domínio `mail.felipe-fioreti.tech` |
+| `SMTP_FROM_ADDRESS` | `nao-responda@mail.felipe-fioreti.tech` (nome exibido: `ChefArchive`, de `Smtp:FromName`) |
+
+- **Subdomínio `mail.`**: o envio usa um subdomínio próprio para que problemas de reputação de envio não
+  atinjam o domínio principal `felipe-fioreti.tech`.
+- **`nao-responda@`**: o domínio só envia. Não existe caixa de entrada nem MX de recebimento, então respostas
+  ao email não chegam a ninguém.
+
+Registros DNS, cadastrados no hPanel da Hostinger (onde o DNS de `felipe-fioreti.tech` é gerenciado). Os
+valores vêm da aba **Records** do domínio no painel do Resend, que precisa mostrar o domínio como **Verified**:
+
+| Registro | Tipo | Aponta para / valor | Função |
+|---|---|---|---|
+| `resend._domainkey.mail` | TXT | Chave pública `p=MIGf...` | DKIM: assinatura dos emails |
+| `send.mail` | CNAME | `send.forge.rmta.net` | SPF e MX de devoluções (bounces) do envio, delegados ao Resend |
+| `rsend.mail` | CNAME | `rsend-sae1.forge.rmta.net` | SPF e MX de devoluções da infraestrutura Amazon SES do Resend |
+| `_dmarc` | TXT | `v=DMARC1; p=none;` | Política DMARC: só monitora, não rejeita |
+
+Os CNAMEs delegam SPF e MX ao Resend: se ele trocar IPs ou servidores, não é preciso mexer no DNS.
+
+**Firewall:** o envio é uma conexão de **saída** do `email-worker` para `smtp.resend.com:587`, então nenhuma
+porta de entrada precisa ser aberta na VPS. Não abra portas do `rabbitmq` (5672/15672) nem de SMTP. Para
+diagnosticar, use `nc -vz smtp.resend.com 587` na VPS e `docker logs` do `email-worker`: timeout indica
+bloqueio de rede, e erro de autenticação indica `SMTP_USERNAME`/`SMTP_PASSWORD` errados.
+
+**Limites:** no plano gratuito, o Resend permite 3.000 emails por mês e 100 por dia (confira em
+[resend.com/pricing](https://resend.com/pricing)). O rate limit por IP do `forgot-password` protege essa
+cota. Se ela estourar, o worker esgota as tentativas e a mensagem vai para a `email.send.dead`, sem afetar
+a API.
+
+**Trocar de provedor:** basta atualizar os secrets `SMTP_*` e fazer um novo deploy (tag). Também é preciso
+recadastrar no DNS os registros do novo provedor e remover os do Resend.
+
 ## Os 3 projetos Docker Compose na VPS
 
 Cada serviço roda como um projeto Docker Compose **independente** na VPS:
@@ -99,11 +141,11 @@ Detalhes operacionais completos (como adicionar uma aplicação nova ao proxy, v
 
 Build de imagem e deploy em produção são coisas **separadas**, disparadas em momentos diferentes:
 
-1. **As mudanças se juntam numa `release/X.Y.Z`** → cada branch de trabalho abre PR para a `release/*` da versão em que vai sair (nunca direto para a `main`). PRs e merges rodam só CI, nunca deploy.
+1. **As mudanças se juntam numa `release/X.Y.Z`** → cada branch de trabalho entra na `release/*` da versão em que vai sair por merge local (`--no-ff`, sem PR), nunca direto na `main`. Merges nunca disparam deploy.
 2. **Você cria e envia uma tag de versão anotada no último commit da `release/*`** (`git tag -a v1.2.3 -m "Release 1.2.3" && git push origin v1.2.3`) → dispara o build, publicando `latest` e `1.2.3` no GHCR.
 3. Essa mesma tag dispara o job `deploy` do workflow (só roda em tags `v*`), que chama a [Action da Hostinger](https://github.com/hostinger/deploy-on-vps) passando a versão exata recém-publicada.
 4. A API da Hostinger recria **só o projeto correspondente** na VPS (`chefarchive-api`, `chefarchive-web` ou `chefarchive-proxy`, dependendo de qual repositório foi tagueado), puxando a imagem já publicada.
-5. **Deploy com sucesso → PR da `release/*` para a `main`.** A `main` só recebe versões que já estão em produção, então sempre tem o mesmo código que está no ar. Em `recipes` e `chefarchive-web`, esse push na `main` builda de novo e publica uma imagem só com a tag `sha-<hash>`, sem mover `latest` e sem deploy.
+5. **Deploy com sucesso → PR da `release/*` para a `main`**, o único PR do ciclo. A `release/*` é mantida depois do merge, como registro da versão. A `main` só recebe versões que já estão em produção, então sempre tem o mesmo código que está no ar. Em `recipes` e `chefarchive-web`, esse push na `main` builda de novo e publica uma imagem só com a tag `sha-<hash>`, sem mover `latest` e sem deploy.
 
 Ou seja: **só a tag leva uma versão para produção.** Rollback é refazer o deploy da tag anterior; uma correção vira uma nova tag (`v1.2.4`), nunca uma tag movida ou recriada. O fluxo completo (numeração, hotfix, sincronização entre releases) está em `docs/git-best-practices.md`, no `chefarchive-infra` (privado).
 
@@ -149,4 +191,4 @@ Nenhum segredo entra em imagem Docker, código-fonte ou log — todos são injet
 
 ## Mantendo esta doc atualizada
 
-Este arquivo cobre os **3 repositórios**, não só este. A regra em `CLAUDE.md` (aqui e nos outros dois repositórios) diz: qualquer mudança que altere como o sistema é deployado, roteado, ou como os serviços se conectam entre si — rede, segredo, banco, proxy, workflow de deploy, imagem publicada — deve atualizar este arquivo como parte do mesmo PR, esteja a mudança em `recipes`, `chefarchive-web` ou `chefarchive-infra`.
+Este arquivo cobre os **3 repositórios**, não só este. A regra em `CLAUDE.md` (aqui e nos outros dois repositórios) diz: qualquer mudança que altere como o sistema é deployado, roteado, ou como os serviços se conectam entre si — rede, segredo, banco, proxy, workflow de deploy, imagem publicada — deve atualizar este arquivo junto: na mesma branch de trabalho, se a mudança for em `recipes`, ou numa branch de trabalho do `recipes` aberta em paralelo, se for em `chefarchive-web` ou `chefarchive-infra`.
