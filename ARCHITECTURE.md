@@ -141,11 +141,11 @@ Detalhes operacionais completos (como adicionar uma aplicação nova ao proxy, v
 
 Build de imagem e deploy em produção são coisas **separadas**, disparadas em momentos diferentes:
 
-1. **As mudanças se juntam numa `release/X.Y.Z`** → cada branch de trabalho abre PR para a `release/*` da versão em que vai sair (nunca direto para a `main`). PRs e merges rodam só CI, nunca deploy.
+1. **As mudanças se juntam numa `release/X.Y.Z`** → cada branch de trabalho entra na `release/*` da versão em que vai sair por merge local (`--no-ff`, sem PR), nunca direto na `main`. Merges nunca disparam deploy.
 2. **Você cria e envia uma tag de versão anotada no último commit da `release/*`** (`git tag -a v1.2.3 -m "Release 1.2.3" && git push origin v1.2.3`) → dispara o build, publicando `latest` e `1.2.3` no GHCR.
 3. Essa mesma tag dispara o job `deploy` do workflow (só roda em tags `v*`), que chama a [Action da Hostinger](https://github.com/hostinger/deploy-on-vps) passando a versão exata recém-publicada.
 4. A API da Hostinger recria **só o projeto correspondente** na VPS (`chefarchive-api`, `chefarchive-web` ou `chefarchive-proxy`, dependendo de qual repositório foi tagueado), puxando a imagem já publicada.
-5. **Deploy com sucesso → PR da `release/*` para a `main`.** A `main` só recebe versões que já estão em produção, então sempre tem o mesmo código que está no ar. Em `recipes` e `chefarchive-web`, esse push na `main` builda de novo e publica uma imagem só com a tag `sha-<hash>`, sem mover `latest` e sem deploy.
+5. **Deploy com sucesso → PR da `release/*` para a `main`**, o único PR do ciclo. A `release/*` é mantida depois do merge, como registro da versão. A `main` só recebe versões que já estão em produção, então sempre tem o mesmo código que está no ar. Em `recipes` e `chefarchive-web`, esse push na `main` builda de novo e publica uma imagem só com a tag `sha-<hash>`, sem mover `latest` e sem deploy.
 
 Ou seja: **só a tag leva uma versão para produção.** Rollback é refazer o deploy da tag anterior; uma correção vira uma nova tag (`v1.2.4`), nunca uma tag movida ou recriada. O fluxo completo (numeração, hotfix, sincronização entre releases) está em `docs/git-best-practices.md`, no `chefarchive-infra` (privado).
 
@@ -191,4 +191,4 @@ Nenhum segredo entra em imagem Docker, código-fonte ou log — todos são injet
 
 ## Mantendo esta doc atualizada
 
-Este arquivo cobre os **3 repositórios**, não só este. A regra em `CLAUDE.md` (aqui e nos outros dois repositórios) diz: qualquer mudança que altere como o sistema é deployado, roteado, ou como os serviços se conectam entre si — rede, segredo, banco, proxy, workflow de deploy, imagem publicada — deve atualizar este arquivo como parte do mesmo PR, esteja a mudança em `recipes`, `chefarchive-web` ou `chefarchive-infra`.
+Este arquivo cobre os **3 repositórios**, não só este. A regra em `CLAUDE.md` (aqui e nos outros dois repositórios) diz: qualquer mudança que altere como o sistema é deployado, roteado, ou como os serviços se conectam entre si — rede, segredo, banco, proxy, workflow de deploy, imagem publicada — deve atualizar este arquivo junto: na mesma branch de trabalho, se a mudança for em `recipes`, ou numa branch de trabalho do `recipes` aberta em paralelo, se for em `chefarchive-web` ou `chefarchive-infra`.
